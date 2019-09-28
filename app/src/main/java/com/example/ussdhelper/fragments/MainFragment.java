@@ -155,7 +155,9 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent hoverIntent = new HoverParameters.Builder(getActivity())
+
                         .request("46e80959")
+                    .style(R.style.BaseTheme)
                         .extra("Amount", editTextAmount.getText().toString())
                         .buildIntent();
                 startActivityForResult(hoverIntent,0);

@@ -6,7 +6,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/blue_A700</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_grey_600</item>
         <item name="android:dialogTheme">@style/Dialog.Theme</item>
