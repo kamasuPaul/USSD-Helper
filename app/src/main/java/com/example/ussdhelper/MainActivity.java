@@ -35,14 +35,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //*185*2*1*1*amount*pin
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                Intent i = new HoverParameters.Builder(getApplicationContext())
-                        .request("46e80959")
-                        .extra("Amount","70")
-                                .buildIntent();
-                startActivityForResult(i, 0);
+                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
             }
         });
     }
