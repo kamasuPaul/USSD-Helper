@@ -37,6 +37,7 @@ public class MainFragment extends Fragment {
 
 
     private OnFragmentInteractionListener mListener;
+    Dialog dialog;
 
     public MainFragment() {
         // Required empty public constructor
@@ -59,6 +60,15 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpDialog();
+    }
+
+    private void setUpDialog() {
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_enter_number_and_amount);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(true);
     }
 
     @Override
@@ -78,6 +88,13 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showDialogPolygon();
+            }
+        });
+        final LinearLayout buyData = root.findViewById(R.id.sendData);
+        buyData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogPolygon1();
             }
         });
 //        pageViewModel.getText().observe(this, new Observer<String>() {
@@ -101,6 +118,10 @@ public class MainFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(resultCode==0){
             Toast.makeText(getActivity(), data.getDataString(), Toast.LENGTH_SHORT).show();
+            if(dialog!=null){
+                dialog.dismiss();
+            }
+
         }
     }
 
@@ -160,6 +181,36 @@ public class MainFragment extends Fragment {
                     .style(R.style.BaseTheme)
                         .extra("Amount", editTextAmount.getText().toString())
                         .buildIntent();
+                startActivityForResult(hoverIntent,0);
+            }
+
+        });
+
+        ((Button) dialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+    }
+    private void showDialogPolygon1() {
+
+        final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
+        final EditText editTextNumber = dialog.findViewById(R.id.edit_text_mobileNumber);
+
+
+        ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+                    .request("e0d94aec")
+                    .style(R.style.BaseTheme)
+                    .extra("MobileNumber",editTextNumber.getText().toString())
+                    .extra("Amount", editTextAmount.getText().toString())
+                    .buildIntent();
                 startActivityForResult(hoverIntent,0);
             }
 
