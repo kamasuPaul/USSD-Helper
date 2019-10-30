@@ -1,5 +1,6 @@
 package com.example.ussdhelper.fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -76,13 +77,20 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-                final LinearLayout checkBalance = root.findViewById(R.id.check_balance);
-                checkBalance.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        checkBalance();
-                    }
-                });
+        final LinearLayout checkAirtimeBalance = root.findViewById(R.id.check_balance);
+        checkAirtimeBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkBalance();
+            }
+        });
+        final LinearLayout checkDataBalance = root.findViewById(R.id.check_data_balance);
+        checkDataBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkDataBalance();
+            }
+        });
         final LinearLayout buyAirtime = root.findViewById(R.id.buy_airtime);
         buyAirtime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +105,21 @@ public class MainFragment extends Fragment {
                 showDialogPolygon1();
             }
         });
+        final LinearLayout sendMoneyAirtel = root.findViewById(R.id.send_money_airteNo);
+        sendMoneyAirtel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMoneyToAirtelNo();
+            }
+        });
+        final LinearLayout withDrawCash = root.findViewById(R.id.withdraw_cash);
+        withDrawCash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                withdrawCash();
+            }
+        });
+
 //        pageViewModel.getText().observe(this, new Observer<String>() {
 //            @Override
 //            public void onChanged(@Nullable String s) {
@@ -108,20 +131,30 @@ public class MainFragment extends Fragment {
 
     private void checkBalance() {
         //*185*2*1*1*amount*pin
-        Intent i = new HoverParameters.Builder(getActivity())
-                .request("9ad2cd6e")
-                .buildIntent();
-        startActivityForResult(i, 0);
+//        Intent i = new HoverParameters.Builder(getActivity())
+//            .request("9ad2cd6e")
+//            .buildIntent();
+//        startActivityForResult(i, 0);
+        String ussdCode = "*131"+ Uri.encode("#");
+        startActivity(new Intent(Intent.ACTION_CALL,Uri.parse("tel:"+ussdCode)));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode==0){
-            Toast.makeText(getActivity(), data.getDataString(), Toast.LENGTH_SHORT).show();
-            if(dialog!=null){
-                dialog.dismiss();
-            }
+//        if (resultCode == 0) {
+//            Toast.makeText(getActivity(), data.getDataString(), Toast.LENGTH_SHORT).show();
+//            if (dialog != null) {
+//                dialog.dismiss();
+//            }
+//
+//        }
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            String[] sessionTextArr = data.getStringArrayExtra("ussd_messages");
+            String uuid = data.getStringExtra("uuid");
+            Toast.makeText(getActivity(), sessionTextArr.toString(), Toast.LENGTH_LONG).show();
 
+        } else if (requestCode == 0 && resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -163,7 +196,11 @@ public class MainFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
     private void showDialogPolygon() {
+
+
+//        if(true)return;//end here
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_enter_amount);
@@ -175,13 +212,17 @@ public class MainFragment extends Fragment {
         ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-
-                        .request("46e80959")
-                    .style(R.style.BaseTheme)
-                        .extra("Amount", editTextAmount.getText().toString())
-                        .buildIntent();
-                startActivityForResult(hoverIntent,0);
+                String ussdCode = "*185*2*1*1*"+editTextAmount.getText().toString().trim()+ Uri.encode("#");
+                startActivity(new Intent(Intent.ACTION_CALL,Uri.parse("tel:"+ussdCode)));
+//        *185*2*1*1*amount*pin
+//
+//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+//
+//                    .request("46e80959")
+//                    .style(R.style.BaseTheme)
+//                    .extra("Amount", editTextAmount.getText().toString())
+//                    .buildIntent();
+//                startActivityForResult(hoverIntent, 0);
             }
 
         });
@@ -196,6 +237,7 @@ public class MainFragment extends Fragment {
 
         dialog.show();
     }
+
     private void showDialogPolygon1() {
 
         final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
@@ -208,10 +250,10 @@ public class MainFragment extends Fragment {
                 Intent hoverIntent = new HoverParameters.Builder(getActivity())
                     .request("e0d94aec")
                     .style(R.style.BaseTheme)
-                    .extra("MobileNumber",editTextNumber.getText().toString())
+                    .extra("MobileNumber", editTextNumber.getText().toString())
                     .extra("Amount", editTextAmount.getText().toString())
                     .buildIntent();
-                startActivityForResult(hoverIntent,0);
+                startActivityForResult(hoverIntent, 0);
             }
 
         });
@@ -225,5 +267,82 @@ public class MainFragment extends Fragment {
 
 
         dialog.show();
+    }
+
+    private void checkDataBalance() {
+//        Intent i = new HoverParameters.Builder(getActivity())
+//            .request("c7f7271b")
+//            .buildIntent();
+//        startActivityForResult(i, 0);
+        String ussdCode = "*175*4" + Uri.encode("#");
+        startActivity(new Intent(Intent.ACTION_CALL,Uri.parse("tel:"+ussdCode)));
+
+    }
+    private void sendMoneyToAirtelNo(){
+       // *185*1*1*mn*amount*pin
+        final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
+        final EditText editTextNumber = dialog.findViewById(R.id.edit_text_mobileNumber);
+        ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+                    .request("aa04833e")
+                    .style(R.style.BaseTheme)
+                    .extra("MobileNumber", editTextNumber.getText().toString())
+                    .extra("Amount", editTextAmount.getText().toString())
+                    .buildIntent();
+                Toast.makeText(getActivity(), editTextNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), editTextAmount.getText().toString(), Toast.LENGTH_SHORT).show();
+                startActivityForResult(hoverIntent, 0);
+            }
+
+        });
+
+        ((Button) dialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+
+    }
+    private void withdrawCash(){
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_enter_amount);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(true);
+        final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
+
+
+        ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+
+                    .request("5aba6be4")
+                    .style(R.style.BaseTheme)
+                    .extra("Amount", editTextAmount.getText().toString())
+                    .buildIntent();
+                startActivityForResult(hoverIntent, 0);
+            }
+
+        });
+
+        ((Button) dialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+    }
+    private void callMeBack(){
+        //7199627a
     }
 }

@@ -64,13 +64,13 @@
                             android:orientation="vertical"
                             android:padding="@dimen/spacing_large">
 
-                            <ImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -223,7 +223,7 @@
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -268,7 +268,7 @@
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -299,6 +299,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
+                            android:id="@+id/check_data_balance"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
@@ -312,7 +313,7 @@
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -329,6 +330,15 @@
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_middle"
+                android:text="Mobile Money"
+                android:textAlignment="center"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/grey_90"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -350,6 +360,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
+                            android:id="@+id/withdraw_cash"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
@@ -363,12 +374,12 @@
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="LANDLINE"
+                                android:text="WithDraw Cash"
                                 android:textAlignment="center"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                 android:textColor="@color/grey_90" />
@@ -407,12 +418,12 @@
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="CABLE TV"
+                                android:text="Send to Mtn No"
                                 android:textAlignment="center"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                 android:textColor="@color/grey_90" />
@@ -438,6 +449,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
+                            android:id="@+id/send_money_airteNo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
@@ -451,12 +463,12 @@
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:tint="@color/indigo_500"
-                                app:srcCompat="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="INTERNET"
+                                android:text="Send to Airtel No"
                                 android:textAlignment="center"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                                 android:textColor="@color/grey_90" />
