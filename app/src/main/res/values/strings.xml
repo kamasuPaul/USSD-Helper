@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">USSD Helper</string>
     <string name="tab_text_1">Home</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_2">Custom Codes</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <string-array name="types">
+        <item>Text</item>
+        <item>Tel No</item>
+        <item>Number</item>
+    </string-array>
 </resources>

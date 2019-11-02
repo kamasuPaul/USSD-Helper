@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 //                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
 //                    .putExtra(ContactPickerActivity.EXTRA_CONTACT_SORT_ORDER, ContactSortOrder.AUTOMATIC.name());
 //                startActivityForResult(intent, REQUEST_CONTACT);
-//                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
+                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
 //                Intent intent = null;
 //                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ECLAIR) {
 //                    intent = new Intent(Intent.ACTION_ALL_APPS, ContactsContract.Contacts.CONTENT_URI);
@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
 //                startActivityForResult(intent,REQUEST_CONTACT);
 //                TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //                manager.sendUssdRequest("*175*4#",);
-                String ussdCode = "*175*4"+ Uri.encode("#");
-                startActivity(new Intent(Intent.ACTION_CALL,Uri.parse("tel:"+ussdCode)));
             }
         });
     }
