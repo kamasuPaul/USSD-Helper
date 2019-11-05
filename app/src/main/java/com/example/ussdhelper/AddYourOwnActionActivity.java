@@ -19,9 +19,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ussdhelper.modals.UssdAction;
+import com.example.ussdhelper.modals.UssdAction.Step;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
 import com.hover.sdk.api.HoverParameters;
 
@@ -32,6 +34,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
     SQLiteDatabaseHandler db;
     Button button;
     EditText actionName,actionCode,actionNetwork;
+//    Spinner spinner;
     int lastId =6;
     LinearLayout parentlayout;
 
@@ -43,6 +46,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         actionName =  findViewById(R.id.action_name);
         actionCode =  findViewById(R.id.action_code);
         actionNetwork =  findViewById(R.id.action_network);
+//        spinner = findViewById(R.id.type_spinner);
 
         parentlayout = findViewById(R.id.layout_parent);
 
@@ -73,14 +77,22 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void addNewAction(){
-//        UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(),actionCode.getText().toString(),actionNetwork.getText().toString());
-//        db.addUssdAction(ussdAction);
         int count = parentlayout.getChildCount();
+
+        Step[] steps = new Step[count];
         for(int i=0;i<count;i++){
             final View row = parentlayout.getChildAt(i);
             EditText editText = row.findViewById(R.id.number_edit_text);
-            Log.d("DATA",editText.getText().toString());
+            Spinner spinner1 = row.findViewById(R.id.type_spinner);
+            Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
+            Step step =  new UssdAction.Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+            steps[i] = step;
         }
+        //insert the data into the database
+                UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(),actionCode.getText().toString(),actionNetwork.getText().toString(),steps);
+        db.addUssdAction(ussdAction);
+
+        Toast.makeText(this, ussdAction.toString(), Toast.LENGTH_SHORT).show();
 
     }
 
