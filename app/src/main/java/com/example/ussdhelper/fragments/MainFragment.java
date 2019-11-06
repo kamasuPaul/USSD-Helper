@@ -4,27 +4,39 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.ussdhelper.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.hover.sdk.api.HoverParameters;
+import com.wafflecopter.multicontactpicker.ContactResult;
+import com.wafflecopter.multicontactpicker.LimitColumn;
+import com.wafflecopter.multicontactpicker.MultiContactPicker;
+
+import java.util.List;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +51,7 @@ public class MainFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     Dialog dialog;
+    private static final int CONTACT_PICKER_REQUEST =29;
 
     public MainFragment() {
         // Required empty public constructor
@@ -141,6 +154,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
 //        if (resultCode == 0) {
 //            Toast.makeText(getActivity(), data.getDataString(), Toast.LENGTH_SHORT).show();
 //            if (dialog != null) {
@@ -148,12 +162,20 @@ public class MainFragment extends Fragment {
 //            }
 //
 //        }
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+        if(requestCode == CONTACT_PICKER_REQUEST){
+            if(resultCode == RESULT_OK) {
+                List<ContactResult> results = MultiContactPicker.obtainResult(data);
+                Log.d("MyTag", results.get(0).getDisplayName());
+            } else if(resultCode == RESULT_CANCELED){
+                System.out.println("User closed the picker without selecting items.");
+            }
+        }
+        if (requestCode == 0 && resultCode == RESULT_OK) {
             String[] sessionTextArr = data.getStringArrayExtra("ussd_messages");
             String uuid = data.getStringExtra("uuid");
             Toast.makeText(getActivity(), sessionTextArr.toString(), Toast.LENGTH_LONG).show();
 
-        } else if (requestCode == 0 && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
             Toast.makeText(getActivity(), "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
         }
     }
@@ -242,6 +264,29 @@ public class MainFragment extends Fragment {
 
         final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
         final EditText editTextNumber = dialog.findViewById(R.id.edit_text_mobileNumber);
+        ImageButton imageButton = dialog.findViewById(R.id.selec_contact_ImageBtn);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MultiContactPicker.Builder(getActivity()) //Activity/fragment context
+//                    .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
+                    .hideScrollbar(false) //Optional - default: false
+                    .showTrack(true) //Optional - default: true
+                    .searchIconColor(Color.WHITE) //Option - default: White
+                    .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
+                    .handleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
+                    .bubbleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
+                    .bubbleTextColor(Color.WHITE) //Optional - default: White
+                    .setTitleText("Select Contacts") //Optional - default: Select Contacts
+//                    .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
+                    .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
+                    .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
+                    .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out) //Optional - default: No animation overrides
+                    .showPickerForResult(CONTACT_PICKER_REQUEST);
+            }
+        });
 
 
         ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {

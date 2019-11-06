@@ -88,6 +88,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             Step step =  new UssdAction.Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
             steps[i] = step;
         }
+
         //insert the data into the database
                 UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(),actionCode.getText().toString(),actionNetwork.getText().toString(),steps);
         db.addUssdAction(ussdAction);

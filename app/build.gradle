@@ -38,6 +38,7 @@ dependencies {
     implementation 'com.hover:android-sdk:1.3.2-androidx'              // hover ussd library
 //    implementation 'com.1gravity:android-contactpicker:1.3.2'          //contact picker library
 //    implementation 'pub.devrel:easypermissions:3.0.0'                  //easy permissions library
+    implementation 'com.github.broakenmedia:MultiContactPicker:1.8.5'    //contacts picker library
 
 
 

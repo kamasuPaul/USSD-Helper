@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ussdhelper.modals.UssdAction;
@@ -97,7 +98,9 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
     public List<UssdAction> allUssdActions() {
 
         List<UssdAction> ussdActions = new LinkedList<UssdAction>();
-        String query = "SELECT * FROM "+TABLE_NAME+" LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id ";
+        String query = "SELECT * FROM "+TABLE_NAME;
+        String query2 = "SELECT * FROM "+ TABLE_NAME1+ " WHERE action_id = ?";
+//            " LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id ";
 
             String query1 = "SELECT  * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -106,16 +109,23 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
+                Log.d("CURSOR",cursor.toString());
                 ussdAction = new UssdAction();
                 ArrayList<UssdAction.Step>steps = new ArrayList<>();
                 ussdAction.setId(Integer.parseInt(cursor.getString(0)));
                 ussdAction.setName(cursor.getString(1));
                 ussdAction.setNetwork(cursor.getString(2));
                 ussdAction.setCode(cursor.getString(3));
-                //add step
-                UssdAction.Step step = new UssdAction.Step();
-                step.setType(cursor.getString(cursor.getColumnIndex("type")));
-                steps.add(step);
+                Cursor cursor2 = db.rawQuery(query2,new String[]{cursor.getString(0)});
+                if(cursor2.moveToFirst()){
+                    do{
+                        //add step
+                        UssdAction.Step step = new UssdAction.Step();
+                        step.setType(cursor2.getString(cursor2.getColumnIndex("type")));
+                        steps.add(step);
+                    }while(cursor2.moveToNext());
+                }
+
                 UssdAction.Step[]s = new UssdAction.Step[steps.size()];
                 s =  steps.toArray(s);
                 ussdAction.setSteps(s);

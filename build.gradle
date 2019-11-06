@@ -20,6 +20,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url "http://maven.usehover.com/releases" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
