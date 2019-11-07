@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -51,6 +52,7 @@ public class MainFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     Dialog dialog;
+    Dialog customDialog;
     private static final int CONTACT_PICKER_REQUEST =29;
 
     public MainFragment() {
@@ -262,34 +264,40 @@ public class MainFragment extends Fragment {
 
     private void showDialogPolygon1() {
 
-        final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
-        final EditText editTextNumber = dialog.findViewById(R.id.edit_text_mobileNumber);
-        ImageButton imageButton = dialog.findViewById(R.id.selec_contact_ImageBtn);
+        //inflate the root dialog
+        LayoutInflater inflater = getLayoutInflater();
+        CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root,null);
+        LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
+        //inflate each row that should be contained in the dialog box
+        View rowAmount = inflater.inflate(R.layout.row_amount,null);
+        View rowTelephone = inflater.inflate(R.layout.row_telephone,null);
+        View rowText = inflater.inflate(R.layout.row_text,null);
+        View rowButtons = inflater.inflate(R.layout.row_buttons,null);
+        //add each row to the root
+        root.addView(rowAmount);
+        root.addView(rowTelephone);
+        root.addView(rowText);
+        root.addView(rowButtons);
+
+        customDialog = new Dialog(getActivity());
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        customDialog.setContentView(cardView);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        customDialog.setCancelable(true);
+
+
+        final EditText editTextAmount = customDialog.findViewById(R.id.edit_text_amount);
+        final EditText editTextNumber = customDialog.findViewById(R.id.edit_text_mobileNumber);
+        ImageButton imageButton = customDialog.findViewById(R.id.selec_contact_ImageBtn);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MultiContactPicker.Builder(getActivity()) //Activity/fragment context
-//                    .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
-                    .hideScrollbar(false) //Optional - default: false
-                    .showTrack(true) //Optional - default: true
-                    .searchIconColor(Color.WHITE) //Option - default: White
-                    .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
-                    .handleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
-                    .bubbleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
-                    .bubbleTextColor(Color.WHITE) //Optional - default: White
-                    .setTitleText("Select Contacts") //Optional - default: Select Contacts
-//                    .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
-                    .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
-                    .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
-                    .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out) //Optional - default: No animation overrides
-                    .showPickerForResult(CONTACT_PICKER_REQUEST);
+                contactPicker();
             }
         });
 
 
-        ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+        ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent hoverIntent = new HoverParameters.Builder(getActivity())
@@ -303,15 +311,35 @@ public class MainFragment extends Fragment {
 
         });
 
-        ((Button) dialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+        ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                customDialog.dismiss();
             }
         });
 
 
-        dialog.show();
+        customDialog.show();
+    }
+
+    private void contactPicker() {
+        new MultiContactPicker.Builder(getActivity()) //Activity/fragment context
+//                    .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
+            .hideScrollbar(false) //Optional - default: false
+            .showTrack(true) //Optional - default: true
+            .searchIconColor(Color.WHITE) //Option - default: White
+            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
+            .handleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
+            .bubbleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
+            .bubbleTextColor(Color.WHITE) //Optional - default: White
+            .setTitleText("Select Contacts") //Optional - default: Select Contacts
+//                    .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
+            .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
+            .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
+            .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out) //Optional - default: No animation overrides
+            .showPickerForResult(CONTACT_PICKER_REQUEST);
     }
 
     private void checkDataBalance() {

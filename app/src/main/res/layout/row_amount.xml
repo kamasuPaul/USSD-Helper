@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:fontFamily="sans-serif-light"
+        android:text="Enter Amount"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/grey_60" />
+    <EditText
+        android:hint="Amount"
+        android:id="@+id/edit_text_mobileNumber"
+        android:layout_width="match_parent"
+        android:inputType="number"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
