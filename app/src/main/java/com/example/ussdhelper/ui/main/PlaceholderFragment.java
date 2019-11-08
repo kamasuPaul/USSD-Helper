@@ -25,11 +25,15 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
+import com.example.ussdhelper.adapters.AdapterGridCustomCodes;
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
+import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
 
 import java.util.List;
@@ -43,7 +47,9 @@ public class PlaceholderFragment extends Fragment {
 
     private PageViewModel pageViewModel;
     SQLiteDatabaseHandler db;
-    ListView list;
+    private AdapterGridCustomCodes mAdapter;
+    private RecyclerView recyclerView;
+    private List<UssdAction>  ussdActions;
 
 
     public static PlaceholderFragment newInstance(int index) {
@@ -69,12 +75,12 @@ public class PlaceholderFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_blank, container, false);
+        View root = inflater.inflate(R.layout.fragment_custom_codes, container, false);
 
         db = new SQLiteDatabaseHandler(getActivity());
 
         // list all usdActions
-        final List<UssdAction> ussdActions = db.allUssdActions();
+        ussdActions = db.allUssdActions();
 
         if (ussdActions != null) {
             String[] itemsNames = new String[ussdActions.size()];
@@ -82,22 +88,22 @@ public class PlaceholderFragment extends Fragment {
             for (int i = 0; i < ussdActions.size(); i++) {
                 itemsNames[i] = ussdActions.get(i).toString();
             }
-
-            // display like string instances
-             list = (ListView) root.findViewById(R.id.list);
-            list.setAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, itemsNames));
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    String ussdCode = "*131"+ Uri.encode("#");
-                    String uscode = ussdActions.get(position).getCode();
-                    String cd = uscode+ Uri.encode("#");
-                    createDialog(ussdActions.get(position),cd);
-//                    String code = uscode.substring(uscode.lastIndexOf("#"));
-//                    Toast.makeText(AddYourOwnActionActivity.this,uscode, Toast.LENGTH_SHORT).show();
-                }
-            });
+                initComponent(root);
+//            // display like string instances
+//             list = (ListView) root.findViewById(R.id.list);
+//            list.setAdapter(new ArrayAdapter<String>(getActivity(),
+//                android.R.layout.simple_list_item_1, android.R.id.text1, itemsNames));
+//            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                    String ussdCode = "*131"+ Uri.encode("#");
+//                    String uscode = ussdActions.get(position).getCode();
+//                    String cd = uscode+ Uri.encode("#");
+//                    createDialog(ussdActions.get(position),cd);
+////                    String code = uscode.substring(uscode.lastIndexOf("#"));
+////                    Toast.makeText(AddYourOwnActionActivity.this,uscode, Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
         }
 
@@ -106,7 +112,7 @@ public class PlaceholderFragment extends Fragment {
     public void createDialog(final UssdAction ussdAction, final String cd) {
         if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
             //execute the code immediately
-            Toast.makeText(getActivity(), "No steps Found",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "No steps Found",Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
 
 
@@ -202,4 +208,32 @@ public class PlaceholderFragment extends Fragment {
 //            return customDialog;
         }
     }
+    private void initComponent(View root) {
+        recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+//        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 8), true));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+
+//        List<ShopCategory> items = DataGenerator.getShoppingCategory(this);
+
+        //set data and list adapter
+        mAdapter = new AdapterGridCustomCodes(getActivity(), ussdActions);
+        recyclerView.setAdapter(mAdapter);
+
+        // on item list clicked
+        mAdapter.setOnItemClickListener(new AdapterGridCustomCodes.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdAction obj, int position) {
+                String ussdCode = "*131"+ Uri.encode("#");
+                String uscode = ussdActions.get(position).getCode();
+                String cd = uscode+ Uri.encode("#");
+                createDialog(ussdActions.get(position),cd);
+                Snackbar.make(view, "Item " + obj.getCode() + " clicked", Snackbar.LENGTH_SHORT).show();
+            }
+
+        });
+
+    }
+
 }
