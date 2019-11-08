@@ -22,8 +22,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.ussdhelper.ui.main.SectionsPagerAdapter;
-import com.hover.sdk.api.Hover;
-import com.hover.sdk.api.HoverParameters;
+//import com.hover.sdk.api.Hover;
+//import com.hover.sdk.api.HoverParameters;
 import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Hover.initialize(this);
+//        Hover.initialize(this);
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);

@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.hover.sdk.api.HoverParameters;
+//import com.hover.sdk.api.HoverParameters;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
@@ -301,13 +301,13 @@ public class MainFragment extends Fragment {
         ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-                    .request("e0d94aec")
-                    .style(R.style.BaseTheme)
-                    .extra("MobileNumber", editTextNumber.getText().toString())
-                    .extra("Amount", editTextAmount.getText().toString())
-                    .buildIntent();
-                startActivityForResult(hoverIntent, 0);
+//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+//                    .request("e0d94aec")
+//                    .style(R.style.BaseTheme)
+//                    .extra("MobileNumber", editTextNumber.getText().toString())
+//                    .extra("Amount", editTextAmount.getText().toString())
+//                    .buildIntent();
+//                startActivityForResult(hoverIntent, 0);
             }
 
         });
@@ -340,15 +340,15 @@ public class MainFragment extends Fragment {
         ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-                    .request("aa04833e")
-                    .style(R.style.BaseTheme)
-                    .extra("MobileNumber", editTextNumber.getText().toString())
-                    .extra("Amount", editTextAmount.getText().toString())
-                    .buildIntent();
-                Toast.makeText(getActivity(), editTextNumber.getText().toString(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(getActivity(), editTextAmount.getText().toString(), Toast.LENGTH_SHORT).show();
-                startActivityForResult(hoverIntent, 0);
+//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+//                    .request("aa04833e")
+//                    .style(R.style.BaseTheme)
+//                    .extra("MobileNumber", editTextNumber.getText().toString())
+//                    .extra("Amount", editTextAmount.getText().toString())
+//                    .buildIntent();
+//                Toast.makeText(getActivity(), editTextNumber.getText().toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), editTextAmount.getText().toString(), Toast.LENGTH_SHORT).show();
+//                startActivityForResult(hoverIntent, 0);
             }
 
         });
@@ -376,13 +376,13 @@ public class MainFragment extends Fragment {
         ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-
-                    .request("5aba6be4")
-                    .style(R.style.BaseTheme)
-                    .extra("Amount", editTextAmount.getText().toString())
-                    .buildIntent();
-                startActivityForResult(hoverIntent, 0);
+//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
+//
+//                    .request("5aba6be4")
+//                    .style(R.style.BaseTheme)
+//                    .extra("Amount", editTextAmount.getText().toString())
+//                    .buildIntent();
+//                startActivityForResult(hoverIntent, 0);
             }
 
         });

@@ -30,7 +30,7 @@ import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
-import com.hover.sdk.api.HoverParameters;
+//import com.hover.sdk.api.HoverParameters;
 
 import java.util.List;
 

@@ -2,12 +2,14 @@ package com.example.ussdhelper;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+//import androidx.room.util.StringUtil;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,7 +27,7 @@ import android.widget.Toast;
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.modals.UssdAction.Step;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
-import com.hover.sdk.api.HoverParameters;
+//import com.hover.sdk.api.HoverParameters;
 
 import java.util.List;
 
@@ -90,7 +92,9 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         }
 
         //insert the data into the database
-                UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(),actionCode.getText().toString(),actionNetwork.getText().toString(),steps);
+        String code = actionCode.getText().toString().replaceAll("#","");
+
+        UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(), code,actionNetwork.getText().toString(),steps);
         db.addUssdAction(ussdAction);
 
         Toast.makeText(this, ussdAction.toString(), Toast.LENGTH_SHORT).show();
