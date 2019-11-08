@@ -3,6 +3,7 @@ package com.example.ussdhelper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.provider.ContactsContract;
@@ -22,6 +24,9 @@ import android.widget.Toast;
 import com.example.ussdhelper.ui.main.SectionsPagerAdapter;
 import com.hover.sdk.api.Hover;
 import com.hover.sdk.api.HoverParameters;
+import com.wafflecopter.multicontactpicker.LimitColumn;
+import com.wafflecopter.multicontactpicker.MultiContactPicker;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +34,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CONTACT = 20 ;
+    private static final int CONTACT_PICKER_REQUEST = 90;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,4 +106,24 @@ public class MainActivity extends AppCompatActivity {
 //            }
         }
     }
+    public void contactPicker(Context context) {
+        new MultiContactPicker.Builder(this) //Activity/fragment context
+//                    .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
+            .hideScrollbar(false) //Optional - default: false
+            .showTrack(true) //Optional - default: true
+            .searchIconColor(Color.WHITE) //Option - default: White
+            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
+            .handleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Azure Blue
+            .bubbleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Azure Blue
+            .bubbleTextColor(Color.WHITE) //Optional - default: White
+            .setTitleText("Select Contacts") //Optional - default: Select Contacts
+//                    .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
+            .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
+            .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
+            .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                android.R.anim.fade_out) //Optional - default: No animation overrides
+            .showPickerForResult(CONTACT_PICKER_REQUEST);
+    }
+
 }

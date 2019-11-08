@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.hover.sdk.api.HoverParameters;
@@ -292,7 +293,7 @@ public class MainFragment extends Fragment {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contactPicker();
+                ((MainActivity)getActivity()).contactPicker(getActivity());
             }
         });
 
@@ -322,25 +323,6 @@ public class MainFragment extends Fragment {
         customDialog.show();
     }
 
-    private void contactPicker() {
-        new MultiContactPicker.Builder(getActivity()) //Activity/fragment context
-//                    .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
-            .hideScrollbar(false) //Optional - default: false
-            .showTrack(true) //Optional - default: true
-            .searchIconColor(Color.WHITE) //Option - default: White
-            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
-            .handleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
-            .bubbleColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary)) //Optional - default: Azure Blue
-            .bubbleTextColor(Color.WHITE) //Optional - default: White
-            .setTitleText("Select Contacts") //Optional - default: Select Contacts
-//                    .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
-            .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
-            .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
-            .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                android.R.anim.fade_out) //Optional - default: No animation overrides
-            .showPickerForResult(CONTACT_PICKER_REQUEST);
-    }
 
     private void checkDataBalance() {
 //        Intent i = new HoverParameters.Builder(getActivity())

@@ -13,6 +13,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/grey_60" />
     <EditText
+        android:tag="editText"
         android:hint="1"
         android:inputType="text"
         android:id="@+id/editText_text"
