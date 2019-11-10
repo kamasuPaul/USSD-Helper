@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.modals.UssdAction.Step;
+import com.example.ussdhelper.ui.main.PlaceholderFragment;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
 //import com.hover.sdk.api.HoverParameters;
 
@@ -96,8 +97,12 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(), code,actionNetwork.getText().toString(),steps);
         db.addUssdAction(ussdAction);
+        //for now update the ui from here
+        PlaceholderFragment.ussdActions.add(ussdAction);
+        PlaceholderFragment.mAdapter.notifyDataSetChanged();
 
-        Toast.makeText(this, ussdAction.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ussdAction.getName()+" Has been added", Toast.LENGTH_SHORT).show();
+        finish();
 
     }
 

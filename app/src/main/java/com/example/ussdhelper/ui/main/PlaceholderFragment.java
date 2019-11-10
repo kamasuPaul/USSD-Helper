@@ -47,9 +47,9 @@ public class PlaceholderFragment extends Fragment {
 
     private PageViewModel pageViewModel;
     SQLiteDatabaseHandler db;
-    private AdapterGridCustomCodes mAdapter;
+    public static AdapterGridCustomCodes mAdapter;
     private RecyclerView recyclerView;
-    private List<UssdAction>  ussdActions;
+    public static List<UssdAction>  ussdActions;
 
 
     public static PlaceholderFragment newInstance(int index) {
