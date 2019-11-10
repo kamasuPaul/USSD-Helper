@@ -49,15 +49,18 @@ public class MainActivity extends AppCompatActivity {
         //ask for permissions
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
-                             Manifest.permission.INTERNET)
+                             Manifest.permission.READ_CONTACTS)
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
-
+                    if(!report.areAllPermissionsGranted()){
+                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
                 public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                    token.continuePermissionRequest();
 
                 }
             }).check();
