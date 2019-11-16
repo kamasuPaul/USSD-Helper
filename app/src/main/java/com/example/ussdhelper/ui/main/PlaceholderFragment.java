@@ -212,7 +212,7 @@ public class PlaceholderFragment extends Fragment {
         recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 //        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 8), true));
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
 
 //        List<ShopCategory> items = DataGenerator.getShoppingCategory(this);
@@ -230,6 +230,12 @@ public class PlaceholderFragment extends Fragment {
                 String cd = uscode+ Uri.encode("#");
                 createDialog(ussdActions.get(position),cd);
                 Snackbar.make(view, "Item " + obj.getCode() + " clicked", Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemDelete(View view, UssdAction obj, int position) {
+                ussdActions.remove(position);
+                mAdapter.notifyDataSetChanged();
             }
 
         });

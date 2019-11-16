@@ -97,6 +97,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(), code,actionNetwork.getText().toString(),steps);
         db.addUssdAction(ussdAction);
+
         //for now update the ui from here
         PlaceholderFragment.ussdActions.add(ussdAction);
         PlaceholderFragment.mAdapter.notifyDataSetChanged();

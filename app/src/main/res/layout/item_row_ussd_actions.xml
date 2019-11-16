@@ -9,37 +9,51 @@
 
     <com.balysv.materialripple.MaterialRippleLayout
         style="@style/RippleStyleBlack"
-        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/lyt_parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_large">
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:tint="@color/grey_60"
-                app:srcCompat="@drawable/ic_phone_android" />
-
-            <TextView
-                android:id="@+id/title"
+        <RelativeLayout
+            android:id="@+id/RelativLyt_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/lyt_parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_middle"
-                android:text="Action Name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_80" />
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_large">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:tint="@color/grey_60"
+                    app:srcCompat="@drawable/ic_phone_android" />
 
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/spacing_middle"
+                    android:text="Action Name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80" />
+
+            </LinearLayout>
+            <TextView
+                android:padding="10dp"
+                android:id="@+id/textView_optionsMenu"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:text="&#8942;"/>
+
+        </RelativeLayout>
     </com.balysv.materialripple.MaterialRippleLayout>
 
 </androidx.cardview.widget.CardView>
