@@ -19,7 +19,51 @@
             android:descendantFocusability="blocksDescendants"
             android:orientation="vertical"
             android:padding="@dimen/spacing_middle">
+<androidx.core.widget.NestedScrollView
+    android:scrollbars="none"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/linearLayout_root_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.robertlevonyan.views.chip.Chip
+            android:id="@+id/chip_airel"
+            android:tag="chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Airtel"
+            app:mcv_selectable="true"
+            app:mcv_selectedBackgroundColor="@color/colorPrimary"
+            app:mcv_chipIcon="@drawable/bg_polygon"
 
+            />
+
+        <com.robertlevonyan.views.chip.Chip
+            android:id="@+id/chip_mtn"
+            android:tag="chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Mtn"
+            app:mcv_selectedBackgroundColor="@color/colorPrimary"
+            app:mcv_chipIcon="@drawable/bg_polygon"
+            app:mcv_selectable="true" />
+
+        <com.robertlevonyan.views.chip.Chip
+            android:id="@+id/chip_africell"
+            android:tag="chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Africell"
+            app:mcv_selectable="true"
+            app:mcv_selectedBackgroundColor="@color/colorPrimary"
+            app:mcv_chipIcon="@drawable/bg_polygon"
+            />
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_middle" />
@@ -485,7 +529,10 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_smlarge" />
 
+
+
         </LinearLayout>
+
 
     </androidx.core.widget.NestedScrollView>
 

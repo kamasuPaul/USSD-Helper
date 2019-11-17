@@ -25,16 +25,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
 import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
+import com.robertlevonyan.views.chip.Chip;
+import com.robertlevonyan.views.chip.OnSelectClickListener;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -142,6 +147,42 @@ public class MainFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
+
+        //iniatize chip views
+        final LinearLayout rootLinearLayout = root.findViewById(R.id.linearLayout_root_chips);
+        com.robertlevonyan.views.chip.Chip chipAirtel = root.findViewById(R.id.chip_airel);
+        com.robertlevonyan.views.chip.Chip chipMtn = root.findViewById(R.id.chip_mtn);
+        com.robertlevonyan.views.chip.Chip chipAfricel = root.findViewById(R.id.chip_africell);
+        List<Chip> chips = Arrays.asList(chipAirtel, chipAfricel, chipMtn);
+        for (com.robertlevonyan.views.chip.Chip chip: chips) {
+            chip.setOnSelectClickListener(new OnSelectClickListener() {
+                @Override
+                public void onSelectClick(View v, boolean selected) {
+                    for(View v1:getViewsByTag(rootLinearLayout,"chip")){
+                        if(!v.equals(v1)){
+                            ((com.robertlevonyan.views.chip.Chip)v1).setChipSelected(false);
+
+                        }
+//
+                    }
+                }
+            });
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((com.robertlevonyan.views.chip.Chip)v).setChipSelected(true);
+
+                    for(View v1:getViewsByTag(rootLinearLayout,"chip")){
+                        if(!v.equals(v1)){
+                            ((com.robertlevonyan.views.chip.Chip)v1).setChipSelected(false);
+
+                        }
+//
+                    }
+                }
+            });
+        };
+
         return root;
     }
 
@@ -399,5 +440,23 @@ public class MainFragment extends Fragment {
     }
     private void callMeBack(){
         //7199627a
+    }
+    //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
+    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup) child, tag));
+            }
+
+            final Object tagObj = child.getTag();
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+
+        }
+        return views;
     }
 }
