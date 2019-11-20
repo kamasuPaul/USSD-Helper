@@ -19,51 +19,57 @@
             android:descendantFocusability="blocksDescendants"
             android:orientation="vertical"
             android:padding="@dimen/spacing_middle">
-<androidx.core.widget.NestedScrollView
-    android:scrollbars="none"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:id="@+id/linearLayout_root_chips"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.robertlevonyan.views.chip.Chip
-            android:id="@+id/chip_airel"
-            android:tag="chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Airtel"
-            app:mcv_selectable="true"
-            app:mcv_selectedBackgroundColor="@color/colorPrimary"
-            app:mcv_chipIcon="@drawable/bg_polygon"
 
-            />
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
 
-        <com.robertlevonyan.views.chip.Chip
-            android:id="@+id/chip_mtn"
-            android:tag="chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Mtn"
-            app:mcv_selectedBackgroundColor="@color/colorPrimary"
-            app:mcv_chipIcon="@drawable/bg_polygon"
-            app:mcv_selectable="true" />
+                <LinearLayout
+                    android:id="@+id/linearLayout_root_chips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <com.robertlevonyan.views.chip.Chip
-            android:id="@+id/chip_africell"
-            android:tag="chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Africell"
-            app:mcv_selectable="true"
-            app:mcv_selectedBackgroundColor="@color/colorPrimary"
-            app:mcv_chipIcon="@drawable/bg_polygon"
-            />
-    </LinearLayout>
+                    <com.robertlevonyan.views.chip.Chip
+                        android:visibility="gone"
+                        android:id="@+id/chip_airel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="chip"
+                        android:text="Airtel"
+                        app:mcv_chipIcon="@drawable/bg_polygon"
+                        app:mcv_selectable="true"
+                        app:mcv_selectedBackgroundColor="@color/colorPrimary"
 
-</androidx.core.widget.NestedScrollView>
+                        />
+
+                    <com.robertlevonyan.views.chip.Chip
+                        android:visibility="gone"
+                        android:id="@+id/chip_mtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:tag="chip"
+                        android:text="Mtn"
+                        app:mcv_chipIcon="@drawable/bg_polygon"
+                        app:mcv_selectable="true"
+                        app:mcv_selectedBackgroundColor="@color/colorPrimary" />
+
+                    <com.robertlevonyan.views.chip.Chip
+                        android:visibility="gone"
+                        android:id="@+id/chip_africell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:tag="chip"
+                        android:text="Africell"
+                        app:mcv_chipIcon="@drawable/bg_polygon"
+                        app:mcv_selectable="true"
+                        app:mcv_selectedBackgroundColor="@color/colorPrimary" />
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_middle" />
@@ -113,8 +119,8 @@
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -157,8 +163,8 @@
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -202,8 +208,8 @@
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -266,8 +272,8 @@
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -311,8 +317,8 @@
                                 android:layout_height="35dp"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
                                 android:layout_marginBottom="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -354,10 +360,10 @@
                             <ImageView
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:layout_marginBottom="@dimen/spacing_smlarge"
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -374,6 +380,7 @@
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -415,10 +422,10 @@
                             <ImageView
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:layout_marginBottom="@dimen/spacing_smlarge"
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -459,10 +466,10 @@
                             <ImageView
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:layout_marginBottom="@dimen/spacing_smlarge"
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -504,10 +511,10 @@
                             <ImageView
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:layout_marginBottom="@dimen/spacing_smlarge"
                                 android:layout_marginTop="@dimen/spacing_smlarge"
-                                android:tint="@color/indigo_500"
-                                android:src="@drawable/ic_phone_android" />
+                                android:layout_marginBottom="@dimen/spacing_smlarge"
+                                android:src="@drawable/ic_phone_android"
+                                android:tint="@color/indigo_500" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -528,7 +535,6 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_smlarge" />
-
 
 
         </LinearLayout>

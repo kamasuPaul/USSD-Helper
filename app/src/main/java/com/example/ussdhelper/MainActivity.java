@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         //ask for permissions
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
-                             Manifest.permission.READ_CONTACTS)
+                             Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE)
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {

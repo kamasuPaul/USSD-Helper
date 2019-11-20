@@ -40,7 +40,8 @@ dependencies {
 //    implementation 'pub.devrel:easypermissions:3.0.0'                  //easy permissions library
     implementation 'com.github.broakenmedia:MultiContactPicker:1.8.5'    //contacts picker library
     implementation 'com.karumi:dexter:6.0.0'                            //permissions library dexter
-    implementation 'com.robertlevonyan.view:MaterialChipView:2.0.3'
+    implementation 'com.robertlevonyan.view:MaterialChipView:2.0.3'     //matrial chip view
+    implementation 'io.github.farhad:contactpicker:2.0.0'
 
 
 

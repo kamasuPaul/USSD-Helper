@@ -1,0 +1,13 @@
+
+<com.robertlevonyan.views.chip.Chip android:id="@+id/chip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:tag="chip"
+    android:text="Airtel"
+    app:mcv_chipIcon="@drawable/airtel"
+    app:mcv_selectable="true"
+    app:mcv_selectedBackgroundColor="@color/colorPrimary"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+
