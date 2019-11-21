@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:tag="chip"
     android:text="Airtel"
+
     app:mcv_chipIcon="@drawable/airtel"
     app:mcv_selectable="true"
     app:mcv_selectedBackgroundColor="@color/colorPrimary"

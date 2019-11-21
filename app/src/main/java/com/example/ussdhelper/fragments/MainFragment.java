@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
+import com.example.ussdhelper.modals.UssdAction;
 import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
 import com.robertlevonyan.views.chip.Chip;
@@ -75,6 +76,8 @@ public class MainFragment extends Fragment {
     Dialog customDialog;
     private static final int CONTACT_PICKER_REQUEST = 29;
     String mode = null;
+    int slot = -1;
+    int subscriptionId =0;
     List<SubscriptionInfo> subList;
 
     public MainFragment() {
@@ -110,7 +113,6 @@ public class MainFragment extends Fragment {
     }
 
     @SuppressLint("MissingPermission")
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -120,7 +122,7 @@ public class MainFragment extends Fragment {
         checkAirtimeBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkBalance();
+                checkBalance(new SuperAction(new UssdAction(0,"aitel","*131","",new UssdAction.Step[]{}),new UssdAction(0,"aitel","*131","",new UssdAction.Step[]{})));
             }
         });
         final LinearLayout checkDataBalance = root.findViewById(R.id.check_data_balance);
@@ -159,19 +161,13 @@ public class MainFragment extends Fragment {
             }
         });
 
-//        pageViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-
         //iniatize chip views
         final LinearLayout rootLinearLayoutChips = root.findViewById(R.id.linearLayout_root_chips);
         com.robertlevonyan.views.chip.Chip chipAirtel = root.findViewById(R.id.chip_airel);
         com.robertlevonyan.views.chip.Chip chipMtn = root.findViewById(R.id.chip_mtn);
         com.robertlevonyan.views.chip.Chip chipAfricel = root.findViewById(R.id.chip_africell);
         List<Chip> chips = Arrays.asList(chipAirtel, chipAfricel, chipMtn);
+        //set click listeners on chips
         for (final com.robertlevonyan.views.chip.Chip chip : chips) {
             chip.setOnSelectClickListener(new OnSelectClickListener() {
                 @Override
@@ -202,57 +198,78 @@ public class MainFragment extends Fragment {
                 }
             });
         };
-        SubscriptionManager subscriptionManager = (SubscriptionManager) getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        //make the first chip selected
+        chipAirtel.setChipSelected(true);
+        //set default mode to airtel
+        mode = "Airtel";
 
-        subList = subscriptionManager.getActiveSubscriptionInfoList();
-//                    Toast.makeText(getActivity(), "Detected simcards:"subscriptionInfo.toString(), Toast.LENGTH_SHORT).show();
+        //if the api level is greaterthat 22 ie lollipop, get simcards inside phone
+        SubscriptionManager subscriptionManager = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+            subscriptionManager = (SubscriptionManager) getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            subList = subscriptionManager.getActiveSubscriptionInfoList();
 
-        for(SubscriptionInfo subscriptionInfo: subList){
-            Toast.makeText(getActivity(), "Slot "+subscriptionInfo.getSimSlotIndex()+1+" "+subscriptionInfo.getCarrierName()+" "+subscriptionInfo.getIccId(), Toast.LENGTH_SHORT).show();
-            subscriptionInfo.getNumber();
-            String networkName = subscriptionInfo.getCarrierName().toString();
-            final Chip chip1 = (Chip)getLayoutInflater().inflate(R.layout.chip, null);
-            chip1.setText(networkName);
+            for(final SubscriptionInfo subscriptionInfo: subList){
+                String networkName = subscriptionInfo.getCarrierName().toString();
 
-            chip1.setOnSelectClickListener(new OnSelectClickListener() {
-                @Override
-                public void onSelectClick(View v, boolean selected) {
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-                            mode = chip1.getText().toString();
-                            Toast.makeText(getActivity(), mode, Toast.LENGTH_SHORT).show();
+                final Chip chip1 = (Chip)getLayoutInflater().inflate(R.layout.chip, null);
+                //set margin for the chip
+                chip1.setText(networkName);
+                if(networkName.contains("MTN"))chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
+                if(networkName.contains("AFRICELL"))chip1.setChipIcon(getResources().getDrawable(R.drawable.africell));
+                if(subscriptionInfo.getSimSlotIndex()==0)chip1.setChipSelected(true);
 
-                        }
+                chip1.setOnSelectClickListener(new OnSelectClickListener() {
+                    @Override
+                    public void onSelectClick(View v, boolean selected) {
+                        for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                            if (!v.equals(v1)) {
+                                ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
+                                mode = chip1.getText().toString();
+                                slot = subscriptionInfo.getSimSlotIndex();
+                                subscriptionId = subscriptionInfo.getSubscriptionId();
+                            }
 //
-                    }
-                }
-            });
-            chip1.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
-                @Override
-                public void onClick(View v) {
-                    ((com.robertlevonyan.views.chip.Chip) v).setChipSelected(true);
-
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-                            mode = chip1.getText().toString();
-                            Toast.makeText(getActivity(), mode, Toast.LENGTH_SHORT).show();
-
-
-
                         }
-//
                     }
+                });
+                chip1.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+                    @Override
+                    public void onClick(View v) {
+                        //mark the current chip as selected
+                        ((com.robertlevonyan.views.chip.Chip) v).setChipSelected(true);
+                        //mark all the others as deselected
+                        for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                            if (!v.equals(v1)) {
+                                ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
+                                mode = chip1.getText().toString();
+                                slot = subscriptionInfo.getSimSlotIndex();
+                                subscriptionId = subscriptionInfo.getSubscriptionId();
 
-                }
-            });
+
+                            }
+                        }
+                        //notify the user of their action
+                        Toast.makeText(getActivity(),"You have changed to "+ mode+" codes", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                //add detected chips
+                rootLinearLayoutChips.addView(chip1);
+                setMargins(chip1,0,0,15,0);
 
 
-            rootLinearLayoutChips.addView(chip1);
+                //hide default chips
+                for (Chip chip:chips)chip.setVisibility(View.GONE);
+
+            }
+
 
         }
+
+//                    Toast.makeText(getActivity(), "Detected simcards:"subscriptionInfo.toString(), Toast.LENGTH_SHORT).show();
+
 
         return root;
     }
@@ -261,42 +278,65 @@ public class MainFragment extends Fragment {
         return 1;
     }
 
-    @SuppressLint({"NewApi", "MissingPermission"})
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void checkBalance() {
-        CharSequence chosenNetworkId ="";
-        for(SubscriptionInfo subscriptionInfo: subList) {
-            Toast.makeText(getActivity(), "Slot " + subscriptionInfo.getSimSlotIndex() + 1 + " " + subscriptionInfo.getCarrierName() + " " + subscriptionInfo.getIccId(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), mode, Toast.LENGTH_SHORT).show();
-            if ((subscriptionInfo.getCarrierName()).toString().contains(("Airtel"))) {
-                chosenNetworkId = subscriptionInfo.getIccId();
-                Toast.makeText(getActivity(), "df"+chosenNetworkId, Toast.LENGTH_SHORT).show();
+    @SuppressLint("MissingPermission")
+    private void checkBalance(SuperAction superAction) {
+        //use the selected simcard if only  android api level is greater that 26 ,Oreo
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            manager.createForSubscriptionId(subscriptionId).sendUssdRequest("*131#", new TelephonyManager.UssdResponseCallback() {
+                /**
+                 * Called when a USSD request has succeeded.  The {@code response} contains the USSD
+                 * response received from the network.  The calling app can choose to either display the
+                 * response to the user or perform some operation based on the response.
+                 * <p>
+                 * USSD responses are unstructured text and their content is determined by the mobile network
+                 * operator.
+                 *
+                 * @param telephonyManager the TelephonyManager the callback is registered to.
+                 * @param request          the USSD request sent to the mobile network.
+                 * @param response         the response to the USSD request provided by the mobile network.
+                 **/
+                @Override
+                public void onReceiveUssdResponse(TelephonyManager telephonyManager, String request, CharSequence response) {
+                    super.onReceiveUssdResponse(telephonyManager, request, response);
+                    Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_SHORT).show();
+                }
+
+                /**
+                 * Called when a USSD request has failed to complete.
+                 *
+                 * @param telephonyManager the TelephonyManager the callback is registered to.
+                 * @param request          the USSD request sent to the mobile network.
+                 * @param failureCode      failure code indicating why the request failed.  Will be either
+                 *                         {@link TelephonyManager#USSD_RETURN_FAILURE} or
+                 *                         {@link TelephonyManager#USSD_ERROR_SERVICE_UNAVAIL}.
+                 **/
+                @Override
+                public void onReceiveUssdResponseFailed(TelephonyManager telephonyManager, String request, int failureCode) {
+                    super.onReceiveUssdResponseFailed(telephonyManager, request, failureCode);
+                    Toast.makeText(getActivity(),String.valueOf(failureCode), Toast.LENGTH_SHORT).show();
+
+                }
+            }, new Handler());
+        }else{
+            //use normal way of dialing ussd code
+            switch (mode){
+                case "Airtel":
+                    StringBuilder stringBuilder = new StringBuilder(superAction.airtel.getCode());
+                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+                    break;
+                case "Mtn":
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + superAction.mtn.getCode()+ Uri.encode("#"))));
+                    break;
+                default:
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + superAction.airtel.getCode()+ Uri.encode("#"))));
 
             }
-        }
-        TelecomManager telecomManager = (TelecomManager) getActivity().getSystemService(Context.TELECOM_SERVICE);
-        @SuppressLint("MissingPermission") List<PhoneAccountHandle>list = telecomManager.getCallCapablePhoneAccounts();
-        for(PhoneAccountHandle phoneAccountHandle : list){
-            Toast.makeText(getActivity(), "bdfuodfu", Toast.LENGTH_SHORT).show();
-            Log.d("CODE",chosenNetworkId.toString());
-            Log.d("CODE",phoneAccountHandle.getId());
-            phoneAccountHandle.
-//            if(phoneAccountHandle.getId().contains(chosenNetworkId)){
-                Toast.makeText(getActivity(), "bdfuodfu", Toast.LENGTH_SHORT).show();
-                String cd = "*131" + Uri.encode("#");
-//                    Uri uri = Uri.fromParts("tel",Uri.parse("tel:" + cd))
-                Bundle extras = new Bundle();
-                extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE,phoneAccountHandle);
-                telecomManager.placeCall(Uri.parse("tel:" + cd),extras);
 
-//                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
-//            }
         }
 
-//        String ussdCode = "*131"+ Uri.encode("#");
-//        startActivity(new Intent(Intent.ACTION_CALL,Uri.parse("tel:"+ussdCode)));
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
@@ -339,7 +379,6 @@ public class MainFragment extends Fragment {
             Toast.makeText(getActivity(), "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
         }
     }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -419,7 +458,6 @@ public class MainFragment extends Fragment {
 
         dialog.show();
     }
-
     private void showDialogPolygon1() {
 
         //inflate the root dialog
@@ -483,8 +521,6 @@ public class MainFragment extends Fragment {
 
         customDialog.show();
     }
-
-
     private void checkDataBalance() {
 //        Intent i = new HoverParameters.Builder(getActivity())
 //            .request("c7f7271b")
@@ -606,9 +642,6 @@ public class MainFragment extends Fragment {
 //
 //        dialog.show();
     }
-    private void callMeBack(){
-        //7199627a
-    }
     //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
     private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
         ArrayList<View> views = new ArrayList<View>();
@@ -627,4 +660,56 @@ public class MainFragment extends Fragment {
         }
         return views;
     }
+
+    /**
+     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
+     * @param v the  view whose layout is to be set
+     * @param l left
+     * @param t top
+     * @param r right
+     * @param b bottom
+     */
+    public static void setMargins(View v,int l,int t,int r,int b){
+        if(v.getLayoutParams()instanceof ViewGroup.MarginLayoutParams){
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l,t,r,b);
+            v.requestLayout();
+        }
+    }
+
+    //TODO change its location
+    class SuperAction{
+        int id;
+        UssdAction airtel;
+        UssdAction mtn;
+        public SuperAction(UssdAction airtel,UssdAction mtn){
+            this.airtel = airtel;
+            this.mtn = mtn;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public UssdAction getAirtel() {
+            return airtel;
+        }
+
+        public void setAirtel(UssdAction airtel) {
+            this.airtel = airtel;
+        }
+
+        public UssdAction getMtn() {
+            return mtn;
+        }
+
+        public void setMtn(UssdAction mtn) {
+            this.mtn = mtn;
+        }
+    }
 }
+
