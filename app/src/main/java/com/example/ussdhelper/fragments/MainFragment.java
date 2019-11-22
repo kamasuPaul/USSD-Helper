@@ -202,6 +202,7 @@ public class MainFragment extends Fragment {
         chipAirtel.setChipSelected(true);
         //set default mode to airtel
         mode = "Airtel";
+        slot = 0;
 
         //if the api level is greaterthat 22 ie lollipop, get simcards inside phone
         SubscriptionManager subscriptionManager = null;
@@ -217,7 +218,11 @@ public class MainFragment extends Fragment {
                 chip1.setText(networkName);
                 if(networkName.contains("MTN"))chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
                 if(networkName.contains("AFRICELL"))chip1.setChipIcon(getResources().getDrawable(R.drawable.africell));
-                if(subscriptionInfo.getSimSlotIndex()==0)chip1.setChipSelected(true);
+                if(subscriptionInfo.getSimSlotIndex()==0){
+                    chip1.setChipSelected(true);
+                    mode = chip1.getText().toString();
+                    slot = 0;
+                }
 
                 chip1.setOnSelectClickListener(new OnSelectClickListener() {
                     @Override
@@ -280,59 +285,80 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void checkBalance(SuperAction superAction) {
-        //use the selected simcard if only  android api level is greater that 26 ,Oreo
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            manager.createForSubscriptionId(subscriptionId).sendUssdRequest("*131#", new TelephonyManager.UssdResponseCallback() {
-                /**
-                 * Called when a USSD request has succeeded.  The {@code response} contains the USSD
-                 * response received from the network.  The calling app can choose to either display the
-                 * response to the user or perform some operation based on the response.
-                 * <p>
-                 * USSD responses are unstructured text and their content is determined by the mobile network
-                 * operator.
-                 *
-                 * @param telephonyManager the TelephonyManager the callback is registered to.
-                 * @param request          the USSD request sent to the mobile network.
-                 * @param response         the response to the USSD request provided by the mobile network.
-                 **/
-                @Override
-                public void onReceiveUssdResponse(TelephonyManager telephonyManager, String request, CharSequence response) {
-                    super.onReceiveUssdResponse(telephonyManager, request, response);
-                    Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * Called when a USSD request has failed to complete.
-                 *
-                 * @param telephonyManager the TelephonyManager the callback is registered to.
-                 * @param request          the USSD request sent to the mobile network.
-                 * @param failureCode      failure code indicating why the request failed.  Will be either
-                 *                         {@link TelephonyManager#USSD_RETURN_FAILURE} or
-                 *                         {@link TelephonyManager#USSD_ERROR_SERVICE_UNAVAIL}.
-                 **/
-                @Override
-                public void onReceiveUssdResponseFailed(TelephonyManager telephonyManager, String request, int failureCode) {
-                    super.onReceiveUssdResponseFailed(telephonyManager, request, failureCode);
-                    Toast.makeText(getActivity(),String.valueOf(failureCode), Toast.LENGTH_SHORT).show();
-
-                }
-            }, new Handler());
-        }else{
-            //use normal way of dialing ussd code
-            switch (mode){
-                case "Airtel":
-                    StringBuilder stringBuilder = new StringBuilder(superAction.airtel.getCode());
-                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-                    break;
-                case "Mtn":
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + superAction.mtn.getCode()+ Uri.encode("#"))));
-                    break;
-                default:
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + superAction.airtel.getCode()+ Uri.encode("#"))));
-
+        //use codes for the selected network mode
+        StringBuilder stringBuilder;
+        String fullCode;
+        switch (mode){
+            case "Airtel":
+                stringBuilder = new StringBuilder(superAction.airtel.getCode());
+                fullCode = stringBuilder.toString()+ Uri.encode("#");
+                break;
+            case "Mtn":
+                stringBuilder = new StringBuilder(superAction.mtn.getCode());
+                fullCode = stringBuilder.toString()+ Uri.encode("#");
+                break;
+            default:
+                stringBuilder = new StringBuilder(superAction.airtel.getCode());
+                fullCode = stringBuilder.toString()+ Uri.encode("#");
+        }
+        TelecomManager telecomManager = null;
+        List<PhoneAccountHandle>phoneAccountHandleList = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            //TODO if api level is greater than 26 do background codes,do this later,not important right now
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+//            manager.createForSubscriptionId(subscriptionId).sendUssdRequest("*131#", new TelephonyManager.UssdResponseCallback() {
+//                /**
+//                 * Called when a USSD request has succeeded.  The {@code response} contains the USSD
+//                 * response received from the network.  The calling app can choose to either display the
+//                 * response to the user or perform some operation based on the response.
+//                 * <p>
+//                 * USSD responses are unstructured text and their content is determined by the mobile network
+//                 * operator.
+//                 *
+//                 * @param telephonyManager the TelephonyManager the callback is registered to.
+//                 * @param request          the USSD request sent to the mobile network.
+//                 * @param response         the response to the USSD request provided by the mobile network.
+//                 **/
+//                @Override
+//                public void onReceiveUssdResponse(TelephonyManager telephonyManager, String request, CharSequence response) {
+//                    super.onReceiveUssdResponse(telephonyManager, request, response);
+//                    Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_SHORT).show();
+//                }
+//
+//                /**
+//                 * Called when a USSD request has failed to complete.
+//                 *
+//                 * @param telephonyManager the TelephonyManager the callback is registered to.
+//                 * @param request          the USSD request sent to the mobile network.
+//                 * @param failureCode      failure code indicating why the request failed.  Will be either
+//                 *                         {@link TelephonyManager#USSD_RETURN_FAILURE} or
+//                 *                         {@link TelephonyManager#USSD_ERROR_SERVICE_UNAVAIL}.
+//                 **/
+//                @Override
+//                public void onReceiveUssdResponseFailed(TelephonyManager telephonyManager, String request, int failureCode) {
+//                    super.onReceiveUssdResponseFailed(telephonyManager, request, failureCode);
+//                    Toast.makeText(getActivity(),String.valueOf(failureCode), Toast.LENGTH_SHORT).show();
+//
+//                }
+//            }, new Handler());
             }
+            telecomManager = (TelecomManager)getActivity().getSystemService(Context.TELECOM_SERVICE);
+            phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
+            for(int i=0;i<phoneAccountHandleList.size();i++){
+                PhoneAccountHandle phoneAccountHandle = phoneAccountHandleList.get(i);
+                if(i==slot){
+                    Uri uri = Uri.parse("tel:" + fullCode);
+                    Bundle extras = new Bundle();
+                    extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE,phoneAccountHandle);
+                    telecomManager.placeCall(uri,extras);
+                    break;//break out of the loop
+                }
+            }
+
+        }else{
+            //use normal way of dialing ussd code,because their is not an easy way of getting user selected simcard
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
 
         }
 
