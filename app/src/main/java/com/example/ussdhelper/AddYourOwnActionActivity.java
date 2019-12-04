@@ -4,23 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 //import androidx.room.util.StringUtil;
 
-import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,15 +20,16 @@ import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.modals.UssdAction.Step;
 import com.example.ussdhelper.ui.main.PlaceholderFragment;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
+import com.google.android.material.button.MaterialButton;
 //import com.hover.sdk.api.HoverParameters;
 
-import java.util.List;
 
 public class AddYourOwnActionActivity extends AppCompatActivity {
 
     SQLiteDatabaseHandler db;
-    Button button;
-    EditText actionName,actionCode,actionNetwork;
+    MaterialButton button;
+    EditText actionName,actionCode;
+    AutoCompleteTextView actionNetwork;
 //    Spinner spinner;
     int lastId =6;
     LinearLayout parentlayout;
@@ -62,6 +55,20 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
        });
 
         db = new SQLiteDatabaseHandler(this);
+
+        //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
+        String[] COUNTRIES = new String[] {"Airtel", "Mtn", "Africell"};
+
+        ArrayAdapter<String> adapter =
+            new ArrayAdapter<>(
+                this,
+                R.layout.dropdown_menu_popup_item,
+                COUNTRIES);
+
+        AutoCompleteTextView editTextFilledExposedDropdown =
+            findViewById(R.id.action_network);
+        editTextFilledExposedDropdown.setAdapter(adapter);
+        //**************************************************************************************//
 
     }
 
