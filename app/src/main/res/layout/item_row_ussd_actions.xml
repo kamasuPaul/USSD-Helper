@@ -29,8 +29,7 @@
                     android:id="@+id/image"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:tint="@color/grey_60"
-                    app:srcCompat="@drawable/ic_phone_android" />
+                    />
 
                 <TextView
                     android:id="@+id/title"

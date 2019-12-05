@@ -9,8 +9,9 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.ussdhelper.R;
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
@@ -30,6 +31,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     public interface OnItemClickListener {
         void onItemClick(View view, UssdAction obj, int position);
+
         void onItemDelete(View view, UssdAction obj, int position);
     }
 
@@ -55,7 +57,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
             title = (TextView) v.findViewById(R.id.title);
             relativeLayout = v.findViewById(R.id.RelativLyt_root);
             lyt_parent = (View) relativeLayout.findViewById(R.id.lyt_parent);
-            optionsMenu = (TextView)v.findViewById(R.id.textView_optionsMenu);
+            optionsMenu = (TextView) v.findViewById(R.id.textView_optionsMenu);
         }
     }
 
@@ -77,6 +79,21 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
             final UssdAction p = items.get(position);
             view.title.setText(p.getName());
 //            view.image.setImageDrawable();
+            // generate color based on a key (same key returns the same color), useful for list/grid views
+
+            int color1 = ColorGenerator.MATERIAL.getRandomColor();
+
+            // declare the builder object once.
+            TextDrawable.IBuilder builder = TextDrawable.builder()
+                .beginConfig()
+                .withBorder(2)
+                .endConfig()
+                .round();
+
+            TextDrawable drawable = builder.build(String.valueOf(p.getName().trim().toUpperCase().charAt(0)), color1);
+            view.image.setImageDrawable(drawable);
+
+
             view.relativeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -91,7 +108,8 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                     createOptionsMenu(v, view, p, position);
                     return true;
                 }
-            });;
+            });
+            ;
             //add aclick listener to the textview
             view.optionsMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,18 +122,18 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     private void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
         //inflate options menu
-        PopupMenu popupMenu = new PopupMenu(ctx,view.optionsMenu);
+        PopupMenu popupMenu = new PopupMenu(ctx, view.optionsMenu);
         //inflate the menu from layout resource file
         popupMenu.inflate(R.menu.action_card_menu);
         //handle menu item clicks
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.edit_menu:
-                        //edit clicked
-                        editAction(p.getId());
-                        break;
+                switch (item.getItemId()) {
+//                    case R.id.edit_menu:
+//                        //edit clicked
+//                        editAction(p.getId());
+//                        break;
                     case R.id.delete_menu:
                         //delete clicked
                         deleteAction(p);
@@ -132,6 +150,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     /**
      * this methods deletes a given action from the custom codes activity
+     *
      * @param
      */
     private void editAction(int id) {
@@ -140,7 +159,6 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     private void deleteAction(UssdAction action) {
         db.deleteOne(action);
-
 
 
     }

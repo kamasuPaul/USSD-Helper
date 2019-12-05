@@ -24,7 +24,7 @@
             android:padding="@dimen/spacing_large">
 
             <ImageView
-                android:id="@+id/TextView_ActionIcon"
+                android:id="@+id/ImageView_ActionIcon"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="@dimen/spacing_smlarge"

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,10 +22,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.example.ussdhelper.R;
 import com.example.ussdhelper.modals.Step;
 import com.example.ussdhelper.modals.UssdAction;
@@ -195,9 +198,7 @@ public class MainFragment extends Fragment {
                     for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
                         if (!v.equals(v1)) {
                             ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-
                         }
-//
                     }
                 }
             });
@@ -212,9 +213,7 @@ public class MainFragment extends Fragment {
                             ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
 
                         }
-//
                     }
-
                 }
             });
         }
@@ -313,6 +312,13 @@ public class MainFragment extends Fragment {
             TextView actionName = cardView.findViewById(R.id.TextView_ActionName);
             actionName.setText(String.valueOf(s.getAirtel().getName()));
 
+            //change the image icon to a letter icon
+            TextDrawable drawable = TextDrawable.builder()
+                .buildRound(String.valueOf((s.getAirtel().getName()).trim().charAt(0)).toUpperCase(), Color.RED);
+
+            ImageView image = cardView.findViewById(R.id.ImageView_ActionIcon);
+            image.setImageDrawable(drawable);
+
 
         }
     }
@@ -401,6 +407,7 @@ public class MainFragment extends Fragment {
                 ussdAction = superAction.getMtn();
                 break;
             case "Africell":
+                //TODO add africell and change below line to getAfricell
                 ussdAction = superAction.getAirtel();
                 break;
             default:
@@ -468,18 +475,6 @@ public class MainFragment extends Fragment {
             customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             customDialog.setCancelable(true);
 
-            // TODO  add code for choosing phone number
-//        final EditText editTextAmount = customDialog.findViewById(R.id.edit_text_amount);
-//        final EditText editTextNumber = customDialog.findViewById(R.id.edit_text_mobileNumber);
-//        ImageButton imageButton = customDialog.findViewById(R.id.selec_contact_ImageBtn);
-//        imageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ((MainActivity)getActivity()).contactPicker(getActivity());
-//            }
-//        });
-
-
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -523,13 +518,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
-//        if (resultCode == 0) {
-//            Toast.makeText(getActivity(), data.getDataString(), Toast.LENGTH_SHORT).show();
-//            if (dialog != null) {
-//                dialog.dismiss();
-//            }
-//
-//        }
+
         if (requestCode == CONTACT_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Uri contactUri = data.getData();
@@ -599,111 +588,6 @@ public class MainFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private void showDialogPolygon() {
-
-
-//        if(true)return;//end here
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_enter_amount);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(true);
-        final EditText editTextAmount = dialog.findViewById(R.id.edit_text_amount);
-
-
-        ((Button) dialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ussdCode = "*185*2*1*1*" + editTextAmount.getText().toString().trim() + Uri.encode("#");
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode)));
-//        *185*2*1*1*amount*pin
-//
-//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-//
-//                    .request("46e80959")
-//                    .style(R.style.BaseTheme)
-//                    .extra("Amount", editTextAmount.getText().toString())
-//                    .buildIntent();
-//                startActivityForResult(hoverIntent, 0);
-            }
-
-        });
-
-        ((Button) dialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-
-        dialog.show();
-    }
-
-    private void showDialogPolygon1() {
-
-        //inflate the root dialog
-        LayoutInflater inflater = getLayoutInflater();
-        CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
-        LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
-        //inflate each row that should be contained in the dialog box
-        View rowAmount = inflater.inflate(R.layout.row_amount, null);
-        View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
-        View rowText = inflater.inflate(R.layout.row_text, null);
-        View rowButtons = inflater.inflate(R.layout.row_buttons, null);
-        //add each row to the root
-        root.addView(rowAmount);
-        root.addView(rowTelephone);
-        root.addView(rowText);
-        root.addView(rowButtons);
-
-        customDialog = new Dialog(getActivity());
-        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        customDialog.setContentView(cardView);
-        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        customDialog.setCancelable(true);
-
-
-        final EditText editTextAmount = customDialog.findViewById(R.id.edit_text_amount);
-        final EditText editTextNumber = customDialog.findViewById(R.id.edit_text_mobileNumber);
-        ImageButton imageButton = customDialog.findViewById(R.id.selec_contact_ImageBtn);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK);
-                i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                startActivityForResult(i, CONTACT_PICKER_REQUEST);
-
-//                ((MainActivity)getActivity()).contactPicker(getActivity());
-            }
-        });
-
-
-        ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent hoverIntent = new HoverParameters.Builder(getActivity())
-//                    .request("e0d94aec")
-//                    .style(R.style.BaseTheme)
-//                    .extra("MobileNumber", editTextNumber.getText().toString())
-//                    .extra("Amount", editTextAmount.getText().toString())
-//                    .buildIntent();
-//                startActivityForResult(hoverIntent, 0);
-            }
-
-        });
-
-        ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customDialog.dismiss();
-            }
-        });
-
-
-        customDialog.show();
     }
     //************************ UTILITY METHODS *************************************************
 
