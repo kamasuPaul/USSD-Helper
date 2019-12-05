@@ -16,8 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.ussdhelper.modals.Step;
 import com.example.ussdhelper.modals.UssdAction;
-import com.example.ussdhelper.modals.UssdAction.Step;
 import com.example.ussdhelper.ui.main.PlaceholderFragment;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
 import com.google.android.material.button.MaterialButton;
@@ -95,7 +95,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             EditText editText = row.findViewById(R.id.number_edit_text);
             Spinner spinner1 = row.findViewById(R.id.type_spinner);
             Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
-            Step step =  new UssdAction.Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
             steps[i] = step;
         }
 

@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ussdhelper.modals.Step;
 import com.example.ussdhelper.modals.UssdAction;
 
 public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
@@ -111,7 +112,7 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
             do {
                 Log.d("CURSOR",cursor.toString());
                 ussdAction = new UssdAction();
-                ArrayList<UssdAction.Step>steps = new ArrayList<>();
+                ArrayList<Step>steps = new ArrayList<>();
                 ussdAction.setId(Integer.parseInt(cursor.getString(0)));
                 ussdAction.setName(cursor.getString(1));
                 ussdAction.setNetwork(cursor.getString(2));
@@ -120,13 +121,13 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
                 if(cursor2.moveToFirst()){
                     do{
                         //add step
-                        UssdAction.Step step = new UssdAction.Step();
+                        Step step = new Step();
                         step.setType(cursor2.getString(cursor2.getColumnIndex("type")));
                         steps.add(step);
                     }while(cursor2.moveToNext());
                 }
 
-                UssdAction.Step[]s = new UssdAction.Step[steps.size()];
+                Step[]s = new Step[steps.size()];
                 s =  steps.toArray(s);
                 ussdAction.setSteps(s);
                 ussdActions.add(ussdAction);
@@ -148,7 +149,7 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT seq FROM sqlite_sequence WHERE name='"+TABLE_NAME+"'",null);
         if(c.moveToFirst()) id = Integer.parseInt(c.getString(0));
         //INSERT INTO THE SECOND TABLE
-        for(UssdAction.Step step : ussdAction.getSteps()){
+        for(Step step : ussdAction.getSteps()){
             ContentValues v = new ContentValues();
             v.put(KEY_TYPE,step.getType());
             v.put(KEY_DESCRIPTION,step.getDescription());

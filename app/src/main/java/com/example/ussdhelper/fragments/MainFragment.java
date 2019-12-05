@@ -40,10 +40,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
+import com.example.ussdhelper.modals.Step;
 import com.example.ussdhelper.modals.UssdAction;
 import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
@@ -79,6 +81,7 @@ public class MainFragment extends Fragment {
     int slot = -1;
     int subscriptionId =0;
     List<SubscriptionInfo> subList;
+    List<SuperAction>superActions;
 
     public MainFragment() {
         // Required empty public constructor
@@ -101,7 +104,25 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        superActions = new ArrayList<>();
+        Step[] tel_nos = {new Step(2, "Text", null, -1)};
+        UssdAction action1 =  new UssdAction(0,"Buy Airtime","*185*2*1*1","",tel_nos);
+        UssdAction action2 =  new UssdAction(0,"Buy Airtime","*131","", tel_nos);
+
+        SuperAction superAction = new SuperAction(action1,action2);
+        superActions.add(superAction);
+        superActions.add(simpleAction("Check Balance","*131","*131"));
+        superActions.add(simpleAction("Borrow Airtime","*100*4*1","*131"));
+        superActions.add(new SuperAction(new UssdAction(0,"Call Me Back","*100*7*7","",
+            new Step[]{new Step(0,"Tel No",null,-1)}),
+            new UssdAction(0,"Buy Airtime","*131","",
+                new Step[]{new Step(0,"Tel No",null,-1)})));
+        superActions.add(simpleAction(" PakaLast  ","*100*2*1","*131"));
+
+
         setUpDialog();
+
+
     }
 
     private void setUpDialog() {
@@ -118,34 +139,64 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-        final LinearLayout checkAirtimeBalance = root.findViewById(R.id.check_balance);
-        checkAirtimeBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBalance(new SuperAction(new UssdAction(0,"aitel","*131","",new UssdAction.Step[]{}),new UssdAction(0,"aitel","*131","",new UssdAction.Step[]{})));
-            }
-        });
-        final LinearLayout checkDataBalance = root.findViewById(R.id.check_data_balance);
-        checkDataBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkDataBalance();
-            }
-        });
-        final LinearLayout buyAirtime = root.findViewById(R.id.buy_airtime);
-        buyAirtime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogPolygon();
-            }
-        });
-        final LinearLayout buyData = root.findViewById(R.id.sendData);
-        buyData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogPolygon1();
-            }
-        });
+
+        //**********************AIRTIME****************************************************************//
+
+        //generate layouts for airtime section
+        //TODO make this work, i dont why click listeners are not working
+        final LinearLayout linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
+        for(final SuperAction s: superActions){
+            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.item_action,null,false);
+            View view = cardView.findViewById(R.id.myAction);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "kdfj", Toast.LENGTH_SHORT).show();
+                    executeSuperAction(s);
+                }
+            });
+            linearLayoutAirtime.addView(cardView);
+            setMargins(cardView,3,3,10,3);
+
+            //set action name
+            TextView actionName = cardView.findViewById(R.id.TextView_ActionName);
+            actionName.setText(String.valueOf(s.getAirtel().getName()));
+
+
+        }
+
+         //
+
+
+//        final LinearLayout checkAirtimeBalance = root.findViewById(R.id.check_balance);
+//        checkAirtimeBalance.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getActivity(), "kdfj", Toast.LENGTH_SHORT).show();
+//                executeSuperAction(new SuperAction(new UssdAction(0,"airtel","*131","",new UssdAction.Step[]{new UssdAction.Step(2,"Tel No","",2)}),new UssdAction(0,"aitel","*131","",new UssdAction.Step[]{})));
+//            }
+//        });
+//        final LinearLayout checkDataBalance = root.findViewById(R.id.check_data_balance);
+//        checkDataBalance.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                checkDataBalance();
+//            }
+//        });
+//        final LinearLayout buyAirtime = root.findViewById(R.id.buy_airtime);
+//        buyAirtime.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showDialogPolygon();
+//            }
+//        });
+//        final LinearLayout buyData = root.findViewById(R.id.sendData);
+//        buyData.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showDialogPolygon1();
+//            }
+//        });
         final LinearLayout sendMoneyAirtel = root.findViewById(R.id.send_money_airteNo);
         sendMoneyAirtel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,8 +302,6 @@ public class MainFragment extends Fragment {
                                 mode = chip1.getText().toString();
                                 slot = subscriptionInfo.getSimSlotIndex();
                                 subscriptionId = subscriptionInfo.getSubscriptionId();
-
-
                             }
                         }
                         //notify the user of their action
@@ -270,7 +319,6 @@ public class MainFragment extends Fragment {
 
             }
 
-
         }
 
 //                    Toast.makeText(getActivity(), "Detected simcards:"subscriptionInfo.toString(), Toast.LENGTH_SHORT).show();
@@ -279,28 +327,10 @@ public class MainFragment extends Fragment {
         return root;
     }
 
-    private int checkSelfPermission(String readPhoneState) {
-        return 1;
-    }
-
     @SuppressLint("MissingPermission")
-    private void checkBalance(SuperAction superAction) {
-        //use codes for the selected network mode
-        StringBuilder stringBuilder;
-        String fullCode;
-        switch (mode){
-            case "Airtel":
-                stringBuilder = new StringBuilder(superAction.airtel.getCode());
-                fullCode = stringBuilder.toString()+ Uri.encode("#");
-                break;
-            case "Mtn":
-                stringBuilder = new StringBuilder(superAction.mtn.getCode());
-                fullCode = stringBuilder.toString()+ Uri.encode("#");
-                break;
-            default:
-                stringBuilder = new StringBuilder(superAction.airtel.getCode());
-                fullCode = stringBuilder.toString()+ Uri.encode("#");
-        }
+    private void executeUssd(String fullCode) {
+        Toast.makeText(getActivity(),"method called"+fullCode, Toast.LENGTH_SHORT).show();
+
         TelecomManager telecomManager = null;
         List<PhoneAccountHandle>phoneAccountHandleList = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -363,6 +393,142 @@ public class MainFragment extends Fragment {
         }
 
     }
+
+
+    /**
+     * this mthd checks a super action  for the network and  ussdAction and executes it
+     * @param superAction
+     */
+    public void executeSuperAction(SuperAction superAction) {
+        //use codes for the selected network mode
+        final UssdAction ussdAction;
+        switch (mode){
+            case "Airtel":
+                ussdAction = superAction.getAirtel();
+                break;
+            case "Mtn":
+                ussdAction = superAction.getMtn();
+                break;
+            case "Africell":
+                ussdAction = superAction.getAirtel();
+                break;
+            default:
+                ussdAction = superAction.getAirtel();
+        }
+        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
+            //execute the code immediately
+            Toast.makeText(getActivity(), "No steps Found",Toast.LENGTH_SHORT).show();
+            executeUssd(ussdAction.getCode()+Uri.encode("#"));
+
+        } else {
+            Toast.makeText(getActivity(), " steps Found",Toast.LENGTH_SHORT).show();
+
+
+            final Dialog customDialog;
+            //inflate the root dialog
+            LayoutInflater inflater = getLayoutInflater();
+            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
+            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
+            //else check for steps and construct the layout
+            for (Step step : ussdAction.getSteps()) {
+                if (step.getType().equals("Text")) {
+
+                    View rowText = inflater.inflate(R.layout.row_text, null);
+                    rowText.setId(step.getId());
+                    root.addView(rowText);
+
+
+                }
+                if (step.getType().equals("Tel No")) {
+                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
+
+                            ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO pick contact
+            }
+        });
+
+                    rowTelephone.setId(step.getId());
+                    root.addView(rowTelephone);
+
+
+                }
+                if (step.getType().equals("Number")) {
+                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+                    rowAmount.setId(step.getId());
+                    root.addView(rowAmount);
+
+                }
+
+            }
+
+            //inflate each row that should be contained in the dialog box
+            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
+            //add each row to the root
+            root.addView(rowButtons);
+
+            customDialog = new Dialog(getActivity());
+            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+            customDialog.setContentView(cardView);
+            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            customDialog.setCancelable(true);
+
+            // TODO  add code for choosing phone number
+//        final EditText editTextAmount = customDialog.findViewById(R.id.edit_text_amount);
+//        final EditText editTextNumber = customDialog.findViewById(R.id.edit_text_mobileNumber);
+//        ImageButton imageButton = customDialog.findViewById(R.id.selec_contact_ImageBtn);
+//        imageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ((MainActivity)getActivity()).contactPicker(getActivity());
+//            }
+//        });
+
+
+            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
+                    //get all the user entered values
+                    for(Step step: ussdAction.getSteps()){
+                        //get the user entered value of each step using its id
+                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
+
+                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
+                        if(value!=null&&!value.isEmpty()){
+                            stringBuilder.append("*"+value);
+                        }
+
+                    }
+                    //generate the code with the values inserted
+                    //run the code
+                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
+
+                    customDialog.dismiss();
+                    //execute the ussd code
+                    executeUssd(fullCode);
+
+
+                }
+
+
+            });
+
+            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    customDialog.dismiss();
+                }
+            });
+            customDialog.show();
+        }
+    }
+
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
@@ -443,7 +609,6 @@ public class MainFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
     private void showDialogPolygon() {
 
 
@@ -667,6 +832,18 @@ public class MainFragment extends Fragment {
 //
 //
 //        dialog.show();
+    }
+
+
+    //************************ UTILITY METHODS *************************************************
+
+    public SuperAction simpleAction(String name,String airtelCode,String mtnCode){
+        Step[] tel_nos = {};
+        UssdAction action1 =  new UssdAction(0,name,airtelCode,"",tel_nos);
+        UssdAction action2 =  new UssdAction(0,name,mtnCode,"", tel_nos);
+
+        SuperAction superAction = new SuperAction(action1,action2);
+        return superAction;
     }
     //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
     private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){

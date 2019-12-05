@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ussdhelper.MainActivity;
 import com.example.ussdhelper.R;
 import com.example.ussdhelper.adapters.AdapterGridCustomCodes;
+import com.example.ussdhelper.modals.Step;
 import com.example.ussdhelper.modals.UssdAction;
 import com.example.ussdhelper.util.SQLiteDatabaseHandler;
 import com.google.android.material.snackbar.Snackbar;
@@ -125,7 +126,7 @@ public class PlaceholderFragment extends Fragment {
             CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
             //else check for steps and construct the layout
-            for (UssdAction.Step step : ussdAction.getSteps()) {
+            for (Step step : ussdAction.getSteps()) {
                 if (step.getType().equals("Text")) {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
@@ -178,7 +179,7 @@ public class PlaceholderFragment extends Fragment {
                 public void onClick(View v) {
                     StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
                     //get all the user entered values
-                    for(UssdAction.Step step: ussdAction.getSteps()){
+                    for(Step step: ussdAction.getSteps()){
                         //get the user entered value of each step using its id
                         LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
 
@@ -225,7 +226,6 @@ public class PlaceholderFragment extends Fragment {
         mAdapter.setOnItemClickListener(new AdapterGridCustomCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdAction obj, int position) {
-                String ussdCode = "*131"+ Uri.encode("#");
                 String uscode = ussdActions.get(position).getCode();
                 String cd = uscode+ Uri.encode("#");
                 createDialog(ussdActions.get(position),cd);

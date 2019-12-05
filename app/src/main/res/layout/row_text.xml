@@ -7,17 +7,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_margin="@dimen/spacing_medium"
         android:fontFamily="sans-serif-light"
         android:text="Enter Text"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/grey_60" />
-    <EditText
-        android:tag="editText"
-        android:hint="1"
-        android:inputType="text"
-        android:id="@+id/editText_text"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        >
+        <EditText
+            android:layout_margin="5dp"
+            android:tag="editText"
+            android:hint="Text"
+            android:inputType="number|text"
+            android:id="@+id/editText_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 </LinearLayout>
