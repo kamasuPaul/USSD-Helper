@@ -75,8 +75,9 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
     private void setupToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Add Custome codes");
+        getSupportActionBar().setTitle("Add custom codes");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backbutton);
     }
 
     @Override

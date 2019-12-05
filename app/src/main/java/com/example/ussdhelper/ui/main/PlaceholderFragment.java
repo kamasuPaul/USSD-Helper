@@ -2,9 +2,12 @@ package com.example.ussdhelper.ui.main;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,18 +42,23 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final int CONTACT_PICKER_REQUEST = 29;
 
     private PageViewModel pageViewModel;
     SQLiteDatabaseHandler db;
     public static AdapterGridCustomCodes mAdapter;
     private RecyclerView recyclerView;
     public static List<UssdAction>  ussdActions;
+    private EditText phoneNumber;
 
 
     public static PlaceholderFragment newInstance(int index) {
@@ -90,21 +98,6 @@ public class PlaceholderFragment extends Fragment {
                 itemsNames[i] = ussdActions.get(i).toString();
             }
                 initComponent(root);
-//            // display like string instances
-//             list = (ListView) root.findViewById(R.id.list);
-//            list.setAdapter(new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_list_item_1, android.R.id.text1, itemsNames));
-//            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-////                    String ussdCode = "*131"+ Uri.encode("#");
-//                    String uscode = ussdActions.get(position).getCode();
-//                    String cd = uscode+ Uri.encode("#");
-//                    createDialog(ussdActions.get(position),cd);
-////                    String code = uscode.substring(uscode.lastIndexOf("#"));
-////                    Toast.makeText(AddYourOwnActionActivity.this,uscode, Toast.LENGTH_SHORT).show();
-//                }
-//            });
 
         }
 
@@ -113,7 +106,6 @@ public class PlaceholderFragment extends Fragment {
     public void createDialog(final UssdAction ussdAction, final String cd) {
         if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
             //execute the code immediately
-//            Toast.makeText(getActivity(), "No steps Found",Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
 
 
@@ -137,7 +129,20 @@ public class PlaceholderFragment extends Fragment {
                 }
                 if (step.getType().equals("Tel No")) {
                     View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
-                        rowTelephone.setId(step.getId());
+                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
+                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
+                    imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO pick contact
+                            phoneNumber = editText;
+                            Intent i = new Intent(Intent.ACTION_PICK);
+                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
+                        }
+                    });
+
+                    rowTelephone.setId(step.getId());
                     root.addView(rowTelephone);
 
 
@@ -156,22 +161,12 @@ public class PlaceholderFragment extends Fragment {
             //add each row to the root
             root.addView(rowButtons);
 
+
             customDialog = new Dialog(getActivity());
             customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
             customDialog.setContentView(cardView);
             customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             customDialog.setCancelable(true);
-
-
-//        final EditText editTextAmount = customDialog.findViewById(R.id.edit_text_amount);
-//        final EditText editTextNumber = customDialog.findViewById(R.id.edit_text_mobileNumber);
-//        ImageButton imageButton = customDialog.findViewById(R.id.selec_contact_ImageBtn);
-//        imageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ((MainActivity)getActivity()).contactPicker(getActivity());
-//            }
-//        });
 
 
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
@@ -212,11 +207,10 @@ public class PlaceholderFragment extends Fragment {
     private void initComponent(View root) {
         recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.addItemDecoration(new MyItemDecorator(2,5));
 //        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 8), true));
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
-
-//        List<ShopCategory> items = DataGenerator.getShoppingCategory(this);
 
         //set data and list adapter
         mAdapter = new AdapterGridCustomCodes(getActivity(), ussdActions);
@@ -242,4 +236,81 @@ public class PlaceholderFragment extends Fragment {
 
     }
 
-}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
+        if (requestCode == CONTACT_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Uri contactUri = data.getData();
+                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                Cursor cursor = getActivity().getContentResolver().query(contactUri, projection, null, null, null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String number = cursor.getString(numberIdex);
+                    if (phoneNumber != null) {
+                        phoneNumber.setText(number);
+                    }
+
+
+                }
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getActivity(), "No contact selected", Toast.LENGTH_SHORT).show();
+                System.out.println("User closed the picker without selecting items.");
+            }
+        }
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            String[] sessionTextArr = data.getStringArrayExtra("ussd_messages");
+            String uuid = data.getStringExtra("uuid");
+            Toast.makeText(getActivity(), sessionTextArr.toString(), Toast.LENGTH_LONG).show();
+
+        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
+        }
+    }
+//********************************************UTILITY METHODS ****************************
+    /**
+     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
+     *
+     * @param v the  view whose layout is to be set
+     * @param l left
+     * @param t top
+     * @param r right
+     * @param b bottom
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
+    class MyItemDecorator extends RecyclerView.ItemDecoration{
+        private  int margin,columns;
+        public MyItemDecorator(int columns,int margin) {
+            this.columns = columns;
+            this.margin = margin;
+
+        }
+        @Override
+        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            int position = parent.getChildLayoutPosition(view);
+            //set right margin to all
+            outRect.right = margin;
+            //set bottom margin to all
+            outRect.bottom = margin;
+            //we only add top margin to the first row
+            if (position <columns) {
+                outRect.top = margin;
+            }
+            //add left margin only to the first column
+            if(position%columns==0){
+                outRect.left = margin;
+            }
+        }
+        }
+    }
+
+

@@ -138,7 +138,8 @@
             android:id="@+id/toolbar"
             app:titleTextColor="@android:color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_height="?attr/actionBarSize" />
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
