@@ -81,7 +81,7 @@ public class MainFragment extends Fragment {
     int slot = -1;
     int subscriptionId =0;
     List<SubscriptionInfo> subList;
-    List<SuperAction>superActionsAirtime,superActionsData,superActionsMMoney;
+    List<SuperAction>superActionsAirtime,superActionsData,superActionsMMoney,superActionsOthers;
 
     EditText phoneNumber;
 
@@ -109,11 +109,20 @@ public class MainFragment extends Fragment {
         addAirtimeCodes();
         addDataCodes();
         addMobileMoneyCodes();
+        addOtherCodes();
 
 
         setUpDialog();
 
 
+    }
+
+    private void addOtherCodes() {
+        superActionsOthers = new ArrayList<>();
+        superActionsOthers.add(simpleAction("Pay Umeme","*175*2","*131"));
+        superActionsOthers.add(simpleAction("Pay Tv","*175*4","*131"));
+        superActionsOthers.add(simpleAction("School Fees","*175*9*2","*131"));
+        superActionsOthers.add(simpleAction("Sports Betting","*175*9*2","*131"));
     }
 
     private void addAirtimeCodes() {
@@ -180,9 +189,11 @@ public class MainFragment extends Fragment {
         final LinearLayout linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
         final LinearLayout linearLayoutData = root.findViewById(R.id.linearLayout_data);
         final LinearLayout linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
+        final LinearLayout linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
         myInflator(linearLayoutAirtime,superActionsAirtime);
         myInflator(linearLayoutData,superActionsData);
         myInflator(linearLayoutMMoney,superActionsMMoney);
+        myInflator(linearLayoutOthers,superActionsOthers);
 
 
         //iniatize chip views
@@ -304,7 +315,6 @@ public class MainFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "kdfj", Toast.LENGTH_SHORT).show();
                     executeSuperAction(s);
                 }
             });
@@ -409,12 +419,9 @@ public class MainFragment extends Fragment {
         }
         if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
             //execute the code immediately
-            Toast.makeText(getActivity(), "No steps Found",Toast.LENGTH_SHORT).show();
             executeUssd(ussdAction.getCode()+Uri.encode("#"));
 
         } else {
-            Toast.makeText(getActivity(), " steps Found",Toast.LENGTH_SHORT).show();
-
 
             final Dialog customDialog;
             //inflate the root dialog
