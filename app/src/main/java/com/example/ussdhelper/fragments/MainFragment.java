@@ -228,14 +228,15 @@ public class MainFragment extends Fragment {
             subList = subscriptionManager.getActiveSubscriptionInfoList();
 
             for (final SubscriptionInfo subscriptionInfo : subList) {
-                String networkName = subscriptionInfo.getCarrierName().toString();
+                final String networkName = subscriptionInfo.getCarrierName().toString();
 
                 final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
                 //set margin for the chip
                 chip1.setText(networkName);
-                if (networkName.contains("MTN"))
+                if (networkName.contains("MTN")){
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
-                    removeNonMtnAction();
+                    hideNonMtnAction();
+                }
                 if (networkName.contains("AFRICELL"))
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.africell));
                 if (subscriptionInfo.getSimSlotIndex() == 0) {
@@ -257,7 +258,13 @@ public class MainFragment extends Fragment {
 //
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if(mode.contains("MTN")) removeNonMtnAction();
+                        if(!mode.contains("MTN")){
+                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
+                            hideNonMtnAction();
+                        }else{
+                            unHideNonMtnAction();
+
+                        }
                     }
                 });
                 chip1.setOnClickListener(new View.OnClickListener() {
@@ -276,7 +283,11 @@ public class MainFragment extends Fragment {
                             }
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if(mode.contains("MTN")) removeNonMtnAction();
+                        if(mode.contains("MTN")){
+                            hideNonMtnAction();
+                        }else{
+                            unHideNonMtnAction();
+                        }
                         //notify the user of their action
                         Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
 
@@ -300,12 +311,21 @@ public class MainFragment extends Fragment {
     /**
      * methods to remove cards with codes that are not supported on mtn
      */
-    private void removeNonMtnAction() {
+    private void hideNonMtnAction() {
         List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
             linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
         for(LinearLayout l : linearLayouts){
-            getViewsByTag(l,"hide");
+            ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
+            for(View v :hiddenViews) v.setVisibility(View.GONE);
 
+        }
+    }
+    private void unHideNonMtnAction(){
+        List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
+            linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
+        for(LinearLayout l : linearLayouts){
+            ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
+            for(View v :hiddenViews) v.setVisibility(View.VISIBLE);
         }
     }
 
@@ -314,14 +334,13 @@ public class MainFragment extends Fragment {
             CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.item_action, null, false);
             View view = cardView.findViewById(R.id.myAction);
             // if code has empty string , add tag that will be used to remove it
-            for(SuperAction superAction: superActions){
-                UssdAction action = superAction.getMtn();
-                if((action.getCode()).isEmpty() && action.getSteps()==null){
+                UssdAction action = s.getMtn();
+                if((action.getCode()).isEmpty()){
                     // this action is not supported on mtn , add tag that will be used to hide it
                     view.setTag("hide");
                 }
 
-            }
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
