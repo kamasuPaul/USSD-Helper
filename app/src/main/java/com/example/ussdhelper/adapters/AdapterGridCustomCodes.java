@@ -149,14 +149,18 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     /**
-     * this methods deletes a given action from the custom codes activity
+     * this methods edits a given action from the custom codes activity
      *
      * @param
      */
     private void editAction(int id) {
 
     }
-
+    /**
+     * this methods deletes a given action from the custom codes activity
+     *
+     * @param
+     */
     private void deleteAction(UssdAction action) {
         db.deleteOne(action);
 

@@ -113,7 +113,7 @@ public class MainFragment extends Fragment {
 
     private void addAirtimeCodes() {
         superActionsAirtime = new ArrayList<>();
-        Step[] tel_nos = {new Step(2, "Text", null, -1)};
+        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
         UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
         UssdAction action2 = new UssdAction(0, "Buy Airtime", "*131", "", tel_nos);
 
@@ -149,7 +149,7 @@ public class MainFragment extends Fragment {
             new UssdAction(0, "", "*131", "",
                 new Step[]{new Step(0, "Tel No", null, -1)})));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
-            new Step[]{new Step(0, "Text", null, -1)}),
+            new Step[]{new Step(0, "Text", "Amount", -1)}),
             new UssdAction(0, "", "*131", "",
                 new Step[]{new Step(0, "Text", null, -1)})));
         superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*131"));
@@ -430,6 +430,8 @@ public class MainFragment extends Fragment {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId(step.getId());
+                    final EditText editText = rowText.findViewById(R.id.editText_text);
+                    editText.setHint(step.getDescription());
                     root.addView(rowText);
 
 
@@ -458,6 +460,8 @@ public class MainFragment extends Fragment {
                 if (step.getType().equals("Number")) {
                     View rowAmount = inflater.inflate(R.layout.row_amount, null);
                     rowAmount.setId(step.getId());
+                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+                    editText.setHint(step.getDescription());
                     root.addView(rowAmount);
 
                 }
@@ -468,12 +472,14 @@ public class MainFragment extends Fragment {
             View rowButtons = inflater.inflate(R.layout.row_buttons, null);
             //add each row to the root
             root.addView(rowButtons);
+            cardView.setPadding(5,5,5,5);
 
             customDialog = new Dialog(getActivity());
             customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
             customDialog.setContentView(cardView);
             customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             customDialog.setCancelable(true);
+
 
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override

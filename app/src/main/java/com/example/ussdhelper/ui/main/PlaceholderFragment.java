@@ -123,6 +123,8 @@ public class PlaceholderFragment extends Fragment {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId(step.getId());
+                    final EditText editText = rowText.findViewById(R.id.editText_text);
+                    editText.setHint(step.getDescription());
                     root.addView(rowText);
 
 
@@ -150,6 +152,8 @@ public class PlaceholderFragment extends Fragment {
                 if (step.getType().equals("Number")) {
                     View rowAmount = inflater.inflate(R.layout.row_amount, null);
                     rowAmount.setId(step.getId());
+                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+                    editText.setHint(step.getDescription());
                     root.addView(rowAmount);
 
                 }

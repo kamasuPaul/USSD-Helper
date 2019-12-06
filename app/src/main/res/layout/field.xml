@@ -17,10 +17,12 @@
         android:layout_height="match_parent"
         android:layout_weight="5"
         android:inputType="text" />
-    <Button
+    <ImageView
         android:id="@+id/delete_button"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_weight="1"
-        android:background="@drawable/ic_close2"
-        android:onClick="onDelete" /></LinearLayout>
+        android:src="@drawable/ic_close2"
+        android:onClick="onDelete"></ImageView>
+
+</LinearLayout>

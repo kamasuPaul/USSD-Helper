@@ -2,22 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:fontFamily="sans-serif-light"
-        android:text="Enter Amount"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:text="Enter"
         android:textColor="@color/grey_60" />
-    <EditText
-        android:tag="editText"
-        android:hint="Amount"
-        android:id="@+id/edit_text_amount"
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
-        android:inputType="number"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
+
+        <EditText
+            android:id="@+id/edit_text_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:tag="editText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
