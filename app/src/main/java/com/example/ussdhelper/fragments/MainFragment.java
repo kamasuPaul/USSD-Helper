@@ -68,7 +68,7 @@ public class MainFragment extends Fragment {
     int subscriptionId = 0;
     List<SubscriptionInfo> subList;
     List<SuperAction> superActionsAirtime, superActionsData, superActionsMMoney, superActionsOthers;
-
+    LinearLayout linearLayoutAirtime,linearLayoutData,linearLayoutMMoney,linearLayoutOthers;
     EditText phoneNumber;
 
     public MainFragment() {
@@ -115,44 +115,41 @@ public class MainFragment extends Fragment {
         superActionsAirtime = new ArrayList<>();
         Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
         UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*131", "", tel_nos);
+        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
 
         SuperAction superAction = new SuperAction(action1, action2);
         superActionsAirtime.add(superAction);
         superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
-        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*131"));
+        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160*3"));
         superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
             new Step[]{new Step(0, "Tel No", null, -1)}),
-            new UssdAction(0, "Buy Airtime", "*131", "",
-                new Step[]{new Step(0, "Tel No", null, -1)})));
-        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*131"));
+            new UssdAction(0, "Call Me Back", "", "", null)));
+        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
     }
 
     private void addDataCodes() {
         superActionsData = new ArrayList<>();
-        superActionsData.add(simpleAction("Data Bundles", "*175*2", "*131"));
+        superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
         superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
-        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", "*131"));
+        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
 
-        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*131"));
+        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", ""));
         superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
             new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", null, -2)}),
-            new UssdAction(0, "", "*131", "",
-                new Step[]{new Step(0, "Tel No", null, -1)})));
+            new UssdAction(0, "", "", "", null)));
     }
 
     private void addMobileMoneyCodes() {
         superActionsMMoney = new ArrayList<>();
-        superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*131"));
+        superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
             new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", null, -2)}),
-            new UssdAction(0, "", "*131", "",
+            new UssdAction(0, "", "*185*1", "",
                 new Step[]{new Step(0, "Tel No", null, -1)})));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
             new Step[]{new Step(0, "Text", "Amount", -1)}),
-            new UssdAction(0, "", "*131", "",
-                new Step[]{new Step(0, "Text", null, -1)})));
-        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*131"));
+            new UssdAction(0, "", "", "", null)));
+        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5"));
     }
 
     private void setUpDialog() {
@@ -174,10 +171,10 @@ public class MainFragment extends Fragment {
 
         //generate layouts for airtime section
         //TODO make this work, i dont why click listeners are not working
-        final LinearLayout linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
-        final LinearLayout linearLayoutData = root.findViewById(R.id.linearLayout_data);
-        final LinearLayout linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
-        final LinearLayout linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
+         linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
+         linearLayoutData = root.findViewById(R.id.linearLayout_data);
+         linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
+        linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
         myInflator(linearLayoutAirtime, superActionsAirtime);
         myInflator(linearLayoutData, superActionsData);
         myInflator(linearLayoutMMoney, superActionsMMoney);
@@ -238,6 +235,7 @@ public class MainFragment extends Fragment {
                 chip1.setText(networkName);
                 if (networkName.contains("MTN"))
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
+                    removeNonMtnAction();
                 if (networkName.contains("AFRICELL"))
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.africell));
                 if (subscriptionInfo.getSimSlotIndex() == 0) {
@@ -258,6 +256,8 @@ public class MainFragment extends Fragment {
                             }
 //
                         }
+                        //if the selected mode is mtn remove non mtn action cards
+                        if(mode.contains("MTN")) removeNonMtnAction();
                     }
                 });
                 chip1.setOnClickListener(new View.OnClickListener() {
@@ -275,6 +275,8 @@ public class MainFragment extends Fragment {
                                 subscriptionId = subscriptionInfo.getSubscriptionId();
                             }
                         }
+                        //if the selected mode is mtn remove non mtn action cards
+                        if(mode.contains("MTN")) removeNonMtnAction();
                         //notify the user of their action
                         Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
 
@@ -295,10 +297,31 @@ public class MainFragment extends Fragment {
         return root;
     }
 
+    /**
+     * methods to remove cards with codes that are not supported on mtn
+     */
+    private void removeNonMtnAction() {
+        List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
+            linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
+        for(LinearLayout l : linearLayouts){
+            getViewsByTag(l,"hide");
+
+        }
+    }
+
     private void myInflator(LinearLayout linearLayoutAirtime, List<SuperAction> superActions) {
         for (final SuperAction s : superActions) {
             CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.item_action, null, false);
             View view = cardView.findViewById(R.id.myAction);
+            // if code has empty string , add tag that will be used to remove it
+            for(SuperAction superAction: superActions){
+                UssdAction action = superAction.getMtn();
+                if((action.getCode()).isEmpty() && action.getSteps()==null){
+                    // this action is not supported on mtn , add tag that will be used to hide it
+                    view.setTag("hide");
+                }
+
+            }
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -325,8 +348,6 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void executeUssd(String fullCode) {
-        Toast.makeText(getActivity(), "method called" + fullCode, Toast.LENGTH_SHORT).show();
-
         TelecomManager telecomManager = null;
         List<PhoneAccountHandle> phoneAccountHandleList = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -389,8 +410,6 @@ public class MainFragment extends Fragment {
         }
 
     }
-
-
     /**
      * this mthd checks a super action  for the network and  ussdAction and executes it
      *
@@ -472,7 +491,7 @@ public class MainFragment extends Fragment {
             View rowButtons = inflater.inflate(R.layout.row_buttons, null);
             //add each row to the root
             root.addView(rowButtons);
-            cardView.setPadding(5,5,5,5);
+            cardView.setPadding(5, 5, 5, 5);
 
             customDialog = new Dialog(getActivity());
             customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -519,11 +538,8 @@ public class MainFragment extends Fragment {
             customDialog.show();
         }
     }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
 
         if (requestCode == CONTACT_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -541,9 +557,8 @@ public class MainFragment extends Fragment {
 
                 }
 
-//                List<ContactResult> results = MultiContactPicker.obtainResult(data);
-//                Log.d("MyTag", results.get(0).getDisplayName());
             } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getActivity(), "No contact selected", Toast.LENGTH_SHORT).show();
                 System.out.println("User closed the picker without selecting items.");
             }
         }
@@ -641,6 +656,7 @@ public class MainFragment extends Fragment {
             v.requestLayout();
         }
     }
+
 
     //TODO change its location
     class SuperAction {

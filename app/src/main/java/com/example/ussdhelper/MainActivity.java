@@ -14,6 +14,7 @@ import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.Iterator;
@@ -35,13 +36,41 @@ public class MainActivity extends AppCompatActivity {
         //ask for permissions
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
-                             Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_CONTACTS,
                 Manifest.permission.READ_PHONE_STATE)
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
-                    if(!report.areAllPermissionsGranted()){
-                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
+                    //if permission granted
+                    if(report.areAllPermissionsGranted()){
+                        setContentView(R.layout.activity_main);
+                        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
+                        ViewPager viewPager = findViewById(R.id.view_pager);
+                        viewPager.setAdapter(sectionsPagerAdapter);
+                        TabLayout tabs = findViewById(R.id.tabs);
+                        tabs.setupWithViewPager(viewPager);
+                        FloatingActionButton fab = findViewById(R.id.fab);
+
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
+                            }
+                        });
+
+                    }else{
+//                        DialogOnAnyDeniedMultiplePermissionsListener.Builder
+//                            .withContext(getApplicationContext())
+//                            .withTitle("Contacts and Phone State")
+//                            .withMessage("These permissions are needed to detect your sim cards")
+//                            .withButtonText("Continue")
+//                            .withIcon(R.mipmap.ic_launcher)
+//                            .build();
+                        Toast.makeText(MainActivity.this, "This app requires the  requested permissions to work", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
+
+
+
                     }
                 }
 
@@ -50,22 +79,11 @@ public class MainActivity extends AppCompatActivity {
                     token.continuePermissionRequest();
 
                 }
-            }).check();
+            })
+            .onSameThread()
+            .check();
 
-        setContentView(R.layout.activity_main);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
-            }
-        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
