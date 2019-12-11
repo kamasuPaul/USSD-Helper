@@ -1,4 +1,4 @@
-package com.example.ussdhelper;
+package com.quickCodes.quickCodes;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.ussdhelper.modals.Step;
-import com.example.ussdhelper.modals.UssdAction;
-import com.example.ussdhelper.ui.main.PlaceholderFragment;
-import com.example.ussdhelper.util.SQLiteDatabaseHandler;
+import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
+import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.google.android.material.button.MaterialButton;
 //import com.hover.sdk.api.HoverParameters;
 

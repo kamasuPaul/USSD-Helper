@@ -1,4 +1,4 @@
-package com.example.ussdhelper.adapters;
+package com.quickCodes.quickCodes.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.example.ussdhelper.R;
-import com.example.ussdhelper.modals.UssdAction;
-import com.example.ussdhelper.util.SQLiteDatabaseHandler;
+import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;

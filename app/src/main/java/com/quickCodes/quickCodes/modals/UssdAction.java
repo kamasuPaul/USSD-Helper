@@ -1,4 +1,4 @@
-package com.example.ussdhelper.modals;
+package com.quickCodes.quickCodes.modals;
 
 import java.util.Arrays;
 

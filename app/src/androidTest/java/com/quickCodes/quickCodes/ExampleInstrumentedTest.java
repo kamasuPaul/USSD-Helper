@@ -1,4 +1,4 @@
-package com.example.ussdhelper;
+package com.quickCodes.quickCodes;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.ussdhelper", appContext.getPackageName());
+        assertEquals("com.quickCodes.ussdhelper", appContext.getPackageName());
     }
 }

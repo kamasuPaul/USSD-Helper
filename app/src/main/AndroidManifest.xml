@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ussdhelper">
+    package="com.quickCodes.quickCodes">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <application
@@ -10,21 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddYourOwnActionActivity"
+        <activity android:name="com.quickCodes.quickCodes.AddYourOwnActionActivity"
             ></activity>
-        <activity
-            android:name="com.onegravity.contactpicker.core.ContactPickerActivity"
-            android:enabled="true"
-            android:exported="false" >
-
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.quickCodes.quickCodes.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/BaseTheme">
             <intent-filter>

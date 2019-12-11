@@ -1,4 +1,4 @@
-package com.example.ussdhelper.ui.main;
+package com.quickCodes.quickCodes.ui.main;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

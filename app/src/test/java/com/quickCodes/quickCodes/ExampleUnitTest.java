@@ -1,4 +1,4 @@
-package com.example.ussdhelper;
+package com.quickCodes.quickCodes;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.ussdhelper.util;
+package com.quickCodes.quickCodes.util;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,10 +10,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.ussdhelper.modals.Step;
-import com.example.ussdhelper.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
 
 public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
 

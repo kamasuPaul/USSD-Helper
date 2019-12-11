@@ -1,4 +1,4 @@
-package com.example.ussdhelper.fragments;
+package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -28,9 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.example.ussdhelper.R;
-import com.example.ussdhelper.modals.Step;
-import com.example.ussdhelper.modals.UssdAction;
+import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
 
@@ -120,7 +120,7 @@ public class MainFragment extends Fragment {
         SuperAction superAction = new SuperAction(action1, action2);
         superActionsAirtime.add(superAction);
         superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
-        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160*3"));
+        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
         superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
             new Step[]{new Step(0, "Tel No", null, -1)}),
             new UssdAction(0, "Call Me Back", "", "", null)));
@@ -133,7 +133,7 @@ public class MainFragment extends Fragment {
         superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
         superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
 
-        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", ""));
+        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
         superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
             new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", null, -2)}),
             new UssdAction(0, "", "", "", null)));
@@ -143,13 +143,13 @@ public class MainFragment extends Fragment {
         superActionsMMoney = new ArrayList<>();
         superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
-            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", null, -2)}),
+            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Amount", -2)}),
             new UssdAction(0, "", "*185*1", "",
-                new Step[]{new Step(0, "Tel No", null, -1)})));
+                new Step[]{new Step(0, "Tel No", "Amount", -1)})));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
             new Step[]{new Step(0, "Text", "Amount", -1)}),
             new UssdAction(0, "", "", "", null)));
-        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5"));
+        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5*1*2"));
     }
 
     private void setUpDialog() {
@@ -259,7 +259,7 @@ public class MainFragment extends Fragment {
                         }
                         //if the selected mode is mtn remove non mtn action cards
                         if(!mode.contains("MTN")){
-                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
                             hideNonMtnAction();
                         }else{
                             unHideNonMtnAction();

@@ -1,4 +1,4 @@
-package com.example.ussdhelper.ui.main;
+package com.quickCodes.quickCodes.ui.main;
 
 import android.content.Context;
 
@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.ussdhelper.R;
-import com.example.ussdhelper.fragments.MainFragment;
+import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.fragments.MainFragment;
 
 import java.util.ArrayList;
 import java.util.List;

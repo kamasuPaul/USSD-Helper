@@ -1,4 +1,4 @@
-package com.example.ussdhelper;
+package com.quickCodes.quickCodes;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,14 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.ussdhelper.ui.main.SectionsPagerAdapter;
+import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.Iterator;

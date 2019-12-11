@@ -1,4 +1,4 @@
-package com.example.ussdhelper.ui.main;
+package com.quickCodes.quickCodes.ui.main;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -12,31 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ussdhelper.MainActivity;
-import com.example.ussdhelper.R;
-import com.example.ussdhelper.adapters.AdapterGridCustomCodes;
-import com.example.ussdhelper.modals.Step;
-import com.example.ussdhelper.modals.UssdAction;
-import com.example.ussdhelper.util.SQLiteDatabaseHandler;
+import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
+import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
 
