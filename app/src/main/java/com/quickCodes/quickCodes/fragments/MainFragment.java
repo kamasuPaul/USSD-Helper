@@ -46,22 +46,11 @@ import androidx.fragment.app.Fragment;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-//import com.hover.sdk.api.HoverParameters;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MainFragment extends Fragment {
-
 
     private OnFragmentInteractionListener mListener;
     Dialog dialog;
-    Dialog customDialog;
+
     private static final int CONTACT_PICKER_REQUEST = 29;
     String mode = null;
     int slot = -1;
@@ -75,20 +64,6 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment MainFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance() {
-        MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +72,7 @@ public class MainFragment extends Fragment {
         addMobileMoneyCodes();
         addOtherCodes();
 
-
         setUpDialog();
-
 
     }
 
@@ -116,7 +89,6 @@ public class MainFragment extends Fragment {
         Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
         UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
         UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-
         SuperAction superAction = new SuperAction(action1, action2);
         superActionsAirtime.add(superAction);
         superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
@@ -132,10 +104,9 @@ public class MainFragment extends Fragment {
         superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
         superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
         superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
-
         superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
         superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
-            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", null, -2)}),
+            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs to send", -2)}),
             new UssdAction(0, "", "", "", null)));
     }
 
@@ -167,10 +138,6 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
-        //**********************AIRTIME****************************************************************//
-
-        //generate layouts for airtime section
-        //TODO make this work, i dont why click listeners are not working
          linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
          linearLayoutData = root.findViewById(R.id.linearLayout_data);
          linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
@@ -185,8 +152,8 @@ public class MainFragment extends Fragment {
         final LinearLayout rootLinearLayoutChips = root.findViewById(R.id.linearLayout_root_chips);
         com.robertlevonyan.views.chip.Chip chipAirtel = root.findViewById(R.id.chip_airel);
         com.robertlevonyan.views.chip.Chip chipMtn = root.findViewById(R.id.chip_mtn);
-        com.robertlevonyan.views.chip.Chip chipAfricel = root.findViewById(R.id.chip_africell);
-        List<Chip> chips = Arrays.asList(chipAirtel, chipAfricel, chipMtn);
+        com.robertlevonyan.views.chip.Chip chipAfricell = root.findViewById(R.id.chip_africell);
+        List<Chip> chips = Arrays.asList(chipAirtel, chipAfricell, chipMtn);
         //set click listeners on chips
         for (final com.robertlevonyan.views.chip.Chip chip : chips) {
             chip.setOnSelectClickListener(new OnSelectClickListener() {
@@ -228,7 +195,7 @@ public class MainFragment extends Fragment {
             subList = subscriptionManager.getActiveSubscriptionInfoList();
 
             for (final SubscriptionInfo subscriptionInfo : subList) {
-                final String networkName = subscriptionInfo.getCarrierName().toString();
+                final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
 
                 final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
                 //set margin for the chip
@@ -244,7 +211,6 @@ public class MainFragment extends Fragment {
                     mode = chip1.getText().toString();
                     slot = 0;
                 }
-
                 chip1.setOnSelectClickListener(new OnSelectClickListener() {
                     @Override
                     public void onSelectClick(View v, boolean selected) {
@@ -258,13 +224,15 @@ public class MainFragment extends Fragment {
 //
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if(!mode.contains("MTN")){
+                        if(mode.contains("MTN")){
 //                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
                             hideNonMtnAction();
                         }else{
                             unHideNonMtnAction();
 
                         }
+                        Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
+
                     }
                 });
                 chip1.setOnClickListener(new View.OnClickListener() {
@@ -435,22 +403,15 @@ public class MainFragment extends Fragment {
      * @param superAction
      */
     public void executeSuperAction(SuperAction superAction) {
+
         //use codes for the selected network mode
-        final UssdAction ussdAction;
-        switch (mode) {
-            case "Airtel":
-                ussdAction = superAction.getAirtel();
-                break;
-            case "Mtn":
-                ussdAction = superAction.getMtn();
-                break;
-            case "Africell":
-                //TODO add africell and change below line to getAfricell
-                ussdAction = superAction.getAirtel();
-                break;
-            default:
-                ussdAction = superAction.getAirtel();
-        }
+        UssdAction ussdAction = null;
+        String mode1 = mode.toUpperCase();
+        if(mode1.contains("MTN"))    ussdAction = superAction.getMtn();
+        if(mode1.contains("AIRTEL"))    ussdAction = superAction.getAirtel();
+        if(mode1.contains("AFRICELL"))    ussdAction = superAction.getAirtel();
+
+
         if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
             //execute the code immediately
             executeUssd(ussdAction.getCode() + Uri.encode("#"));
@@ -482,7 +443,6 @@ public class MainFragment extends Fragment {
                     imageButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // TODO pick contact
                             phoneNumber = editText;
                             Intent i = new Intent(Intent.ACTION_PICK);
                             i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
@@ -519,12 +479,13 @@ public class MainFragment extends Fragment {
             customDialog.setCancelable(true);
 
 
+            final UssdAction finalUssdAction = ussdAction;
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
+                    StringBuilder stringBuilder = new StringBuilder(finalUssdAction.getCode());
                     //get all the user entered values
-                    for (Step step : ussdAction.getSteps()) {
+                    for (Step step : finalUssdAction.getSteps()) {
                         //get the user entered value of each step using its id
                         LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
 
@@ -591,7 +552,6 @@ public class MainFragment extends Fragment {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -626,7 +586,6 @@ public class MainFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
     //************************ UTILITY METHODS *************************************************
