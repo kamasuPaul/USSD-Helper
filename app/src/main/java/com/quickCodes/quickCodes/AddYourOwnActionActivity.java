@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 //import androidx.room.util.StringUtil;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,8 +103,21 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         //insert the data into the database
         String code = actionCode.getText().toString().replaceAll("#","");
+        //check if the code is not empty
+        //check if the name is not empty
+        String actionNameText = actionName.getText().toString();
 
-        UssdAction ussdAction = new UssdAction(lastId++,actionName.getText().toString(), code,actionNetwork.getText().toString(),steps);
+        if(actionNameText.isEmpty()){
+            Toast.makeText(this, "A name is required to save", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(code.isEmpty()){
+            Toast.makeText(this, "A code is required to save", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),steps);
         db.addUssdAction(ussdAction);
 
         //for now update the ui from here

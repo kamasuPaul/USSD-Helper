@@ -106,7 +106,7 @@ public class MainFragment extends Fragment {
         superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
         superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
         superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
-            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs to send", -2)}),
+            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs(50 to 2000)", -2)}),
             new UssdAction(0, "", "", "", null)));
     }
 
@@ -115,8 +115,8 @@ public class MainFragment extends Fragment {
         superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
             new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Amount", -2)}),
-            new UssdAction(0, "", "*185*1", "",
-                new Step[]{new Step(0, "Tel No", "Amount", -1)})));
+            new UssdAction(0, "", "*185*1*1", "",
+                new Step[]{new Step(0, "Tel No", "Amount", -1),new Step(1, "Text", "Amount", -2)})));
         superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
             new Step[]{new Step(0, "Text", "Amount", -1)}),
             new UssdAction(0, "", "", "", null)));
@@ -327,7 +327,9 @@ public class MainFragment extends Fragment {
                 .buildRound(String.valueOf((s.getAirtel().getName()).trim().charAt(0)).toUpperCase(), Color.RED);
 
             ImageView image = cardView.findViewById(R.id.ImageView_ActionIcon);
-            image.setImageDrawable(drawable);
+            if(image!=null){
+                image.setImageDrawable(drawable);
+            }
 
 
         }
@@ -531,6 +533,10 @@ public class MainFragment extends Fragment {
                     int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberIdex);
                     if (phoneNumber != null) {
+                        if(number.startsWith("+256")){
+                            number = number.replace("+256","0");
+                        }
+                        number = number.replace(" ","");
                         phoneNumber.setText(number);
                     }
 

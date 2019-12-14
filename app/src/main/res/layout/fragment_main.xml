@@ -54,6 +54,7 @@
                         app:mcv_selectedBackgroundColor="@color/colorPrimary" />
 
                     <com.robertlevonyan.views.chip.Chip
+                        android:visibility="gone"
                         android:id="@+id/chip_africell"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
