@@ -3,7 +3,10 @@ package com.quickCodes.quickCodes;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,11 +24,14 @@ import java.util.List;
 import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CONTACT = 20 ;
+    private static final int REQUEST_CODE = 40 ;
     private static final int CONTACT_PICKER_REQUEST = 90;
 
     @Override
@@ -53,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
+                                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+"")));
                             }
                         });
 
@@ -82,8 +88,13 @@ public class MainActivity extends AppCompatActivity {
             .onSameThread()
             .check();
 
-
+        setupToolBar();
     }
+    private void setupToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar1);
+        setSupportActionBar(toolbar);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
@@ -98,7 +109,38 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, iterator.next().toString(), Toast.LENGTH_SHORT).show();
             }
         }
+        if(requestCode== REQUEST_CODE && requestCode== Activity.RESULT_OK){
+            Bundle extras = data.getExtras();
+            Set keys = extras.keySet();
+            Iterator iterator = keys.iterator();
+            while(iterator.hasNext()){
+                Toast.makeText(this, iterator.next().toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId){
+            case R.id.share:
+                Toast.makeText(this, "share ", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.help:
+                Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.add_action:
+                startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
