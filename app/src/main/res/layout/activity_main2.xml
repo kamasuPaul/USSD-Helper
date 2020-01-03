@@ -57,11 +57,13 @@
 
                 <ImageView
                     android:id="@+id/cancel"
+                    android:tint="@color/colorPrimary"
+                    android:backgroundTint="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_gravity="right|center_vertical"
-                    android:background="@drawable/delete"
+                    android:background="@drawable/ic_delete_227590"
                     android:layout_weight="0.1"
                     />
 
@@ -247,48 +249,27 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/msg"
-                        android:layout_weight="1"
-                        android:background="@drawable/msg_three"
-                        android:pointerIcon="grab"
-                        android:gravity="center"
-                        android:padding="20dp"
-                        android:layout_margin="20dp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/call"
-                        android:layout_weight="1"
-                        android:background="@drawable/phone_call"
-                        android:gravity="center"
-                        android:layout_margin="20dp"
-                        />
-
-                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:id="@+id/whatsapp"
+                        android:layout_margin="20dp"
+                        android:layout_marginTop="20dp"
                         android:layout_weight="1"
-                        android:background="@drawable/whatsapp_text"
-                        android:gravity="center"
-                        android:layout_margin="15dp"
-                        />
+                        android:src="@mipmap/ic_launcher_foreground"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.shankaryadav.www.callandsms;
+package com.quickCodes.quickCodes;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.provider.ContactsContract;;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,10 +16,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-TextView number,t1,t2,t3,t4,t5,t6,t7,t8,t9,t0,tstar,th,tc,tm,tw,tname,tnumber;
+public class MainActivity2 extends AppCompatActivity {
+
+TextView number,t1,t2,t3,t4,t5,t6,t7,t8,t9,t0,tstar,th,tname,tnumber;
 ImageView cancel;
+AppCompatImageView imageViewCall;
 
 String userinput = null;
 
@@ -36,7 +39,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main);
+        setContentView (R.layout.activity_main2);
 
         findview ();
         checkpermission ();
@@ -139,14 +142,14 @@ ArrayList<String> numberlist = new ArrayList<> ();
             }
         });
 
-        tc.setOnClickListener (new View.OnClickListener () {
+        imageViewCall.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View v) {
 
                 userinput = number.getText ().toString ();
                 PackageManager pm = getApplicationContext ().getPackageManager();
                 int hasPerm = pm.checkPermission(
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         getApplicationContext ().getPackageName());
                 if (hasPerm != PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
@@ -156,40 +159,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
 
             }
         });
-
-        tm.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                userinput = number.getText ().toString ();
-
-                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                smsIntent.setType("vnd.android-dir/mms-sms");
-                smsIntent.putExtra("address", userinput);
-                smsIntent.putExtra("sms_body","Body of Message");
-                startActivity(smsIntent);
-            }
-        });
-
-        tw.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                userinput = number.getText ().toString ();
-
-
-                String url = "https://api.whatsapp.com/send?phone=" + "+91" +userinput;
-                try {
-                    PackageManager pm = getApplicationContext ().getPackageManager();
-                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Toast.makeText(MainActivity.this, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        
         cancel.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View v) {
@@ -218,9 +188,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
         t0 = findViewById (R.id.zero);
         tstar = findViewById (R.id.star);
         th = findViewById (R.id.hatch);
-        tc = findViewById (R.id.call);
-        tm = findViewById (R.id.msg);
-        tw = findViewById (R.id.whatsapp);
+        imageViewCall = findViewById (R.id.call);
         tname = findViewById (R.id.matchedname);
         tnumber = findViewById (R.id.matchednumber);
 
@@ -229,7 +197,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
 
     public void checkpermission(){
         if ((ContextCompat.checkSelfPermission (getApplicationContext (), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission (getApplicationContext (), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission (getApplicationContext (), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)){
-            ActivityCompat.requestPermissions (MainActivity.this,new String[]{Manifest.permission.CALL_PHONE,Manifest.permission.READ_CONTACTS,Manifest.permission.SEND_SMS}, 1);
+            ActivityCompat.requestPermissions (MainActivity2.this,new String[]{Manifest.permission.CALL_PHONE,Manifest.permission.READ_CONTACTS,Manifest.permission.SEND_SMS}, 1);
         }else{
             Toast.makeText (this, "permission not granted", Toast.LENGTH_SHORT).show ();
         }

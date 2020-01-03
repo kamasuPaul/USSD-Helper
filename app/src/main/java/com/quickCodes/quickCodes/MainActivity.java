@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.drm.DrmStore;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                //startActivity(new Intent(MainActivity.this,MainActivity2.class));
                                 startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+"")));
                             }
                         });
@@ -94,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
     }
+    private void shareApp() {
+        String store_url = "https://play.google.com/store/apps/details?id=com.quickCodes.quickCodes";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT,store_url);
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent,"Spread the word"),null);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -131,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (itemId){
             case R.id.share:
-                Toast.makeText(this, "share ", Toast.LENGTH_SHORT).show();
+                shareApp();
                 break;
             case R.id.help:
                 Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
@@ -143,4 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
