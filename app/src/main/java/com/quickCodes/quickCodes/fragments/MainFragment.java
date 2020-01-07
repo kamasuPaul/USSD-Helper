@@ -324,11 +324,17 @@ public class MainFragment extends Fragment {
 
             //change the image icon to a letter icon
             TextDrawable drawable = TextDrawable.builder()
-                .buildRound(String.valueOf((s.getAirtel().getName()).trim().charAt(0)).toUpperCase(), Color.RED);
+                .buildRound(String.valueOf((s.getAirtel().getName()).trim().charAt(0)).toUpperCase(),getResources().getColor(R.color.colorPrimary));
 
             ImageView image = cardView.findViewById(R.id.ImageView_ActionIcon);
-            if(image!=null){
-                image.setImageDrawable(drawable);
+            if(null != image){
+                if(drawable!=null){
+                    try{
+                        image.setImageDrawable(drawable);
+                    }catch(Exception e){
+                        Toast.makeText(getActivity(), "Some features may not work", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
 

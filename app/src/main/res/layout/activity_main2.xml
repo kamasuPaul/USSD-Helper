@@ -6,277 +6,305 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#1f1f1f">
+    android:background="@android:color/white"
+    tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_dialer"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_scrollFlags="scroll|enterAlways"></androidx.appcompat.widget.Toolbar>
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
         android:id="@+id/matchedname"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:gravity="center"/>
-
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/matchednumber"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
         android:gravity="center"
-        android:layout_below="@+id/matchedname"/>
+        android:textAlignment="center"
+        android:textColor="@color/grey_500"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/matchednumber"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/matchedname"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/grey_500"
+        android:textSize="20sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:weightSum="6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/grey_500"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.1"
+                android:background="@drawable/ic_delete_227590"
+                android:backgroundTint="@color/colorPrimary"
+                android:tint="@color/colorPrimary" />
+
+        </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
             android:orientation="vertical"
-            android:weightSum="6"
-            android:layout_marginTop="100dp">
+
+            android:weightSum="5">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:paddingLeft="20dp"
+
+                >
+
+                <ImageView
+                    android:layout_marginLeft="2dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:src="@drawable/ic_number_one"
+                    android:tint="@color/colorPrimary"
+                    android:layout_weight="1"
+                   />
+                <ImageView
+                    android:layout_marginLeft="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_number_one"
+                    android:tint="@color/colorPrimary"
+                    />
+
+                <ImageView
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_number_one"
+                    android:tint="@color/colorPrimary"
+                  />
+
+
+            </GridLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:weightSum="3">
 
                 <TextView
+                    android:id="@+id/one"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:id="@+id/number"
-                    android:layout_weight="0.9"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    />
+                    android:text="1"
+                    android:background="@drawable/ic_circle"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
 
-                <ImageView
-                    android:id="@+id/cancel"
-                    android:tint="@color/colorPrimary"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:background="@drawable/ic_delete_227590"
-                    android:layout_weight="0.1"
-                    />
+                <TextView
+                    android:id="@+id/two"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/three"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="5"
-                android:weightSum="5"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <TextView
+                    android:id="@+id/four"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:gravity="center"
+                    android:text="4"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/one"
-                        android:layout_weight="1"
-                        android:text="1"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/two"
-                        android:layout_weight="1"
-                        android:text="2"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/three"
-                        android:layout_weight="1"
-                        android:text="3"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <TextView
+                    android:id="@+id/five"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/four"
-                        android:layout_weight="1"
-                        android:text="4"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/five"
-                        android:layout_weight="1"
-                        android:text="5"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/six"
-                        android:layout_weight="1"
-                        android:text="6"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <TextView
+                    android:id="@+id/six"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:gravity="center"
+                    android:text="6"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/seven"
-                        android:layout_weight="1"
-                        android:text="7"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/eight"
-                        android:layout_weight="1"
-                        android:text="8"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/nine"
-                        android:layout_weight="1"
-                        android:text="9"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/star"
-                        android:layout_weight="1"
-                        android:text="*"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/zero"
-                        android:layout_weight="1"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/hatch"
-                        android:layout_weight="1"
-                        android:text="#"
-                        android:textColor="#FFFFFF"
-                        android:textSize="50sp"
-                        android:gravity="center"
-                        />
-
-
-
-
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/call"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="20dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_weight="1"
-                        android:src="@mipmap/ic_launcher_foreground"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/seven"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="7"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/eight"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="8"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/nine"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="9"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/star"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="*"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/hatch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="#"
+                    android:textColor="@color/grey_500"
+                    android:textSize="50sp" />
+
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/call"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:src="@mipmap/ic_launcher_foreground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
 
-
-
+    </LinearLayout>
 
 
 </RelativeLayout>

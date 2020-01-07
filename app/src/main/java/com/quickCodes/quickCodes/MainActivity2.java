@@ -15,9 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -43,6 +46,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
 
         findview ();
         checkpermission ();
+        setupToolBar();
         getContactList ();
 
 
@@ -152,9 +156,8 @@ ArrayList<String> numberlist = new ArrayList<> ();
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         getApplicationContext ().getPackageName());
                 if (hasPerm != PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + userinput));
-                    startActivity(intent);
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "*131"+Uri.encode("#"))));
+
                 }
 
             }
@@ -204,53 +207,56 @@ ArrayList<String> numberlist = new ArrayList<> ();
     }
 
     private void getContactList() {
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ContentResolver cr = getContentResolver();
+                    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                        null, null, null, null);
 
-        try {
-
-
-            ContentResolver cr = getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    null, null, null, null);
-
-            if ((cur != null ? cur.getCount() : 0) > 0) {
-                while (cur != null && cur.moveToNext()) {
-                    String id = cur.getString(
-                            cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    String name = cur.getString(cur.getColumnIndex(
-                            ContactsContract.Contacts.DISPLAY_NAME));
+                    if ((cur != null ? cur.getCount() : 0) > 0) {
+                        while (cur != null && cur.moveToNext()) {
+                            String id = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts._ID));
+                            String name = cur.getString(cur.getColumnIndex(
+                                ContactsContract.Contacts.DISPLAY_NAME));
 
 
 
-                    if (cur.getInt(cur.getColumnIndex(
-                            ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                        Cursor pCur = cr.query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                new String[]{id}, null);
-                        while (pCur.moveToNext()) {
-                            String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            if (cur.getInt(cur.getColumnIndex(
+                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                                Cursor pCur = cr.query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                    null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                    new String[]{id}, null);
+                                while (pCur.moveToNext()) {
+                                    String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                        ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                            namelist.add (name);
-                            numberlist.add (phoneNo);
+                                    namelist.add (name);
+                                    numberlist.add (phoneNo);
 
-                            Log.i("TAG----", "Name: " + name);
-                            Log.i("TAG----",  "Phone Number: " + phoneNo);
+                                    Log.i("TAG----", "Name: " + name);
+                                    Log.i("TAG----",  "Phone Number: " + phoneNo);
+                                }
+                                pCur.close();
+                            }
                         }
-                        pCur.close();
                     }
+                    if(cur!=null){
+                        cur.close();
+                    }
+
+
+                }catch (SecurityException e){
+                    e.printStackTrace ();
                 }
+
             }
-            if(cur!=null){
-                cur.close();
-            }
-
-
-        }catch (SecurityException e){
-            e.printStackTrace ();
-        }
-
+        });
 
     }
 
@@ -267,5 +273,12 @@ ArrayList<String> numberlist = new ArrayList<> ();
             }
         }
 
+    }
+
+    private void setupToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar_dialer);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_backbutton);
     }
 }
