@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
 import com.quickCodes.quickCodes.modals.Step;
@@ -221,7 +222,6 @@ public class PlaceholderFragment extends Fragment {
                 String uscode = ussdActions.get(position).getCode();
                 String cd = uscode+ Uri.encode("#");
                 createDialog(ussdActions.get(position),cd);
-                Snackbar.make(view, "Item " + obj.getCode() + " clicked", Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
@@ -230,6 +230,12 @@ public class PlaceholderFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
             }
 
+            @Override
+            public void onItemEdit(View view, UssdAction obj, int position) {
+                Intent i = new Intent(getActivity(), EditActionActivity.class);
+                i.putExtra("action_id",String.valueOf(obj.getId()));
+                startActivity(i);
+            }
         });
 
     }
@@ -247,6 +253,10 @@ public class PlaceholderFragment extends Fragment {
                     int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberIdex);
                     if (phoneNumber != null) {
+                        if(number.startsWith("+256")){
+                            number = number.replace("+256","0");
+                        }
+                        number = number.replace(" ","");
                         phoneNumber.setText(number);
                     }
 

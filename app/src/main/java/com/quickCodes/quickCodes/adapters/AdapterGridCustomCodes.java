@@ -33,6 +33,8 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
         void onItemClick(View view, UssdAction obj, int position);
 
         void onItemDelete(View view, UssdAction obj, int position);
+
+        void onItemEdit(View view, UssdAction obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -130,10 +132,10 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-//                    case R.id.edit_menu:
-//                        //edit clicked
-//                        editAction(p.getId());
-//                        break;
+                    case R.id.edit_menu:
+                        //edit clicked
+                        mOnItemClickListener.onItemEdit(v,items.get(position),position);
+                        break;
                     case R.id.delete_menu:
                         //delete clicked
                         deleteAction(p);
