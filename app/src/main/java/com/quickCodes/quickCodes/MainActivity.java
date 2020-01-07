@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 shareApp();
                 break;
             case R.id.help:
-                Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),HelpActivity.class));
                 break;
             case R.id.add_action:
                 startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));

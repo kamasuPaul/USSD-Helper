@@ -5,10 +5,35 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    
+
     <string-array name="types">
         <item>Text</item>
         <item>Tel No</item>
         <item>Number</item>
     </string-array>
+    <string name="title_activity_help">HelpActivity</string>
+    <string name="HIDE">HIDE</string>
+    <string name="use_of_plus_btn"> You can use it to save your own codes for later use \n
+        \n\n
+    Steps for saving codes\n
+        1.click + button at the top \n
+        2.enter the name, it can be any word \n
+        3.then enter the network , it can be airtel, mtn or anyother network \n
+        4.there after enter the code eg *131#,\n
+        5.finally click the big add button at the bottom \n
+\n\n
+        Optional.\n
+        you can also add additional fields\n
+        for entering information later on ie a field for entering
+        the telephone,or an amount
+        this is done by clicking the add steps button.
+    </string>
+    <string name="which_simcards">We currently support two networks in uganda.\n
+        1.Mtn uganda \n
+        2.Airtel uganda \n
+        \n
+
+        but other networks will be supported soon.
+
+    </string>
 </resources>
