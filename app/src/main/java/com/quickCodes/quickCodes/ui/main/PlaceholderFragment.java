@@ -1,7 +1,9 @@
 package com.quickCodes.quickCodes.ui.main;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -45,11 +47,12 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PlaceholderFragment extends Fragment {
 
+    SQLiteDatabaseHandler db;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final int CONTACT_PICKER_REQUEST = 29;
+    private static final String sharedPrefString = "first";
 
     private PageViewModel pageViewModel;
-    SQLiteDatabaseHandler db;
     public static AdapterGridCustomCodes mAdapter;
     private RecyclerView recyclerView;
     public static List<UssdAction>  ussdActions;
@@ -67,6 +70,15 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new SQLiteDatabaseHandler(getActivity());
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(sharedPrefString, Context.MODE_PRIVATE);
+        if(!prefs.contains("first")){
+            UssdAction ussdAction = new UssdAction(3434, "Airtime Balance", "*131","Airtel",new Step[]{});
+            db.addUssdAction(ussdAction);
+            prefs.edit().putBoolean("first",true)
+                .commit();
+        }
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
@@ -81,7 +93,6 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_custom_codes, container, false);
 
-        db = new SQLiteDatabaseHandler(getActivity());
 
         // list all usdActions
         ussdActions = db.allUssdActions();
@@ -238,12 +249,6 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-    }
-    public void updateUi(Fragment fragment){
-        getActivity().getSupportFragmentManager().beginTransaction()
-            .detach(this)
-            .attach(this)
-            .commit();
     }
 
     @Override
