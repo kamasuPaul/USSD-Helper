@@ -92,19 +92,27 @@ public class MainFragment extends Fragment {
         SuperAction superAction = new SuperAction(action1, action2);
         superActionsAirtime.add(superAction);
         superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
+        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
+        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
+            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
+                )));
         superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
         superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
             new Step[]{new Step(0, "Tel No", null, -1)}),
             new UssdAction(0, "Call Me Back", "", "", null)));
-        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
     }
 
     private void addDataCodes() {
         superActionsData = new ArrayList<>();
         superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
         superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
-        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
+        superActionsData.add(simpleAction("Data OTT","*185*2*5*1","*165*2*6*1"));
+
         superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
+
+        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
         superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
             new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs(50 to 2000)", -2)}),
             new UssdAction(0, "", "", "", null)));
