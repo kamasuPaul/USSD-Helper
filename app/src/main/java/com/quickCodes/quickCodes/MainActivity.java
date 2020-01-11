@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -34,11 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CONTACT = 20 ;
     private static final int REQUEST_CODE = 40 ;
     private static final int CONTACT_PICKER_REQUEST = 90;
+    String edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Intent intent = getIntent();
+        edit = intent.getStringExtra("edit");
         //ask for permissions
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
@@ -51,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
                     if(report.areAllPermissionsGranted()){
                         setContentView(R.layout.activity_main);
                         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
+
                         ViewPager viewPager = findViewById(R.id.view_pager);
                         viewPager.setAdapter(sectionsPagerAdapter);
+                        if(edit!= null){
+                            viewPager.setCurrentItem(1);
+                        }
                         TabLayout tabs = findViewById(R.id.tabs);
                         tabs.setupWithViewPager(viewPager);
                         FloatingActionButton fab = findViewById(R.id.fab);

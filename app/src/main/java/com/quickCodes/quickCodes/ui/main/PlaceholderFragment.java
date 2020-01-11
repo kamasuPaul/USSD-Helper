@@ -239,10 +239,15 @@ public class PlaceholderFragment extends Fragment {
         });
 
     }
+    public void updateUi(Fragment fragment){
+        getActivity().getSupportFragmentManager().beginTransaction()
+            .detach(this)
+            .attach(this)
+            .commit();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Toast.makeText(getActivity(), "aciit callde", Toast.LENGTH_SHORT).show();
         if (requestCode == CONTACT_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Uri contactUri = data.getData();

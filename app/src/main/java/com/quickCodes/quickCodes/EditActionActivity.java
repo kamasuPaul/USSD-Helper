@@ -131,16 +131,11 @@ public class EditActionActivity extends AppCompatActivity {
 
         //for now update the ui from here
 //        PlaceholderFragment.ussdActions.add(ussdAction);
-
+        //TODO add instant ui refresh after adding or editing an action
         PlaceholderFragment.mAdapter.notifyDataSetChanged();
-
-        Toast.makeText(this, ussdAction.getName()+" Has been Updated successfully", Toast.LENGTH_SHORT).show();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(new PlaceholderFragment(),null);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        finish();
-
+        Intent t = new Intent(this,MainActivity.class);
+        t.putExtra("edit","edit");
+        startActivity(t);
     }
 
     public void onDelete(View view) {
