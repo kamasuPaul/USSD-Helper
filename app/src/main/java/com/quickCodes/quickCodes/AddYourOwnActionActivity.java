@@ -2,6 +2,7 @@ package com.quickCodes.quickCodes;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 //import androidx.room.util.StringUtil;
 
 import android.graphics.Color;
@@ -17,9 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
+import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.google.android.material.button.MaterialButton;
 //import com.hover.sdk.api.HoverParameters;
@@ -34,6 +37,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 //    Spinner spinner;
     int lastId =6;
     LinearLayout parentlayout;
+    CustomActionsViewModel customActionsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,13 +120,14 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             return;
         }
 
-
+         customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
+        customActionsViewModel.insert(new CustomAction(1,actionNameText,code));
         UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),steps);
-        db.addUssdAction(ussdAction);
+//        db.addUssdAction(ussdAction);
 
         //for now update the ui from here
-        PlaceholderFragment.ussdActions.add(ussdAction);
-        PlaceholderFragment.mAdapter.notifyDataSetChanged();
+//        PlaceholderFragment.ussdActions.add(ussdAction);
+//        PlaceholderFragment.mAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, ussdAction.getName()+" Has been added", Toast.LENGTH_SHORT).show();
         finish();

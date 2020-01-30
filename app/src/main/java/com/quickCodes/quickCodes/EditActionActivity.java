@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
+import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 
 public class EditActionActivity extends AppCompatActivity {
@@ -29,10 +32,12 @@ public class EditActionActivity extends AppCompatActivity {
     MaterialButton button;
     EditText actionName,actionCode;
     AutoCompleteTextView actionNetwork;
-    //    Spinner spinner;
-    int lastId =6;
-    LinearLayout parentlayout;
-    UssdAction lastAction;
+        LinearLayout parentlayout;
+    CustomAction lastAction;
+
+    String action_id;
+
+    CustomActionsViewModel customActionsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,10 @@ public class EditActionActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String action_id = getIntent().getStringExtra("action_id");
+        customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
+
+        action_id = getIntent().getStringExtra("action_id");
+        lastAction = customActionsViewModel.getAction(action_id);
 
 
         actionName =  findViewById(R.id.action_name);
@@ -64,10 +72,8 @@ public class EditActionActivity extends AppCompatActivity {
             }
         });
 
-        db = new SQLiteDatabaseHandler(this);
-         lastAction  = db.getUssdAction(Integer.valueOf(action_id));
         actionName.setText(lastAction.getName());
-        actionNetwork.setText(lastAction.getNetwork());
+        actionNetwork.setText(lastAction.getName());
         actionCode.setText(lastAction.getCode());
 
 
@@ -123,12 +129,7 @@ public class EditActionActivity extends AppCompatActivity {
             return;
         }
 
-
-        UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),steps);
-        db.deleteOne(lastAction);
-        db.addUssdAction(ussdAction);
-
-
+        customActionsViewModel.update(new CustomAction(Integer.valueOf(action_id ),actionNameText,code));
         //for now update the ui from here
 //        PlaceholderFragment.ussdActions.add(ussdAction);
         //TODO add instant ui refresh after adding or editing an action

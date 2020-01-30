@@ -24,6 +24,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,8 +33,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
+import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.google.android.material.snackbar.Snackbar;
 //import com.hover.sdk.api.HoverParameters;
@@ -48,6 +52,8 @@ import static android.app.Activity.RESULT_OK;
 public class PlaceholderFragment extends Fragment {
 
     SQLiteDatabaseHandler db;
+    CustomActionsViewModel customActionsViewModel;
+
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final int CONTACT_PICKER_REQUEST = 29;
     private static final String sharedPrefString = "first";
@@ -71,6 +77,13 @@ public class PlaceholderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new SQLiteDatabaseHandler(getActivity());
+        customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
+        customActionsViewModel.getAllCustomActions().observe(this, new Observer<List<CustomAction>>() {
+            @Override
+            public void onChanged(List<CustomAction> customActions) {
+                mAdapter.setCustomActions(customActions);
+            }
+        });
 
         SharedPreferences prefs = getActivity().getSharedPreferences(sharedPrefString, Context.MODE_PRIVATE);
         if(!prefs.contains("first")){
@@ -109,110 +122,114 @@ public class PlaceholderFragment extends Fragment {
 
         return root;
     }
-    public void createDialog(final UssdAction ussdAction, final String cd) {
-        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
-            //execute the code immediately
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
+    public void createDialog(final CustomAction ussdAction, final String cd) {
+        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
+        return ;
 
 
-        } else {
-
-
-            final Dialog customDialog;
-            //inflate the root dialog
-            LayoutInflater inflater = getLayoutInflater();
-            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
-            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
-            //else check for steps and construct the layout
-            for (Step step : ussdAction.getSteps()) {
-                if (step.getType().equals("Text")) {
-
-                    View rowText = inflater.inflate(R.layout.row_text, null);
-                    rowText.setId(step.getId());
-                    final EditText editText = rowText.findViewById(R.id.editText_text);
-                    editText.setHint(step.getDescription());
-                    root.addView(rowText);
-
-
-                }
-                if (step.getType().equals("Tel No")) {
-                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
-                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
-                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
-                    imageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // TODO pick contact
-                            phoneNumber = editText;
-                            Intent i = new Intent(Intent.ACTION_PICK);
-                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
-                        }
-                    });
-
-                    rowTelephone.setId(step.getId());
-                    root.addView(rowTelephone);
-
-
-                }
-                if (step.getType().equals("Number")) {
-                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
-                    rowAmount.setId(step.getId());
-                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
-                    editText.setHint(step.getDescription());
-                    root.addView(rowAmount);
-
-                }
-
-            }
-
-            //inflate each row that should be contained in the dialog box
-            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
-            //add each row to the root
-            root.addView(rowButtons);
-
-
-            customDialog = new Dialog(getActivity());
-            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-            customDialog.setContentView(cardView);
-            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            customDialog.setCancelable(true);
-
-
-            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
-                    //get all the user entered values
-                    for(Step step: ussdAction.getSteps()){
-                        //get the user entered value of each step using its id
-                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
-
-                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
-                        stringBuilder.append("*"+value);
-
-                    }
-                    //generate the code with the values inserted
-                    //run the code
-                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
-
-                    customDialog.dismiss();
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-
-                }
-
-
-            });
-
-            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    customDialog.dismiss();
-                }
-            });
-            customDialog.show();
-//            return customDialog;
-        }
+//        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
+//            //execute the code immediately
+//            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
+//
+//
+//        } else {
+//
+//
+//            final Dialog customDialog;
+//            //inflate the root dialog
+//            LayoutInflater inflater = getLayoutInflater();
+//            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
+//            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
+//            //else check for steps and construct the layout
+//            for (Step step : ussdAction.getSteps()) {
+//                if (step.getType().equals("Text")) {
+//
+//                    View rowText = inflater.inflate(R.layout.row_text, null);
+//                    rowText.setId(step.getId());
+//                    final EditText editText = rowText.findViewById(R.id.editText_text);
+//                    editText.setHint(step.getDescription());
+//                    root.addView(rowText);
+//
+//
+//                }
+//                if (step.getType().equals("Tel No")) {
+//                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
+//                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
+//                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
+//                    imageButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            // TODO pick contact
+//                            phoneNumber = editText;
+//                            Intent i = new Intent(Intent.ACTION_PICK);
+//                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+//                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
+//                        }
+//                    });
+//
+//                    rowTelephone.setId(step.getId());
+//                    root.addView(rowTelephone);
+//
+//
+//                }
+//                if (step.getType().equals("Number")) {
+//                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+//                    rowAmount.setId(step.getId());
+//                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+//                    editText.setHint(step.getDescription());
+//                    root.addView(rowAmount);
+//
+//                }
+//
+//            }
+//
+//            //inflate each row that should be contained in the dialog box
+//            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
+//            //add each row to the root
+//            root.addView(rowButtons);
+//
+//
+//            customDialog = new Dialog(getActivity());
+//            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+//            customDialog.setContentView(cardView);
+//            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//            customDialog.setCancelable(true);
+//
+//
+//            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
+//                    //get all the user entered values
+//                    for(Step step: ussdAction.getSteps()){
+//                        //get the user entered value of each step using its id
+//                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
+//
+//                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
+//                        stringBuilder.append("*"+value);
+//
+//                    }
+//                    //generate the code with the values inserted
+//                    //run the code
+//                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
+//
+//                    customDialog.dismiss();
+//                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+//
+//                }
+//
+//
+//            });
+//
+//            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    customDialog.dismiss();
+//                }
+//            });
+//            customDialog.show();
+////            return customDialog;
+//        }
     }
     private void initComponent(View root) {
         recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
@@ -223,26 +240,25 @@ public class PlaceholderFragment extends Fragment {
         recyclerView.setNestedScrollingEnabled(false);
 
         //set data and list adapter
-        mAdapter = new AdapterGridCustomCodes(getActivity(), ussdActions);
+        mAdapter = new AdapterGridCustomCodes(getActivity());
         recyclerView.setAdapter(mAdapter);
 
         // on item list clicked
         mAdapter.setOnItemClickListener(new AdapterGridCustomCodes.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, UssdAction obj, int position) {
-                String uscode = ussdActions.get(position).getCode();
+            public void onItemClick(View view, CustomAction obj, int position) {
+                String uscode = obj.getCode();
                 String cd = uscode+ Uri.encode("#");
-                createDialog(ussdActions.get(position),cd);
+                createDialog(obj,cd);
             }
 
             @Override
-            public void onItemDelete(View view, UssdAction obj, int position) {
-                ussdActions.remove(position);
-                mAdapter.notifyDataSetChanged();
+            public void onItemDelete(View view, CustomAction obj, int position) {
+                customActionsViewModel.delete(obj);
             }
 
             @Override
-            public void onItemEdit(View view, UssdAction obj, int position) {
+            public void onItemEdit(View view, CustomAction obj, int position) {
                 Intent i = new Intent(getActivity(), EditActionActivity.class);
                 i.putExtra("action_id",String.valueOf(obj.getId()));
                 startActivity(i);

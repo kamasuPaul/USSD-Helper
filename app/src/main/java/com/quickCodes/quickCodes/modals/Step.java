@@ -5,6 +5,7 @@ public class Step{
     private String type;
     private String description =null;
     private int action_id;
+    private String defaultValue = null;
 
     public Step(){
 

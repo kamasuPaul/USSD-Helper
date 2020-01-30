@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 
@@ -23,26 +25,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<UssdAction> items = new ArrayList<>();
+    private List<CustomAction> items = new ArrayList<>();
     SQLiteDatabaseHandler db;
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, UssdAction obj, int position);
+        void onItemClick(View view, CustomAction obj, int position);
 
-        void onItemDelete(View view, UssdAction obj, int position);
+        void onItemDelete(View view, CustomAction obj, int position);
 
-        void onItemEdit(View view, UssdAction obj, int position);
+        void onItemEdit(View view, CustomAction obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public AdapterGridCustomCodes(Context context, List<UssdAction> items) {
-        this.items = items;
+    public AdapterGridCustomCodes(Context context) {
         ctx = context;
     }
 
@@ -75,54 +76,70 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof OriginalViewHolder) {
-            final OriginalViewHolder view = (OriginalViewHolder) holder;
+        if(items!=null) {
+            if (holder instanceof OriginalViewHolder) {
+                final OriginalViewHolder view = (OriginalViewHolder) holder;
 
-            final UssdAction p = items.get(position);
-            view.title.setText(p.getName());
+
+                final CustomAction p = items.get(position);
+                view.title.setText(p.getName());
 //            view.image.setImageDrawable();
-            // generate color based on a key (same key returns the same color), useful for list/grid views
+                // generate color based on a key (same key returns the same color), useful for list/grid views
 
-            int color1 = ColorGenerator.MATERIAL.getRandomColor();
+                int color1 = ColorGenerator.MATERIAL.getRandomColor();
 
-            // declare the builder object once.
-            TextDrawable.IBuilder builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(2)
-                .endConfig()
-                .round();
+                // declare the builder object once.
+                TextDrawable.IBuilder builder = TextDrawable.builder()
+                    .beginConfig()
+                    .withBorder(2)
+                    .endConfig()
+                    .round();
 
-            TextDrawable drawable = builder.build(String.valueOf(p.getName().trim().toUpperCase().charAt(0)), color1);
-            view.image.setImageDrawable(drawable);
-
-
-            view.relativeLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), position);
+                TextDrawable drawable = builder.build(String.valueOf(p.getName().trim().toUpperCase().charAt(0)), color1);
+                if (null != view.image) {
+                    if (drawable != null) {
+                        try {
+                            view.image.setImageDrawable(drawable);
+                        } catch (Exception e) {
+                            //Toast.makeText(get, "Some features may not work", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            });
-            view.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    createOptionsMenu(v, view, p, position);
-                    return true;
-                }
-            });
-            ;
-            //add aclick listener to the textview
-            view.optionsMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    createOptionsMenu(v, view, p, position);
-                }
-            });
+                //view.image.setImageDrawable(drawable);
+
+
+                view.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(view, items.get(position), position);
+                        }
+                    }
+                });
+                view.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        createOptionsMenu(v, view, p, position);
+                        return true;
+                    }
+                });
+                ;
+                //add aclick listener to the textview
+                view.optionsMenu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        createOptionsMenu(v, view, p, position);
+                    }
+                });
+            }
         }
     }
+    public void setCustomActions(List<CustomAction>actions){
+        this.items = actions;
+        notifyDataSetChanged();
+    }
 
-    private void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
+    private void createOptionsMenu(final View v, OriginalViewHolder view, final CustomAction p, final int position) {
         //inflate options menu
         PopupMenu popupMenu = new PopupMenu(ctx, view.optionsMenu);
         //inflate the menu from layout resource file
@@ -138,7 +155,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                         break;
                     case R.id.delete_menu:
                         //delete clicked
-                        deleteAction(p);
+
                         mOnItemClickListener.onItemDelete(v, items.get(position), position);
 
                         break;
@@ -172,7 +189,11 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return items.size();
+        if(items!=null){
+            return items.size();
+        }else{
+            return 0;
+        }
     }
 
 }
