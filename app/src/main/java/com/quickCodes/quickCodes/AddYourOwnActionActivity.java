@@ -1,11 +1,5 @@
 package com.quickCodes.quickCodes;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-//import androidx.room.util.StringUtil;
-
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
 import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
-import com.google.android.material.button.MaterialButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+
+//import androidx.room.util.StringUtil;
 //import com.hover.sdk.api.HoverParameters;
 
 
@@ -59,7 +58,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
            }
        });
 
-        db = new SQLiteDatabaseHandler(this);
+//        db = new SQLiteDatabaseHandler(this);
 
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
         String[] COUNTRIES = new String[] {"Airtel", "Mtn", "Africell"};
@@ -101,7 +100,8 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             EditText editText = row.findViewById(R.id.number_edit_text);
             Spinner spinner1 = row.findViewById(R.id.type_spinner);
             Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
-            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+//            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+            Step step = new Step(1,1,1,1,editText.getText().toString());
             steps[i] = step;
         }
 
@@ -122,7 +122,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
          customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
         customActionsViewModel.insert(new CustomAction(1,actionNameText,code));
-        UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),steps);
+        UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),0);
 //        db.addUssdAction(ussdAction);
 
         //for now update the ui from here

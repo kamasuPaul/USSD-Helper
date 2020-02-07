@@ -82,6 +82,11 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/grey_90"
                 android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/airtimeRecylerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               />
 
 
             <HorizontalScrollView

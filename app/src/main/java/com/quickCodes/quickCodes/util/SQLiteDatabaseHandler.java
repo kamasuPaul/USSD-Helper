@@ -1,18 +1,8 @@
 package com.quickCodes.quickCodes.util;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.quickCodes.quickCodes.modals.Step;
-import com.quickCodes.quickCodes.modals.UssdAction;
 
 public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
 
@@ -60,119 +50,119 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public void deleteOne(UssdAction ussdAction) {
-        // Get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, "id = ?", new String[] { String.valueOf(ussdAction.getId()) });
-        db.delete(TABLE_NAME1, "action_id = ?", new String[] { String.valueOf(ussdAction.getId()) });
-        db.close();
-    }
+//    public void deleteOne(UssdAction ussdAction) {
+//        // Get reference to writable DB
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.delete(TABLE_NAME, "id = ?", new String[] { String.valueOf(ussdAction.getId()) });
+//        db.delete(TABLE_NAME1, "action_id = ?", new String[] { String.valueOf(ussdAction.getId()) });
+//        db.close();
+//    }
 
-    public UssdAction getUssdAction(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor1 = db.query(TABLE_NAME, // a. table
-            COLUMNS, // b. column names
-            " id = ?", // c. selections
-            new String[] { String.valueOf(id) }, // d. selections args
-            null, // e. group by
-            null, // f. having
-            null, // g. order by
-            null); // h. limit
-        String query = "SELECT * FROM "+TABLE_NAME+" LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id " +
-            "WHERE UssdActions.id = ?";
-       Cursor cursor  = db.rawQuery(query,new String[]{String.valueOf(id)});
+//    public UssdAction getUssdAction(int id) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor1 = db.query(TABLE_NAME, // a. table
+//            COLUMNS, // b. column names
+//            " id = ?", // c. selections
+//            new String[] { String.valueOf(id) }, // d. selections args
+//            null, // e. group by
+//            null, // f. having
+//            null, // g. order by
+//            null); // h. limit
+//        String query = "SELECT * FROM "+TABLE_NAME+" LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id " +
+//            "WHERE UssdActions.id = ?";
+//       Cursor cursor  = db.rawQuery(query,new String[]{String.valueOf(id)});
+//
+//        if (cursor != null)
+//            cursor.moveToFirst();
+//
+//        UssdAction ussdAction = new UssdAction();
+//        ussdAction.setId(Integer.parseInt(cursor.getString(0)));
+//        ussdAction.setName(cursor.getString(1));
+//        ussdAction.setNetwork(cursor.getString(2));
+//        ussdAction.setCode(cursor.getString(3));
+//        ussdAction.setSteps(null);
+//
+//        return ussdAction;
+//    }
 
-        if (cursor != null)
-            cursor.moveToFirst();
+//    public List<UssdAction> allUssdActions() {
+//
+//        List<UssdAction> ussdActions = new LinkedList<UssdAction>();
+//        String query = "SELECT * FROM "+TABLE_NAME;
+//        String query2 = "SELECT * FROM "+ TABLE_NAME1+ " WHERE action_id = ?";
+////            " LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id ";
+//
+//            String query1 = "SELECT  * FROM " + TABLE_NAME;
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(query, null);
+//        UssdAction ussdAction = null;
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Log.d("CURSOR",cursor.toString());
+//                ussdAction = new UssdAction();
+//                ArrayList<Step>steps = new ArrayList<>();
+//                ussdAction.setId(Integer.parseInt(cursor.getString(0)));
+//                ussdAction.setName(cursor.getString(1));
+//                ussdAction.setNetwork(cursor.getString(2));
+//                ussdAction.setCode(cursor.getString(3));
+//                Cursor cursor2 = db.rawQuery(query2,new String[]{cursor.getString(0)});
+//                if(cursor2.moveToFirst()){
+//                    do{
+//                        //add step
+//                        Step step = new Step();
+//                        step.setType(cursor2.getString(cursor2.getColumnIndex("type")));
+//                        steps.add(step);
+//                    }while(cursor2.moveToNext());
+//                }
+//
+//                Step[]s = new Step[steps.size()];
+//                s =  steps.toArray(s);
+//                ussdAction.setSteps(s);
+//                ussdActions.add(ussdAction);
+//            } while (cursor.moveToNext());
+//        }
+//
+//        return ussdActions;
+//    }
 
-        UssdAction ussdAction = new UssdAction();
-        ussdAction.setId(Integer.parseInt(cursor.getString(0)));
-        ussdAction.setName(cursor.getString(1));
-        ussdAction.setNetwork(cursor.getString(2));
-        ussdAction.setCode(cursor.getString(3));
-        ussdAction.setSteps(null);
+//    public void addUssdAction(UssdAction ussdAction) {
+//        int id =0;
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(KEY_NAME, ussdAction.getName());
+//        values.put(KEY_POSITION, ussdAction.getNetwork());
+//        values.put(KEY_CODE, ussdAction.getCode());
+//        // insert
+//        db.insert(TABLE_NAME,null, values);
+//        Cursor c = db.rawQuery("SELECT seq FROM sqlite_sequence WHERE name='"+TABLE_NAME+"'",null);
+//        if(c.moveToFirst()) id = Integer.parseInt(c.getString(0));
+//        //INSERT INTO THE SECOND TABLE
+//        for(Step step : ussdAction.getSteps()){
+//            ContentValues v = new ContentValues();
+//            v.put(KEY_TYPE,step.getType());
+//            v.put(KEY_DESCRIPTION,step.getDescription());
+//            v.put(KEY_ACTION_ID,id);
+//            db.insert(TABLE_NAME1,null,v);
+//        }
+//        db.close();
+//    }
 
-        return ussdAction;
-    }
-
-    public List<UssdAction> allUssdActions() {
-
-        List<UssdAction> ussdActions = new LinkedList<UssdAction>();
-        String query = "SELECT * FROM "+TABLE_NAME;
-        String query2 = "SELECT * FROM "+ TABLE_NAME1+ " WHERE action_id = ?";
-//            " LEFT JOIN "+TABLE_NAME1+" ON "+TABLE_NAME+".id = "+TABLE_NAME1+".action_id ";
-
-            String query1 = "SELECT  * FROM " + TABLE_NAME;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        UssdAction ussdAction = null;
-
-        if (cursor.moveToFirst()) {
-            do {
-                Log.d("CURSOR",cursor.toString());
-                ussdAction = new UssdAction();
-                ArrayList<Step>steps = new ArrayList<>();
-                ussdAction.setId(Integer.parseInt(cursor.getString(0)));
-                ussdAction.setName(cursor.getString(1));
-                ussdAction.setNetwork(cursor.getString(2));
-                ussdAction.setCode(cursor.getString(3));
-                Cursor cursor2 = db.rawQuery(query2,new String[]{cursor.getString(0)});
-                if(cursor2.moveToFirst()){
-                    do{
-                        //add step
-                        Step step = new Step();
-                        step.setType(cursor2.getString(cursor2.getColumnIndex("type")));
-                        steps.add(step);
-                    }while(cursor2.moveToNext());
-                }
-
-                Step[]s = new Step[steps.size()];
-                s =  steps.toArray(s);
-                ussdAction.setSteps(s);
-                ussdActions.add(ussdAction);
-            } while (cursor.moveToNext());
-        }
-
-        return ussdActions;
-    }
-
-    public void addUssdAction(UssdAction ussdAction) {
-        int id =0;
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, ussdAction.getName());
-        values.put(KEY_POSITION, ussdAction.getNetwork());
-        values.put(KEY_CODE, ussdAction.getCode());
-        // insert
-        db.insert(TABLE_NAME,null, values);
-        Cursor c = db.rawQuery("SELECT seq FROM sqlite_sequence WHERE name='"+TABLE_NAME+"'",null);
-        if(c.moveToFirst()) id = Integer.parseInt(c.getString(0));
-        //INSERT INTO THE SECOND TABLE
-        for(Step step : ussdAction.getSteps()){
-            ContentValues v = new ContentValues();
-            v.put(KEY_TYPE,step.getType());
-            v.put(KEY_DESCRIPTION,step.getDescription());
-            v.put(KEY_ACTION_ID,id);
-            db.insert(TABLE_NAME1,null,v);
-        }
-        db.close();
-    }
-
-    public int updateUssdAction(UssdAction ussdAction) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, ussdAction.getName());
-        values.put(KEY_POSITION, ussdAction.getNetwork());
-        values.put(KEY_CODE, ussdAction.getCode());
-
-        int i = db.update(TABLE_NAME, // table
-            values, // column/value
-            "id = ?", // selections
-            new String[] { String.valueOf(ussdAction.getId()) });
-
-        db.close();
-
-        return i;
-    }
+//    public int updateUssdAction(UssdAction ussdAction) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(KEY_NAME, ussdAction.getName());
+//        values.put(KEY_POSITION, ussdAction.getNetwork());
+//        values.put(KEY_CODE, ussdAction.getCode());
+//
+//        int i = db.update(TABLE_NAME, // table
+//            values, // column/value
+//            "id = ?", // selections
+//            new String[] { String.valueOf(ussdAction.getId()) });
+//
+//        db.close();
+//
+//        return i;
+//    }
 
 }

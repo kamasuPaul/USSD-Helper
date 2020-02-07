@@ -13,32 +13,33 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.quickCodes.quickCodes.R;
-import com.quickCodes.quickCodes.modals.CustomAction;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterUssdCodes extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<CustomAction> items = new ArrayList<>();
+    private List<UssdActionWithSteps> items = new ArrayList<>();
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, CustomAction obj, int position);
+        void onItemClick(View view, UssdActionWithSteps obj, int position);
 
-        void onItemDelete(View view, CustomAction obj, int position);
+        void onItemDelete(View view, UssdAction obj, int position);
 
-        void onItemEdit(View view, CustomAction obj, int position);
+        void onItemEdit(View view, UssdAction obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public AdapterGridCustomCodes(Context context) {
+    public AdapterUssdCodes(Context context) {
         ctx = context;
     }
 
@@ -75,7 +76,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                 final OriginalViewHolder view = (OriginalViewHolder) holder;
 
 
-                final CustomAction p = items.get(position);
+                final UssdAction p = items.get(position).action;
                 view.title.setText(p.getName());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
@@ -128,12 +129,12 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
     }
-    public void setCustomActions(List<CustomAction>actions){
+    public void setUssdActions(List<UssdActionWithSteps> actions){
         this.items = actions;
         notifyDataSetChanged();
     }
 
-    private void createOptionsMenu(final View v, OriginalViewHolder view, final CustomAction p, final int position) {
+    private void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
         //inflate options menu
         PopupMenu popupMenu = new PopupMenu(ctx, view.optionsMenu);
         //inflate the menu from layout resource file
@@ -145,12 +146,12 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                 switch (item.getItemId()) {
                     case R.id.edit_menu:
                         //edit clicked
-                        mOnItemClickListener.onItemEdit(v,items.get(position),position);
+                        mOnItemClickListener.onItemEdit(v,items.get(position).action,position);
                         break;
                     case R.id.delete_menu:
                         //delete clicked
 
-                        mOnItemClickListener.onItemDelete(v, items.get(position), position);
+                        mOnItemClickListener.onItemDelete(v, items.get(position).action, position);
 
                         break;
                 }

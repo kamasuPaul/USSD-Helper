@@ -1,5 +1,7 @@
 package com.quickCodes.quickCodes.modals;
 
+import com.google.gson.annotations.SerializedName;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -7,9 +9,11 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "custom_actions")
 public class CustomAction {
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
     public int id;
+    @SerializedName("title")
     public String name;
-    public String code;
+    public String code = "*131";
 
     public CustomAction() {
     }

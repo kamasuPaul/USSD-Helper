@@ -15,6 +15,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,12 @@ import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
+import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
 
@@ -42,6 +47,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -59,6 +68,9 @@ public class MainFragment extends Fragment {
     List<SuperAction> superActionsAirtime, superActionsData, superActionsMMoney, superActionsOthers;
     LinearLayout linearLayoutAirtime,linearLayoutData,linearLayoutMMoney,linearLayoutOthers;
     EditText phoneNumber;
+    private UssdActionsViewModel viewModel;
+    private AdapterUssdCodes adapterUssdCodes;
+    RecyclerView recyclerView;
 
     public MainFragment() {
         // Required empty public constructor
@@ -67,9 +79,20 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        adapterUssdCodes = new AdapterUssdCodes(getActivity());
+        viewModel  = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+        viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
+            @Override
+            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
+                adapterUssdCodes.setUssdActions(ussdActionWithSteps);
+            }
+        });
         addAirtimeCodes();
-        addDataCodes();
-        addMobileMoneyCodes();
+
+
+//        addDataCodes();
+//        addMobileMoneyCodes();
         addOtherCodes();
 
         setUpDialog();
@@ -85,51 +108,62 @@ public class MainFragment extends Fragment {
     }
 
     private void addAirtimeCodes() {
-        superActionsAirtime = new ArrayList<>();
-        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
-        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-        SuperAction superAction = new SuperAction(action1, action2);
-        superActionsAirtime.add(superAction);
-        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
-        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
-        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
-            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
-                )));
-        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
-        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
-            new Step[]{new Step(0, "Tel No", null, -1)}),
-            new UssdAction(0, "Call Me Back", "", "", null)));
+//        superActionsAirtime = new ArrayList<>();
+        UssdAction action = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "airtel", 0);
+        UssdAction action1 = new UssdAction(1, "Buy Airtime", "*185*2*1*1", "airtel", 0);
+        UssdAction action2 = new UssdAction(2, "Data", "*185*2*1*1", "airtel", 0);
+        UssdAction action5 = new UssdAction(5, "Data2", "*185*2*1*1", "airtel", 0);
+        UssdAction action6 = new UssdAction(6, "Data2", "*185*2*1", "airtel", 0);
+        viewModel.insert(action,Arrays.asList(new Step(0,0,0,1,"Amount")));
+        viewModel.insert(action1,Arrays.asList(new Step(0,1,0,1,"Amount")));
+        viewModel.insert(action2,Arrays.asList(new Step(0,2,0,1,"Amount")));
+        viewModel.insert(action5,Arrays.asList(new Step(0,5,0,1,"Amount")));
+        viewModel.insert(action6,Arrays.asList(new Step(0,6,0,1,"Amount")));
+
+//        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
+//        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
+//        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
+//        SuperAction superAction = new SuperAction(action1, action2);
+//        superActionsAirtime.add(superAction);
+//        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
+//        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
+//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+//            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
+//            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+//                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
+//                )));
+//        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
+//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
+//            new Step[]{new Step(0, "Tel No", null, -1)}),
+//            new UssdAction(0, "Call Me Back", "", "", null)));
     }
 
-    private void addDataCodes() {
-        superActionsData = new ArrayList<>();
-        superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
-        superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
-        superActionsData.add(simpleAction("Data OTT","*185*2*5*1","*165*2*6*1"));
+//    private void addDataCodes() {
+//        superActionsData = new ArrayList<>();
+//        superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
+//        superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
+//        superActionsData.add(simpleAction("Data OTT","*185*2*5*1","*165*2*6*1"));
+//
+//        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
+//
+//        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
+//        superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
+//            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs(50 to 2000)", -2)}),
+//            new UssdAction(0, "", "", "", null)));
+//    }
 
-        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
-
-        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
-        superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
-            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs(50 to 2000)", -2)}),
-            new UssdAction(0, "", "", "", null)));
-    }
-
-    private void addMobileMoneyCodes() {
-        superActionsMMoney = new ArrayList<>();
-        superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
-        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
-            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Amount", -2)}),
-            new UssdAction(0, "", "*185*1*1", "",
-                new Step[]{new Step(0, "Tel No", "Amount", -1),new Step(1, "Text", "Amount", -2)})));
-        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
-            new Step[]{new Step(0, "Text", "Amount", -1)}),
-            new UssdAction(0, "", "", "", null)));
-        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5*1*2"));
-    }
+//    private void addMobileMoneyCodes() {
+//        superActionsMMoney = new ArrayList<>();
+//        superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
+//        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
+//            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Amount", -2)}),
+//            new UssdAction(0, "", "*185*1*1", "",
+//                new Step[]{new Step(0, "Tel No", "Amount", -1),new Step(1, "Text", "Amount", -2)})));
+//        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
+//            new Step[]{new Step(0, "Text", "Amount", -1)}),
+//            new UssdAction(0, "", "", "", null)));
+//        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5*1*2"));
+//    }
 
     private void setUpDialog() {
         dialog = new Dialog(getActivity());
@@ -146,14 +180,38 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
-         linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
+        //setup airtime
+        recyclerView = root.findViewById(R.id.airtimeRecylerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setAdapter(adapterUssdCodes);
+        adapterUssdCodes.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION",obj.toString());
+                Log.d("ACTION",obj.steps.toString());
+//                executeSuperAction(new SuperAction(obj,obj));
+            }
+
+            @Override
+            public void onItemDelete(View view, UssdAction obj, int position) {
+
+            }
+
+            @Override
+            public void onItemEdit(View view, UssdAction obj, int position) {
+
+            }
+        });
+
+        linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
          linearLayoutData = root.findViewById(R.id.linearLayout_data);
          linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
         linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
-        myInflator(linearLayoutAirtime, superActionsAirtime);
-        myInflator(linearLayoutData, superActionsData);
-        myInflator(linearLayoutMMoney, superActionsMMoney);
-        myInflator(linearLayoutOthers, superActionsOthers);
+//        myInflator(linearLayoutAirtime, superActionsAirtime);
+//        myInflator(linearLayoutData, superActionsData);
+//        myInflator(linearLayoutMMoney, superActionsMMoney);
+//        myInflator(linearLayoutOthers, superActionsOthers);
 
 
         //iniatize chip views
@@ -421,16 +479,17 @@ public class MainFragment extends Fragment {
     public void executeSuperAction(SuperAction superAction) {
 
         //use codes for the selected network mode
-        UssdAction ussdAction = null;
-        String mode1 = mode.toUpperCase();
-        if(mode1.contains("MTN"))    ussdAction = superAction.getMtn();
-        if(mode1.contains("AIRTEL"))    ussdAction = superAction.getAirtel();
-        if(mode1.contains("AFRICELL"))    ussdAction = superAction.getAirtel();
+//        UssdAction ussdAction = null;
+        UssdActionWithSteps ussdActionWithSteps = null;
+//        String mode1 = mode.toUpperCase();
+//        if(mode1.contains("MTN"))    ussdAction = superAction.getMtn();
+//        if(mode1.contains("AIRTEL"))    ussdAction = superAction.getAirtel();
+//        if(mode1.contains("AFRICELL"))    ussdAction = superAction.getAirtel();
 
 
-        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
+        if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
-            executeUssd(ussdAction.getCode() + Uri.encode("#"));
+            executeUssd(ussdActionWithSteps.action.getCode() + Uri.encode("#"));
 
         } else {
 
@@ -440,18 +499,18 @@ public class MainFragment extends Fragment {
             CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
             //else check for steps and construct the layout
-            for (Step step : ussdAction.getSteps()) {
-                if (step.getType().equals("Text")) {
+            for (Step step : ussdActionWithSteps.steps) {
+                if (step.getType()== Constants.text) {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
-                    rowText.setId(step.getId());
+                    rowText.setId((int) step.getStepId());
                     final EditText editText = rowText.findViewById(R.id.editText_text);
                     editText.setHint(step.getDescription());
                     root.addView(rowText);
 
 
                 }
-                if (step.getType().equals("Tel No")) {
+                if (step.getType()==Constants.telephone) {
                     View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
 
                     ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
@@ -466,14 +525,14 @@ public class MainFragment extends Fragment {
                         }
                     });
 
-                    rowTelephone.setId(step.getId());
+                    rowTelephone.setId((int) step.getStepId());
                     root.addView(rowTelephone);
 
 
                 }
-                if (step.getType().equals("Number")) {
+                if (step.getType()== Constants.number) {
                     View rowAmount = inflater.inflate(R.layout.row_amount, null);
-                    rowAmount.setId(step.getId());
+                    rowAmount.setId((int) step.getStepId());
                     final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
                     editText.setHint(step.getDescription());
                     root.addView(rowAmount);
@@ -491,19 +550,19 @@ public class MainFragment extends Fragment {
             customDialog = new Dialog(getActivity());
             customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
             customDialog.setContentView(cardView);
-            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             customDialog.setCancelable(true);
 
 
-            final UssdAction finalUssdAction = ussdAction;
+            final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StringBuilder stringBuilder = new StringBuilder(finalUssdAction.getCode());
+                    StringBuilder stringBuilder = new StringBuilder(finalUssdAction.action.getCode());
                     //get all the user entered values
-                    for (Step step : finalUssdAction.getSteps()) {
+                    for (Step step : finalUssdAction.steps) {
                         //get the user entered value of each step using its id
-                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
+                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById((int) step.getStepId());
 
                         String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
                         if (value != null && !value.isEmpty()) {
@@ -612,10 +671,11 @@ public class MainFragment extends Fragment {
 
     public SuperAction simpleAction(String name, String airtelCode, String mtnCode) {
         Step[] tel_nos = {};
-        UssdAction action1 = new UssdAction(0, name, airtelCode, "", tel_nos);
-        UssdAction action2 = new UssdAction(0, name, mtnCode, "", tel_nos);
+//        UssdAction action1 = new UssdAction(0, name, airtelCode, "", tel_nos);
+//        UssdAction action2 = new UssdAction(0, name, mtnCode, "", tel_nos);
 
-        SuperAction superAction = new SuperAction(action1, action2);
+//        SuperAction superAction = new SuperAction(action1, action2);
+        SuperAction superAction = null;
         return superAction;
     }
 

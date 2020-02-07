@@ -1,11 +1,5 @@
 package com.quickCodes.quickCodes;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,10 +16,13 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
-import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
 import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 public class EditActionActivity extends AppCompatActivity {
     SQLiteDatabaseHandler db;
@@ -110,7 +107,8 @@ public class EditActionActivity extends AppCompatActivity {
             EditText editText = row.findViewById(R.id.number_edit_text);
             Spinner spinner1 = row.findViewById(R.id.type_spinner);
             Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
-            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+//            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
+            Step step =  new Step(1,1,1,1,editText.getText().toString());
             steps[i] = step;
         }
 

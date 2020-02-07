@@ -1,32 +1,52 @@
 package com.quickCodes.quickCodes.modals;
 
-import java.util.Arrays;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "ussd_actions")
 public class UssdAction {
-    private int id;
+
+    @PrimaryKey public long actionId;
     private String name;
     private String code;
     private String network;
-    private Step[] steps = null;
+    public int section;
 
+    @Ignore
     public UssdAction(){
 
     }
-
-    public UssdAction(int id, String name, String code, String network,Step[]steps) {
-        this.id = id;
+    @Ignore
+    public UssdAction(String name, String code, String network, int section) {
         this.name = name;
         this.code = code;
         this.network = network;
-        this.steps = steps;
+        this.section = section;
     }
 
-    public int getId() {
-        return id;
+    public UssdAction(long actionId, String name, String code, String network, int section) {
+        this.actionId = actionId;
+        this.name = name;
+        this.code = code;
+        this.network = network;
+        this.section = section;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public long getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(long actionId) {
+        this.actionId = actionId;
+    }
+
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
     }
 
     public String getName() {
@@ -53,23 +73,14 @@ public class UssdAction {
         this.network = network;
     }
 
-    public Step[] getSteps() {
-        return steps;
-    }
-
-    public void setSteps(Step[] steps) {
-        this.steps = steps;
-    }
-
     @Override
     public String toString() {
         return "UssdAction{" +
-            "id=" + id +
+            "actionId=" + actionId +
             ", name='" + name + '\'' +
             ", code='" + code + '\'' +
             ", network='" + network + '\'' +
-            ", steps=" + Arrays.toString(steps) +
+            ", section=" + section +
             '}';
     }
-
 }

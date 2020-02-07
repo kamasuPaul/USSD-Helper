@@ -1,57 +1,46 @@
 package com.quickCodes.quickCodes.ui.main;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
 import com.quickCodes.quickCodes.modals.CustomAction;
-import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.util.CustomActionsViewModel;
-import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
-import com.google.android.material.snackbar.Snackbar;
-//import com.hover.sdk.api.HoverParameters;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+
+//import com.hover.sdk.api.HoverParameters;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PlaceholderFragment extends Fragment {
 
-    SQLiteDatabaseHandler db;
     CustomActionsViewModel customActionsViewModel;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -76,7 +65,9 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = new SQLiteDatabaseHandler(getActivity());
+
+        mAdapter = new AdapterGridCustomCodes(getActivity());
+
         customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
         customActionsViewModel.getAllCustomActions().observe(this, new Observer<List<CustomAction>>() {
             @Override
@@ -87,8 +78,9 @@ public class PlaceholderFragment extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences(sharedPrefString, Context.MODE_PRIVATE);
         if(!prefs.contains("first")){
-            UssdAction ussdAction = new UssdAction(3434, "Airtime Balance", "*131","Airtel",new Step[]{});
-            db.addUssdAction(ussdAction);
+            //TODO add ussd action to db;as custom action
+            //UssdAction ussdAction = new UssdAction(3434, "Airtime Balance", "*131","Airtel",);
+
             prefs.edit().putBoolean("first",true)
                 .commit();
         }
@@ -105,10 +97,6 @@ public class PlaceholderFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_custom_codes, container, false);
-
-
-        // list all usdActions
-        ussdActions = db.allUssdActions();
 
         if (ussdActions != null) {
             String[] itemsNames = new String[ussdActions.size()];
@@ -240,7 +228,6 @@ public class PlaceholderFragment extends Fragment {
         recyclerView.setNestedScrollingEnabled(false);
 
         //set data and list adapter
-        mAdapter = new AdapterGridCustomCodes(getActivity());
         recyclerView.setAdapter(mAdapter);
 
         // on item list clicked

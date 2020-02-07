@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e160cfc148006da81689cec348937d50",
+    "identityHash": "46da75b77a26996beb17cc0b979ca7f4",
     "entities": [
       {
         "tableName": "custom_actions",
@@ -35,12 +35,118 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "ussd_actions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actionId` INTEGER NOT NULL, `name` TEXT, `code` TEXT, `network` TEXT, `section` INTEGER NOT NULL, PRIMARY KEY(`actionId`))",
+        "fields": [
+          {
+            "fieldPath": "actionId",
+            "columnName": "actionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "section",
+            "columnName": "section",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "actionId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Step",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stepId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ussd_action_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `description` TEXT, `defaultValue` TEXT, `weight` INTEGER NOT NULL, FOREIGN KEY(`ussd_action_id`) REFERENCES `ussd_actions`(`actionId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "stepId",
+            "columnName": "stepId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ussd_action_id",
+            "columnName": "ussd_action_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "defaultValue",
+            "columnName": "defaultValue",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "stepId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "ussd_actions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ussd_action_id"
+            ],
+            "referencedColumns": [
+              "actionId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e160cfc148006da81689cec348937d50')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '46da75b77a26996beb17cc0b979ca7f4')"
     ]
   }
 }
