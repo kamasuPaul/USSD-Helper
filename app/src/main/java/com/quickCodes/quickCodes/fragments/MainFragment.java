@@ -52,6 +52,8 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
@@ -69,8 +71,10 @@ public class MainFragment extends Fragment {
     LinearLayout linearLayoutAirtime,linearLayoutData,linearLayoutMMoney,linearLayoutOthers;
     EditText phoneNumber;
     private UssdActionsViewModel viewModel;
-    private AdapterUssdCodes adapterUssdCodes;
-    RecyclerView recyclerView;
+    private AdapterUssdCodes adapterUssdCodes,adapterUssdCodes1,adapterUssdCodes2;
+    RecyclerView airtimeRecyclerView,dataRecyclerView,mmRecyclerView;
+
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -81,15 +85,88 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         adapterUssdCodes = new AdapterUssdCodes(getActivity());
+        adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
+        adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
         viewModel  = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
             @Override
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
-                adapterUssdCodes.setUssdActions(ussdActionWithSteps);
+                List<UssdActionWithSteps>airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps>dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps>mmoneyCodes = new ArrayList<>();
+                for(UssdActionWithSteps us: ussdActionWithSteps){
+                    if(us.action.getSection()== SEC_AIRTIME){
+                        airtimeCodes.add(us);
+                    }
+                    if(us.action.getSection()== SEC_DATA){
+                        dataCodes.add(us);
+                    }
+                    if(us.action.getSection()== SEC_MMONEY){
+                        mmoneyCodes.add(us);
+                    }
+                }
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
             }
         });
         addAirtimeCodes();
 
+        adapterUssdCodes.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION",obj.steps.toString());
+                executeSuperAction(obj);
+            }
+
+            @Override
+            public void onItemDelete(View view, UssdAction obj, int position) {
+
+            }
+
+            @Override
+            public void onItemEdit(View view, UssdAction obj, int position) {
+
+            }
+        });
+        adapterUssdCodes1.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION",obj.steps.toString());
+                executeSuperAction(obj);
+            }
+
+            @Override
+            public void onItemDelete(View view, UssdAction obj, int position) {
+
+            }
+
+            @Override
+            public void onItemEdit(View view, UssdAction obj, int position) {
+
+            }
+        });
+        adapterUssdCodes2.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION",obj.steps.toString());
+                executeSuperAction(obj);
+            }
+
+            @Override
+            public void onItemDelete(View view, UssdAction obj, int position) {
+
+            }
+
+            @Override
+            public void onItemEdit(View view, UssdAction obj, int position) {
+
+            }
+        });
 
 //        addDataCodes();
 //        addMobileMoneyCodes();
@@ -110,12 +187,20 @@ public class MainFragment extends Fragment {
     private void addAirtimeCodes() {
 //        superActionsAirtime = new ArrayList<>();
         UssdAction action = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "*185*2*1*1","*185*2*1*1",SEC_AIRTIME);
-        UssdAction action1 = new UssdAction(1, "Check Balance", "*131", "*131","*131",SEC_AIRTIME);
-        UssdAction action2 = new UssdAction(2, "PakaLast", "*100*2*1", "*160*1","not",SEC_AIRTIME);
+        UssdAction action1 = new UssdAction(1, "Check Balance", "*131", "*131","*131",SEC_DATA);
+        UssdAction action2 = new UssdAction(2, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
+        UssdAction action3 = new UssdAction(3, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
+        UssdAction action4 = new UssdAction(4, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
+        UssdAction action5 = new UssdAction(5, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
+        UssdAction action6 = new UssdAction(6, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
 
         viewModel.insert(action,Arrays.asList(new Step(0,TELEPHONE,0,"Amount")));
         viewModel.insert(action1,null);
         viewModel.insert(action2,null);
+        viewModel.insert(action3,null);
+        viewModel.insert(action4,null);
+        viewModel.insert(action5,null);
+        viewModel.insert(action6,null);
 
 //        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
 //        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
@@ -178,32 +263,24 @@ public class MainFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
         //setup airtime
-        recyclerView = root.findViewById(R.id.airtimeRecylerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
-        recyclerView.setAdapter(adapterUssdCodes);
-        adapterUssdCodes.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION",obj.steps.toString());
-                executeSuperAction(obj);
-            }
+        airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
+        airtimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        airtimeRecyclerView.setAdapter(adapterUssdCodes);
 
-            @Override
-            public void onItemDelete(View view, UssdAction obj, int position) {
-
-            }
-
-            @Override
-            public void onItemEdit(View view, UssdAction obj, int position) {
-
-            }
-        });
 
         linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
          linearLayoutData = root.findViewById(R.id.linearLayout_data);
          linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
         linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
+
+        //setup data
+        dataRecyclerView = root.findViewById(R.id.dataRecylerView);
+        dataRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        dataRecyclerView.setAdapter(adapterUssdCodes1);
+        //setup mobile money
+        mmRecyclerView = root.findViewById(R.id.mmoneyRecylerView);
+        mmRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        mmRecyclerView.setAdapter(adapterUssdCodes2);
 //        myInflator(linearLayoutAirtime, superActionsAirtime);
 //        myInflator(linearLayoutData, superActionsData);
 //        myInflator(linearLayoutMMoney, superActionsMMoney);
@@ -366,7 +443,7 @@ public class MainFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             //TODO if api level is greater than 26 do background codes,do this later,not important right now
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+ //            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 //            manager.createForSubscriptionId(subscriptionId).sendUssdRequest("*131#", new TelephonyManager.UssdResponseCallback() {
 //                /**
 //                 * Called when a USSD request has succeeded.  The {@code response} contains the USSD

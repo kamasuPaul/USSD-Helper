@@ -26,6 +26,7 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
+                        //TODO add initialization codes from here
                         //getDatabase(context).ussdActionDao().insertStepsForAction();
                     }
                 })
