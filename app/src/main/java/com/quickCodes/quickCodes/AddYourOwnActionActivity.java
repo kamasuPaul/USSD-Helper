@@ -18,10 +18,17 @@ import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
+import com.quickCodes.quickCodes.util.UssdActionsViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
+
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 
 //import androidx.room.util.StringUtil;
 //import com.hover.sdk.api.HoverParameters;
@@ -93,16 +100,22 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
     }
     public void addNewAction(){
         int count = parentlayout.getChildCount();
+        Random r  = new Random();
+        Long codeId = r.nextLong();
 
-        Step[] steps = new Step[count];
+        List<Step>steps = new ArrayList<>();
         for(int i=0;i<count;i++){
             final View row = parentlayout.getChildAt(i);
             EditText editText = row.findViewById(R.id.number_edit_text);
-            Spinner spinner1 = row.findViewById(R.id.type_spinner);
-            Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
-//            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
-            Step step = new Step(1,1,1,1,editText.getText().toString());
-            steps[i] = step;
+            Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
+            Log.d("DATA",editText.getText().toString()+stepTypeSpinner.getSelectedItem().toString());
+            int type = Integer.valueOf(stepTypeSpinner.getSelectedItem().toString());
+            int weight = 0;
+            String des = editText.getText().toString();
+            String defaultValue = "";
+            Step step =  new Step(codeId,type,weight,des,defaultValue);
+//            Step step = new Step(1,1,1,1,editText.getText().toString());
+            steps.add(step);
         }
 
         //insert the data into the database
@@ -121,8 +134,10 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         }
 
          customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
+        UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         customActionsViewModel.insert(new CustomAction(1,actionNameText,code));
-        UssdAction ussdAction = new UssdAction(lastId++, actionNameText, code,actionNetwork.getText().toString(),0);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText, code,code,code, SEC_CUSTOM_CODES);
+        v.insert(ussdAction,steps);
 //        db.addUssdAction(ussdAction);
 
         //for now update the ui from here

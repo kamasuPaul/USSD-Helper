@@ -9,27 +9,20 @@ public class UssdAction {
 
     @PrimaryKey public long actionId;
     private String name;
-    private String code;
-    private String network;
+    private String airtelCode,mtnCode,africellCode;
     public int section;
 
     @Ignore
     public UssdAction(){
 
     }
-    @Ignore
-    public UssdAction(String name, String code, String network, int section) {
-        this.name = name;
-        this.code = code;
-        this.network = network;
-        this.section = section;
-    }
 
-    public UssdAction(long actionId, String name, String code, String network, int section) {
+    public UssdAction(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section) {
         this.actionId = actionId;
         this.name = name;
-        this.code = code;
-        this.network = network;
+        this.airtelCode = airtelCode;
+        this.mtnCode = mtnCode;
+        this.africellCode = africellCode;
         this.section = section;
     }
 
@@ -57,30 +50,40 @@ public class UssdAction {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public String getAirtelCode() {
+        return airtelCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setAirtelCode(String airtelCode) {
+        this.airtelCode = airtelCode;
     }
 
-    public String getNetwork() {
-        return network;
+    public String getMtnCode() {
+        return mtnCode;
     }
 
-    public void setNetwork(String network) {
-        this.network = network;
+    public void setMtnCode(String mtnCode) {
+        this.mtnCode = mtnCode;
     }
 
+    public String getAfricellCode() {
+        return africellCode;
+    }
+
+    public void setAfricellCode(String africellCode) {
+        this.africellCode = africellCode;
+    }
     @Override
     public String toString() {
         return "UssdAction{" +
             "actionId=" + actionId +
             ", name='" + name + '\'' +
-            ", code='" + code + '\'' +
-            ", network='" + network + '\'' +
+            ", airtelCode='" + airtelCode + '\'' +
+            ", mtnCode='" + mtnCode + '\'' +
+            ", africellCode='" + africellCode + '\'' +
             ", section=" + section +
             '}';
     }
+
+
 }

@@ -3,14 +3,16 @@ package com.quickCodes.quickCodes.modals;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(foreignKeys = @ForeignKey(entity = UssdAction.class,
         parentColumns = "actionId",
         childColumns ="ussd_action_id",
-        onDelete = ForeignKey.CASCADE))
+        onDelete = ForeignKey.CASCADE),
+        indices = {@Index("ussd_action_id")}
+)
 public class Step{
-
     @PrimaryKey(autoGenerate = true) private  long stepId;
     private long ussd_action_id;
     private int type;
@@ -22,16 +24,22 @@ public class Step{
 
     }
 
-    public Step(long stepId, long ussd_action_id, int type, int weight,String desc) {
-        this.stepId = stepId;
+    /**
+     *
+     * @param ussd_action_id
+     * @param type Telephone or text or number
+     * @param weight
+     * @param description decription of the step
+     */
+    @Ignore
+    public Step(long ussd_action_id, int type, int weight,String description) {
         this.ussd_action_id = ussd_action_id;
         this.type = type;
         this.weight = weight;
-        this.description = desc;
+        this.description = description;
     }
 
-    public Step(long stepId, long ussd_action_id, int type, String description, String defaultValue, int weight) {
-        this.stepId = stepId;
+    public Step(long ussd_action_id, int type, int weight,String description, String defaultValue) {
         this.ussd_action_id = ussd_action_id;
         this.type = type;
         this.description = description;

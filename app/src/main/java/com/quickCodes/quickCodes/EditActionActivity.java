@@ -20,6 +20,8 @@ import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
 import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 
+import java.util.Random;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -101,6 +103,9 @@ public class EditActionActivity extends AppCompatActivity {
     public void addNewAction(){
         int count = parentlayout.getChildCount();
 
+        Random r  = new Random();
+        Long codeId = r.nextLong();
+
         Step[] steps = new Step[count];
         for(int i=0;i<count;i++){
             final View row = parentlayout.getChildAt(i);
@@ -108,7 +113,14 @@ public class EditActionActivity extends AppCompatActivity {
             Spinner spinner1 = row.findViewById(R.id.type_spinner);
             Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
 //            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
-            Step step =  new Step(1,1,1,1,editText.getText().toString());
+//            Step step =  new Step(1,1,1,1,editText.getText().toString());
+            Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
+            Log.d("DATA",editText.getText().toString()+stepTypeSpinner.getSelectedItem().toString());
+            int type = Integer.valueOf(stepTypeSpinner.getSelectedItem().toString());
+            int weight = 0;
+            String des = editText.getText().toString();
+            String defaultValue = "";
+            Step step =  new Step(codeId,type,weight,des,defaultValue);
             steps[i] = step;
         }
 

@@ -19,11 +19,14 @@ import androidx.room.Update;
 public abstract class UssdActionDao {
     public void insertStepsForAction(UssdActionWithSteps a){
         List<Step> steps = a.steps;
-        for(Step s: steps){
-            s.setUssd_action_id(a.action.getActionId());
-        }
         insert(a.action);
-        insertAll(steps);
+        //if steps = null there are no steps
+        if(steps!=null){
+            for(Step s: steps){
+                s.setUssd_action_id(a.action.getActionId());
+            }
+            insertAll(steps);
+        }
     }
     @Insert(onConflict = OnConflictStrategy.REPLACE)//TODO change replace strategy
     abstract void insertAll(List<Step>steps);
