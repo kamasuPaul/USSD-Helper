@@ -43,9 +43,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -88,28 +87,25 @@ public class MainFragment extends Fragment {
         adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
         adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
         viewModel  = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
-            @Override
-            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
-                List<UssdActionWithSteps>airtimeCodes = new ArrayList<>();
-                List<UssdActionWithSteps>dataCodes = new ArrayList<>();
-                List<UssdActionWithSteps>mmoneyCodes = new ArrayList<>();
-                for(UssdActionWithSteps us: ussdActionWithSteps){
-                    if(us.action.getSection()== SEC_AIRTIME){
-                        airtimeCodes.add(us);
-                    }
-                    if(us.action.getSection()== SEC_DATA){
-                        dataCodes.add(us);
-                    }
-                    if(us.action.getSection()== SEC_MMONEY){
-                        mmoneyCodes.add(us);
-                    }
+        viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+            List<UssdActionWithSteps>airtimeCodes = new ArrayList<>();
+            List<UssdActionWithSteps>dataCodes = new ArrayList<>();
+            List<UssdActionWithSteps>mmoneyCodes = new ArrayList<>();
+            for(UssdActionWithSteps us: ussdActionWithSteps){
+                if(us.action.getSection()== SEC_AIRTIME){
+                    airtimeCodes.add(us);
                 }
-                adapterUssdCodes.setUssdActions(airtimeCodes);
-                adapterUssdCodes1.setUssdActions(dataCodes);
-                adapterUssdCodes2.setUssdActions(mmoneyCodes);
-
+                if(us.action.getSection()== SEC_DATA){
+                    dataCodes.add(us);
+                }
+                if(us.action.getSection()== SEC_MMONEY){
+                    mmoneyCodes.add(us);
+                }
             }
+            adapterUssdCodes.setUssdActions(airtimeCodes);
+            adapterUssdCodes1.setUssdActions(dataCodes);
+            adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
         });
         addAirtimeCodes();
 
@@ -186,35 +182,27 @@ public class MainFragment extends Fragment {
 
     private void addAirtimeCodes() {
 //        superActionsAirtime = new ArrayList<>();
-        UssdAction action = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "*185*2*1*1","*185*2*1*1",SEC_AIRTIME);
-        UssdAction action1 = new UssdAction(1, "Check Balance", "*131", "*131","*131",SEC_DATA);
-        UssdAction action2 = new UssdAction(2, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
-        UssdAction action3 = new UssdAction(3, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
-        UssdAction action4 = new UssdAction(4, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
-        UssdAction action5 = new UssdAction(5, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
-        UssdAction action6 = new UssdAction(6, "PakaLast", "*100*2*1", "*160*1","not",SEC_MMONEY);
 
-        viewModel.insert(action,Arrays.asList(new Step(0,TELEPHONE,0,"Amount")));
-        viewModel.insert(action1,null);
-        viewModel.insert(action2,null);
-        viewModel.insert(action3,null);
-        viewModel.insert(action4,null);
-        viewModel.insert(action5,null);
-        viewModel.insert(action6,null);
+
 
 //        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
 //        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
 //        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
 //        SuperAction superAction = new SuperAction(action1, action2);
 //        superActionsAirtime.add(superAction);
+
 //        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
+
 //        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
+
 //        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
 //            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
 //            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
 //                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
 //                )));
+
 //        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
+
 //        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
 //            new Step[]{new Step(0, "Tel No", null, -1)}),
 //            new UssdAction(0, "Call Me Back", "", "", null)));
@@ -264,7 +252,7 @@ public class MainFragment extends Fragment {
 
         //setup airtime
         airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
-        airtimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        airtimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
         airtimeRecyclerView.setAdapter(adapterUssdCodes);
 
 
@@ -275,11 +263,11 @@ public class MainFragment extends Fragment {
 
         //setup data
         dataRecyclerView = root.findViewById(R.id.dataRecylerView);
-        dataRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        dataRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
         dataRecyclerView.setAdapter(adapterUssdCodes1);
         //setup mobile money
         mmRecyclerView = root.findViewById(R.id.mmoneyRecylerView);
-        mmRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        mmRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
         mmRecyclerView.setAdapter(adapterUssdCodes2);
 //        myInflator(linearLayoutAirtime, superActionsAirtime);
 //        myInflator(linearLayoutData, superActionsData);
