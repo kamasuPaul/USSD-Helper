@@ -24,4 +24,7 @@ public class UssdActionsViewModel extends AndroidViewModel {
     public void insert(UssdAction action,List<Step>steps) {
         repository.insertAll(new UssdActionWithSteps(action,steps));
     }
+    public void delete(UssdActionWithSteps actionWithSteps){ repository.delete(actionWithSteps.action);}
+    public void update(UssdActionWithSteps actionWithSteps){ repository.update(actionWithSteps);}
+    public UssdActionWithSteps getussdActionWithSteps(String id){ return repository.getUssdAction(id);}
 }

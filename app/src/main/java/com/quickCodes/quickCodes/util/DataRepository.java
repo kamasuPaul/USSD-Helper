@@ -44,8 +44,8 @@ public class DataRepository {
 
     public LiveData<List<UssdActionWithSteps>> getAllUssdActions(){return allUssdActions;}
     public LiveData<List<CustomAction>> getAllCustomActions(){return allActions;}
-    public void delete(CustomAction action){
-        new deleteAsyncTask(customActionDao).execute(action);
+    public void delete(UssdAction ussdAction){
+        new deleteAsyncTask(ussdActionDao).execute(ussdAction);
     }
     public void insert(CustomAction action){
         new insertAsyncTask(customActionDao).execute(action);
@@ -57,14 +57,15 @@ public class DataRepository {
         new insertAllAsyncTask(ussdActionDao).execute(ussdActionWithSteps);
     }
 
-    public void update(CustomAction action) {
-        new updateAsyncTask(customActionDao).execute(action);
+    public void update(UssdActionWithSteps action) {
+//        Toast.makeText(, "", Toast.LENGTH_SHORT).show();
+//        new updateAsyncTask(customActionDao).execute(action);
     }
-    public CustomAction getCustomAction(String id){
-        AsyncTask<String, Void, CustomAction> execute = new getCustomActionAsyncTask(customActionDao).execute(id);
+    public UssdActionWithSteps getUssdAction(String id){
+        AsyncTask<String, Void, UssdActionWithSteps> execute = new getUssdActionAsyncTask(ussdActionDao).execute(id);
         try {
-            CustomAction customAction = execute.get();
-            return customAction;
+            UssdActionWithSteps ussdActionWithSteps = execute.get();
+            return ussdActionWithSteps;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -72,13 +73,13 @@ public class DataRepository {
 
     }
 
-    private static class deleteAsyncTask extends AsyncTask<CustomAction,Void,Void>{
-        CustomActionDao d;
-        deleteAsyncTask(CustomActionDao dao){
+    private static class deleteAsyncTask extends AsyncTask<UssdAction,Void,Void>{
+        UssdActionDao d;
+        deleteAsyncTask(UssdActionDao dao){
             d =dao;
         }
         @Override
-        protected Void doInBackground(CustomAction... customActions) {
+        protected Void doInBackground(UssdAction... customActions) {
             d.delete(customActions[0]);
             return null;
         }
@@ -105,31 +106,31 @@ public class DataRepository {
             return null;
         }
     }
-    private static class updateAsyncTask extends AsyncTask<CustomAction,Void,Void>{
-        CustomActionDao d;
-        updateAsyncTask(CustomActionDao dao){
+    private static class updateAsyncTask extends AsyncTask<UssdActionWithSteps,Void,Void>{
+        UssdActionDao d;
+        updateAsyncTask(UssdActionDao dao){
             d =dao;
         }
 
         @Override
-        protected Void doInBackground(CustomAction... customActions) {
-            d.update(customActions[0]);
+        protected Void doInBackground(UssdActionWithSteps... customActions) {
+//            d.update(customActions[0]);
             return null;
         }
     }
 
-    private static class getCustomActionAsyncTask extends AsyncTask<String,Void,CustomAction> {
-        CustomActionDao d;
+    private static class getUssdActionAsyncTask extends AsyncTask<String,Void,UssdActionWithSteps> {
+        UssdActionDao d;
 
-        public getCustomActionAsyncTask(CustomActionDao customActionDao) {
-            d = customActionDao;
+        public getUssdActionAsyncTask(UssdActionDao dao) {
+            d = dao;
         }
 
 
         @Override
-        protected CustomAction doInBackground(String... ids) {
-            CustomAction customAction = d.get(String.valueOf(ids[0]));
-            return customAction;
+        protected UssdActionWithSteps doInBackground(String... ids) {
+            UssdActionWithSteps ussdActionWithSteps = d.get(String.valueOf(ids[0]));
+            return ussdActionWithSteps;
         }
     }
 

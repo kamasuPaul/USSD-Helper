@@ -17,10 +17,11 @@ import android.widget.Toast;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
-import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.util.CustomActionsViewModel;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 
 //import com.hover.sdk.api.HoverParameters;
 
@@ -41,7 +43,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PlaceholderFragment extends Fragment {
 
-    CustomActionsViewModel customActionsViewModel;
+    UssdActionsViewModel ussdActionsViewModel;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final int CONTACT_PICKER_REQUEST = 29;
@@ -68,11 +70,17 @@ public class PlaceholderFragment extends Fragment {
 
         mAdapter = new AdapterGridCustomCodes(getActivity());
 
-        customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
-        customActionsViewModel.getAllCustomActions().observe(this, new Observer<List<CustomAction>>() {
+        ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+        ussdActionsViewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
             @Override
-            public void onChanged(List<CustomAction> customActions) {
-                mAdapter.setCustomActions(customActions);
+            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
+                List<UssdActionWithSteps>customCodes = new ArrayList<>();
+                for(UssdActionWithSteps us: ussdActionWithSteps) {
+                    if (us.action.getSection() == SEC_CUSTOM_CODES) {
+                        customCodes.add(us);
+                    }
+                }
+                mAdapter.setCustomActions(customCodes);
             }
         });
 
@@ -104,13 +112,13 @@ public class PlaceholderFragment extends Fragment {
             for (int i = 0; i < ussdActions.size(); i++) {
                 itemsNames[i] = ussdActions.get(i).toString();
             }
-                initComponent(root);
 
         }
+        initComponent(root);
 
         return root;
     }
-    public void createDialog(final CustomAction ussdAction, final String cd) {
+    public void createDialog(final UssdActionWithSteps ussdAction, final String cd) {
         startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
         return ;
 
@@ -233,21 +241,23 @@ public class PlaceholderFragment extends Fragment {
         // on item list clicked
         mAdapter.setOnItemClickListener(new AdapterGridCustomCodes.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, CustomAction obj, int position) {
-                String uscode = obj.getCode();
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+
+                //TODO first look into custom codes
+                String uscode = obj.action.getAirtelCode();
                 String cd = uscode+ Uri.encode("#");
                 createDialog(obj,cd);
             }
 
             @Override
-            public void onItemDelete(View view, CustomAction obj, int position) {
-                customActionsViewModel.delete(obj);
+            public void onItemDelete(View view, UssdActionWithSteps obj, int position) {
+                ussdActionsViewModel.delete(obj);
             }
 
             @Override
-            public void onItemEdit(View view, CustomAction obj, int position) {
+            public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
                 Intent i = new Intent(getActivity(), EditActionActivity.class);
-                i.putExtra("action_id",String.valueOf(obj.getId()));
+                i.putExtra("action_id",String.valueOf(obj.action.getActionId()));
                 startActivity(i);
             }
         });

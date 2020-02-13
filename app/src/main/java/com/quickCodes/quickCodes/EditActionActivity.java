@@ -14,11 +14,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-import com.quickCodes.quickCodes.modals.CustomAction;
+import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
-import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
+import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
 import java.util.Random;
 
@@ -32,11 +34,11 @@ public class EditActionActivity extends AppCompatActivity {
     EditText actionName,actionCode;
     AutoCompleteTextView actionNetwork;
         LinearLayout parentlayout;
-    CustomAction lastAction;
+    UssdActionWithSteps lastAction;
 
     String action_id;
 
-    CustomActionsViewModel customActionsViewModel;
+    UssdActionsViewModel ussdActionsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,10 @@ public class EditActionActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
+        ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
 
         action_id = getIntent().getStringExtra("action_id");
-        lastAction = customActionsViewModel.getAction(action_id);
+        lastAction = ussdActionsViewModel.getussdActionWithSteps(action_id);
 
 
         actionName =  findViewById(R.id.action_name);
@@ -71,9 +73,9 @@ public class EditActionActivity extends AppCompatActivity {
             }
         });
 
-        actionName.setText(lastAction.getName());
-        actionNetwork.setText(lastAction.getName());
-        actionCode.setText(lastAction.getCode());
+        actionName.setText(lastAction.action.getName());
+        actionNetwork.setText(lastAction.action.getName());
+        actionCode.setText(lastAction.action.getAirtelCode());
 
 
 
@@ -138,8 +140,8 @@ public class EditActionActivity extends AppCompatActivity {
             Toast.makeText(this, "A code is required to save", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        customActionsViewModel.update(new CustomAction(Integer.valueOf(action_id ),actionNameText,code));
+        UssdAction action = new UssdAction(Integer.valueOf(action_id),actionNameText,code,code,code, Constants.SEC_CUSTOM_CODES);
+        ussdActionsViewModel.update(new UssdActionWithSteps(action,null));
         //for now update the ui from here
 //        PlaceholderFragment.ussdActions.add(ussdAction);
         //TODO add instant ui refresh after adding or editing an action

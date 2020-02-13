@@ -13,10 +13,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.util.CustomActionsViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
@@ -43,7 +41,6 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 //    Spinner spinner;
     int lastId =6;
     LinearLayout parentlayout;
-    CustomActionsViewModel customActionsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,9 +130,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             return;
         }
 
-         customActionsViewModel = ViewModelProviders.of(this).get(CustomActionsViewModel.class);
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        customActionsViewModel.insert(new CustomAction(1,actionNameText,code));
         UssdAction ussdAction = new UssdAction(codeId, actionNameText, code,code,code, SEC_CUSTOM_CODES);
         v.insert(ussdAction,steps);
 //        db.addUssdAction(ussdAction);
