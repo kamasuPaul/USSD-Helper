@@ -15,6 +15,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -274,7 +275,13 @@ public class MainFragment extends Fragment {
 //        myInflator(linearLayoutMMoney, superActionsMMoney);
 //        myInflator(linearLayoutOthers, superActionsOthers);
 
+        //TRIAL CODE TO USE MCC AND MNC
+        TelephonyManager t = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+//            if(t.getPhoneType()!= TelephonyManager.PHONE_TYPE_CDMA){
+        Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
+        Log.d("TELEPHONE",t.getNetworkOperator());
 
+//            }
         //iniatize chip views
         final LinearLayout rootLinearLayoutChips = root.findViewById(R.id.linearLayout_root_chips);
         com.robertlevonyan.views.chip.Chip chipAirtel = root.findViewById(R.id.chip_airel);
@@ -468,6 +475,7 @@ public class MainFragment extends Fragment {
 //                }
 //            }, new Handler());
             }
+
             telecomManager = (TelecomManager) getActivity().getSystemService(Context.TELECOM_SERVICE);
             phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
             for (int i = 0; i < phoneAccountHandleList.size(); i++) {

@@ -1,8 +1,6 @@
 package com.quickCodes.quickCodes;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,19 +12,24 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
+
+import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
+import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
+import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class EditActionActivity extends AppCompatActivity {
     SQLiteDatabaseHandler db;
@@ -106,28 +109,33 @@ public class EditActionActivity extends AppCompatActivity {
         int count = parentlayout.getChildCount();
 
         Random r  = new Random();
-        Long codeId = r.nextLong();
+        Long codeId = lastAction.action.getActionId();
 
-        Step[] steps = new Step[count];
+        List<Step> steps = new ArrayList<>();
         for(int i=0;i<count;i++){
+
             final View row = parentlayout.getChildAt(i);
             EditText editText = row.findViewById(R.id.number_edit_text);
-            Spinner spinner1 = row.findViewById(R.id.type_spinner);
-            Log.d("DATA",editText.getText().toString()+spinner1.getSelectedItem().toString());
-//            Step step =  new Step(1,spinner1.getSelectedItem().toString(),editText.getText().toString(),1);
-//            Step step =  new Step(1,1,1,1,editText.getText().toString());
             Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
-            Log.d("DATA",editText.getText().toString()+stepTypeSpinner.getSelectedItem().toString());
-            int type = Integer.valueOf(stepTypeSpinner.getSelectedItem().toString());
+
+            String t = stepTypeSpinner.getSelectedItem().toString();
+            int type = TEXT;
+            if(t.equalsIgnoreCase("Text"))  type = TEXT;
+            if(t.equalsIgnoreCase("Number"))  type = NUMBER;
+            if(t.equalsIgnoreCase("Tel No"))  type = TELEPHONE;
             int weight = 0;
+
             String des = editText.getText().toString();
             String defaultValue = "";
             Step step =  new Step(codeId,type,weight,des,defaultValue);
-            steps[i] = step;
+
+            steps.add(step);
         }
 
         //insert the data into the database
         String code = actionCode.getText().toString().replaceAll("#","");
+        //TODO check if the code starts with a *
+
         //check if the code is not empty
         //check if the name is not empty
         String actionNameText = actionName.getText().toString();
@@ -140,15 +148,15 @@ public class EditActionActivity extends AppCompatActivity {
             Toast.makeText(this, "A code is required to save", Toast.LENGTH_SHORT).show();
             return;
         }
-        UssdAction action = new UssdAction(Integer.valueOf(action_id),actionNameText,code,code,code, Constants.SEC_CUSTOM_CODES);
-        ussdActionsViewModel.update(new UssdActionWithSteps(action,null));
-        //for now update the ui from here
-//        PlaceholderFragment.ussdActions.add(ussdAction);
-        //TODO add instant ui refresh after adding or editing an action
-        PlaceholderFragment.mAdapter.notifyDataSetChanged();
-        Intent t = new Intent(this,MainActivity.class);
-        t.putExtra("edit","edit");
-        startActivity(t);
+
+        UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText, code,code,code, SEC_CUSTOM_CODES);
+        v.update(new UssdActionWithSteps(ussdAction,steps));
+
+
+        Toast.makeText(this, ussdAction.getName()+" Has been Edited", Toast.LENGTH_SHORT).show();
+        finish();
+
     }
 
     public void onDelete(View view) {

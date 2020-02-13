@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
+import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
+import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
+import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 //import androidx.room.util.StringUtil;
 //import com.hover.sdk.api.HoverParameters;
@@ -102,21 +104,29 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         List<Step>steps = new ArrayList<>();
         for(int i=0;i<count;i++){
+
             final View row = parentlayout.getChildAt(i);
             EditText editText = row.findViewById(R.id.number_edit_text);
             Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
-            Log.d("DATA",editText.getText().toString()+stepTypeSpinner.getSelectedItem().toString());
-            int type = Integer.valueOf(stepTypeSpinner.getSelectedItem().toString());
+
+            String t = stepTypeSpinner.getSelectedItem().toString();
+            int type = TEXT;
+            if(t.equalsIgnoreCase("Text"))  type = TEXT;
+            if(t.equalsIgnoreCase("Number"))  type = NUMBER;
+            if(t.equalsIgnoreCase("Tel No"))  type = TELEPHONE;
             int weight = 0;
+
             String des = editText.getText().toString();
             String defaultValue = "";
             Step step =  new Step(codeId,type,weight,des,defaultValue);
-//            Step step = new Step(1,1,1,1,editText.getText().toString());
+
             steps.add(step);
         }
 
         //insert the data into the database
         String code = actionCode.getText().toString().replaceAll("#","");
+        //TODO check if the code starts with a *
+
         //check if the code is not empty
         //check if the name is not empty
         String actionNameText = actionName.getText().toString();

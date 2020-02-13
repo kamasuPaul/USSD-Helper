@@ -28,6 +28,10 @@ public abstract class UssdActionDao {
             insertAll(steps);
         }
     }
+    public void updateActionWithSteps(UssdActionWithSteps a){
+        deleteActionSteps(a.action.actionId);
+        insertStepsForAction(a);
+    }
     @Insert(onConflict = OnConflictStrategy.REPLACE)//TODO change replace strategy
     abstract void insertAll(List<Step>steps);
     @Transaction
@@ -46,5 +50,9 @@ public abstract class UssdActionDao {
     @Transaction
     @Query("SELECT * FROM ussd_actions WHERE actionId = :id")
     abstract UssdActionWithSteps get(String id);
+
+    @Transaction
+    @Query("DELETE FROM Step WHERE ussd_action_id = :actionId")
+    abstract void deleteActionSteps(long actionId);
 }
 

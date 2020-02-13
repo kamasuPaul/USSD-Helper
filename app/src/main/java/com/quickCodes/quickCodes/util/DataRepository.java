@@ -58,8 +58,9 @@ public class DataRepository {
     }
 
     public void update(UssdActionWithSteps action) {
+
 //        Toast.makeText(, "", Toast.LENGTH_SHORT).show();
-//        new updateAsyncTask(customActionDao).execute(action);
+        new updateAsyncTask(ussdActionDao).execute(action);
     }
     public UssdActionWithSteps getUssdAction(String id){
         AsyncTask<String, Void, UssdActionWithSteps> execute = new getUssdActionAsyncTask(ussdActionDao).execute(id);
@@ -113,8 +114,8 @@ public class DataRepository {
         }
 
         @Override
-        protected Void doInBackground(UssdActionWithSteps... customActions) {
-//            d.update(customActions[0]);
+        protected Void doInBackground(UssdActionWithSteps... ussdActionWithSteps) {
+            d.updateActionWithSteps(ussdActionWithSteps[0]);
             return null;
         }
     }

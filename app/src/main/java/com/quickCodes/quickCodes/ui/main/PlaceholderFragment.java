@@ -1,22 +1,30 @@
 package com.quickCodes.quickCodes.ui.main;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
+import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
@@ -26,6 +34,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -34,7 +43,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
+import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
+import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 //import com.hover.sdk.api.HoverParameters;
 
@@ -118,11 +130,11 @@ public class PlaceholderFragment extends Fragment {
 
         return root;
     }
-    public void createDialog(final UssdActionWithSteps ussdAction, final String cd) {
-        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
-        return ;
-
-
+//    public void createDialog(final UssdActionWithSteps ussdAction, final String cd) {
+//        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
+//        return ;
+//
+//
 //        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
 //            //execute the code immediately
 //            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
@@ -226,7 +238,132 @@ public class PlaceholderFragment extends Fragment {
 //            customDialog.show();
 ////            return customDialog;
 //        }
+//    }
+    public void createDialog(UssdActionWithSteps ussdActionWithSteps) {
+
+        //use codes for the selected network mode
+//        UssdAction ussdAction = null;
+//        String mode1 = "AIRTEL";//TODO get mode in a better way
+//        UssdAction ussdAction = ussdActionWithSteps.action;
+//        String code = "";
+//        if(mode1.contains("MTN"))       code = ussdAction.getMtnCode();
+//        if(mode1.contains("AIRTEL"))    code = ussdAction.getAirtelCode();
+//        if(mode1.contains("AFRICELL"))  code = ussdAction.getAfricellCode();
+
+        String uscode = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
+        String code = uscode+ Uri.encode("#");
+
+
+
+        if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
+            //execute the code immediately
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
+
+
+        } else {
+
+            final Dialog customDialog;
+            //inflate the root dialog
+            LayoutInflater inflater = getLayoutInflater();
+            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
+            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
+            //else check for steps and construct the layout
+            for (Step step : ussdActionWithSteps.steps) {
+                if (step.getType()== TEXT) {
+
+                    View rowText = inflater.inflate(R.layout.row_text, null);
+                    rowText.setId((int) step.getStepId());
+                    final EditText editText = rowText.findViewById(R.id.editText_text);
+                    editText.setHint(step.getDescription());
+                    root.addView(rowText);
+
+
+                }
+                if (step.getType()==TELEPHONE) {
+                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
+
+                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
+                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
+                    imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            phoneNumber = editText;
+                            Intent i = new Intent(Intent.ACTION_PICK);
+                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
+                        }
+                    });
+
+                    rowTelephone.setId((int) step.getStepId());
+                    root.addView(rowTelephone);
+
+
+                }
+                if (step.getType()== NUMBER) {
+                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+                    rowAmount.setId((int) step.getStepId());
+                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+                    editText.setHint(step.getDescription());
+                    root.addView(rowAmount);
+
+                }
+
+            }
+
+            //inflate each row that should be contained in the dialog box
+            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
+            //add each row to the root
+            root.addView(rowButtons);
+            cardView.setPadding(5, 5, 5, 5);
+
+            customDialog = new Dialog(getActivity());
+            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+            customDialog.setContentView(cardView);
+            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            customDialog.setCancelable(true);
+
+
+            final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
+            String finalCode = code;
+            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StringBuilder stringBuilder = new StringBuilder(finalCode);
+                    //get all the user entered values
+                    for (Step step : finalUssdAction.steps) {
+                        //get the user entered value of each step using its id
+                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById((int) step.getStepId());
+
+                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
+                        if (value != null && !value.isEmpty()) {
+                            stringBuilder.append("*" + value);
+                        }
+
+                    }
+                    //generate the code with the values inserted
+                    //run the code
+                    String fullCode = stringBuilder.toString() + Uri.encode("#");
+
+                    customDialog.dismiss();
+                    //execute the ussd code
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+
+
+                }
+
+
+            });
+
+            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    customDialog.dismiss();
+                }
+            });
+            customDialog.show();
+        }
     }
+
     private void initComponent(View root) {
         recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -246,7 +383,7 @@ public class PlaceholderFragment extends Fragment {
                 //TODO first look into custom codes
                 String uscode = obj.action.getAirtelCode();
                 String cd = uscode+ Uri.encode("#");
-                createDialog(obj,cd);
+                createDialog(obj);
             }
 
             @Override
