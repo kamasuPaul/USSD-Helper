@@ -15,10 +15,10 @@ import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -32,7 +32,6 @@ import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class EditActionActivity extends AppCompatActivity {
-    SQLiteDatabaseHandler db;
     MaterialButton button;
     EditText actionName,actionCode;
     AutoCompleteTextView actionNetwork;
@@ -82,6 +81,9 @@ public class EditActionActivity extends AppCompatActivity {
 
 
 
+
+
+
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
         String[] COUNTRIES = new String[] {"Airtel", "Mtn", "Africell"};
 
@@ -95,6 +97,22 @@ public class EditActionActivity extends AppCompatActivity {
             findViewById(R.id.action_network);
         editTextFilledExposedDropdown.setAdapter(adapter);
         //**************************************************************************************//
+
+        //**********************ADD PREVIOUSLY ADDED STEPS IN THE ACTION**************************//
+        //sort the steps according to weight and display them
+        List<Step> steps = lastAction.steps;
+        Collections.sort(steps, (step1, step2) -> ((Integer) step1.getWeight()).compareTo(step2.getWeight()));
+        LayoutInflater inflater = getLayoutInflater();
+
+        for(Step step: steps){
+            final View rowView = inflater.inflate(R.layout.field,null);
+            //set the description of the step
+            ((EditText)rowView.findViewById(R.id.number_edit_text)).setText(step.getDescription());
+            //set its type,text,number or telephone
+            ((Spinner)rowView.findViewById(R.id.type_spinner)).setSelection(step.getType());
+            parentlayout.addView(rowView,parentlayout.getChildCount());
+
+        }
 
 
     }

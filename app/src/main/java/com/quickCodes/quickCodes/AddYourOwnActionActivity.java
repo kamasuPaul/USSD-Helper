@@ -114,7 +114,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             if(t.equalsIgnoreCase("Text"))  type = TEXT;
             if(t.equalsIgnoreCase("Number"))  type = NUMBER;
             if(t.equalsIgnoreCase("Tel No"))  type = TELEPHONE;
-            int weight = 0;
+            int weight = i;
 
             String des = editText.getText().toString();
             String defaultValue = "";
