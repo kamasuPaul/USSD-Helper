@@ -3,7 +3,6 @@ package com.quickCodes.quickCodes;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.drm.DrmStore;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,8 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.quickCodes.quickCodes.ui.main.PlaceholderFragment;
-import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
@@ -20,6 +17,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +25,6 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT,store_url);
         shareIntent.setType("text/plain");
-        startActivity(Intent.createChooser(shareIntent,"Spread the word"),null);
+        startActivity(Intent.createChooser(shareIntent,"Thank you for sharing , continue with"),null);
     }
 
 
