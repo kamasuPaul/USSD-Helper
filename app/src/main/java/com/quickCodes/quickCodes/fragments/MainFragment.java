@@ -27,10 +27,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.Step;
@@ -39,10 +35,6 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,7 +65,6 @@ public class MainFragment extends Fragment {
     int slot = -1;
     int subscriptionId = 0;
     List<SubscriptionInfo> subList;
-    List<SuperAction> superActionsAirtime, superActionsData, superActionsMMoney, superActionsOthers;
     LinearLayout linearLayoutAirtime, linearLayoutData, linearLayoutMMoney, linearLayoutOthers;
     EditText phoneNumber;
     RecyclerView airtimeRecyclerView, dataRecyclerView, mmRecyclerView;
@@ -150,15 +141,10 @@ public class MainFragment extends Fragment {
             adapterUssdCodes2.setUssdActions(mmoneyCodes);
 
         });
-        addAirtimeCodes();
-
         adapterUssdCodes.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-//                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
-//                Log.d("ACTION",obj.steps.toString());
-//                executeSuperAction(obj);
-                download();
+                executeSuperAction(obj);
             }
 
             @Override
@@ -174,8 +160,6 @@ public class MainFragment extends Fragment {
         adapterUssdCodes1.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION", obj.steps.toString());
                 executeSuperAction(obj);
             }
 
@@ -192,8 +176,6 @@ public class MainFragment extends Fragment {
         adapterUssdCodes2.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION", obj.steps.toString());
                 executeSuperAction(obj);
             }
 
@@ -207,128 +189,13 @@ public class MainFragment extends Fragment {
 
             }
         });
-
-//        addDataCodes();
-//        addMobileMoneyCodes();
-        addOtherCodes();
-
         setUpDialog();
 
-        download();
-
     }
 
-    public void download() {
-
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://10.0.2.2:8000/api/quickcodes";
-        //
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-            s -> {
-                try {
-                    JSONArray codes = new JSONArray(s);
-                    for(int i=0;i<codes.length();i++){
-                        JSONObject code = codes.getJSONObject(i);
-                        Log.d("CODES",code.toString());
-                        int id = code.optInt("id");
-                        String name = code.optString("name");
-                        String airtelCode = code.optString("airtelCode");
-                        String mtnCode = code.optString("mtnCode");
-                        String africellCode = code.optString("africellCode");
-                        int section = code.optInt("section");
-                        UssdAction ussdAction = new UssdAction(id, name, airtelCode, mtnCode, africellCode, section);
-
-                        JSONArray steps = code.getJSONArray("steps");
-                        List<Step>stepList = new ArrayList<>();
-                        for(int j=0;j<steps.length();j++){
-                            JSONObject step = steps.getJSONObject(j);
-                            int type = step.optInt("type");
-                            int weight = step.optInt("weight");
-                            String desc = step.optString("description");
-                            String defaultValue = step.optString("defaultValue");
-                            int ussd_action_id = step.optInt("ussd_action_id");
-                            Step step1 = new Step(ussd_action_id, type, weight, desc, defaultValue);
-                            stepList.add(step1);
-                        }
-                        viewModel.insert(ussdAction,stepList);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            },
-            volleyError -> {
-                Log.d("API","error");
-            });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-    }
-
-//    private void addDataCodes() {
-//        superActionsData = new ArrayList<>();
-//        superActionsData.add(simpleAction("Data Bundles", "*175*2", "*160*2*2*1"));
-//        superActionsData.add(simpleAction("Check Balance", "*175*4", "*131"));
-//        superActionsData.add(simpleAction("Data OTT","*185*2*5*1","*165*2*6*1"));
-//
-//        superActionsData.add(simpleAction(" Data PakaLast  ", "*175*3", "*160*1"));
-//
-//        superActionsData.add(simpleAction("Free Monthly", "*175*9*2", ""));
-//        superActionsData.add(new SuperAction(new UssdAction(0, "Send Data", "*175*5*2", "",
-//            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Mbs(50 to 2000)", -2)}),
-//            new UssdAction(0, "", "", "", null)));
-//    }
-
-//    private void addMobileMoneyCodes() {
-//        superActionsMMoney = new ArrayList<>();
-//        superActionsMMoney.add(simpleAction("Check Balance", "*185*10*1", "*185*8*1"));
-//        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Send Money", "*185*1*1", "",
-//            new Step[]{new Step(0, "Tel No", null, -1), new Step(1, "Text", "Amount", -2)}),
-//            new UssdAction(0, "", "*185*1*1", "",
-//                new Step[]{new Step(0, "Tel No", "Amount", -1),new Step(1, "Text", "Amount", -2)})));
-//        superActionsMMoney.add(new SuperAction(new UssdAction(0, "Withdraw Cash", "*185*3", "",
-//            new Step[]{new Step(0, "Text", "Amount", -1)}),
-//            new UssdAction(0, "", "", "", null)));
-//        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5*1*2"));
-//    }
-
-    private void addOtherCodes() {
-        superActionsOthers = new ArrayList<>();
-        superActionsOthers.add(simpleAction("Pay Umeme", "*175*2", "*131"));
-        superActionsOthers.add(simpleAction("Pay Tv", "*175*4", "*131"));
-        superActionsOthers.add(simpleAction("School Fees", "*175*9*2", "*131"));
-        superActionsOthers.add(simpleAction("Sports Betting", "*175*9*2", "*131"));
-    }
-
-    private void addAirtimeCodes() {
-//        superActionsAirtime = new ArrayList<>();
 
 
-//        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
-//        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-//        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-//        SuperAction superAction = new SuperAction(action1, action2);
-//        superActionsAirtime.add(superAction);
 
-//        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
-
-//        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
-
-//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-//            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
-//            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-//                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
-//                )));
-
-//        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
-
-//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
-//            new Step[]{new Step(0, "Tel No", null, -1)}),
-//            new UssdAction(0, "Call Me Back", "", "", null)));
-    }
 
     private void setUpDialog() {
         dialog = new Dialog(getActivity());
@@ -365,10 +232,7 @@ public class MainFragment extends Fragment {
         mmRecyclerView = root.findViewById(R.id.mmoneyRecylerView);
         mmRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mmRecyclerView.setAdapter(adapterUssdCodes2);
-//        myInflator(linearLayoutAirtime, superActionsAirtime);
-//        myInflator(linearLayoutData, superActionsData);
-//        myInflator(linearLayoutMMoney, superActionsMMoney);
-//        myInflator(linearLayoutOthers, superActionsOthers);
+
 
         //TRIAL CODE TO USE MCC AND MNC
         TelephonyManager t = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -780,16 +644,6 @@ public class MainFragment extends Fragment {
         mListener = null;
     }
 
-    public SuperAction simpleAction(String name, String airtelCode, String mtnCode) {
-        Step[] tel_nos = {};
-//        UssdAction action1 = new UssdAction(0, name, airtelCode, "", tel_nos);
-//        UssdAction action2 = new UssdAction(0, name, mtnCode, "", tel_nos);
-
-//        SuperAction superAction = new SuperAction(action1, action2);
-        SuperAction superAction = null;
-        return superAction;
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -804,40 +658,5 @@ public class MainFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    //TODO change its location
-    class SuperAction {
-        int id;
-        UssdAction airtel;
-        UssdAction mtn;
-
-        public SuperAction(UssdAction airtel, UssdAction mtn) {
-            this.airtel = airtel;
-            this.mtn = mtn;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public UssdAction getAirtel() {
-            return airtel;
-        }
-
-        public void setAirtel(UssdAction airtel) {
-            this.airtel = airtel;
-        }
-
-        public UssdAction getMtn() {
-            return mtn;
-        }
-
-        public void setMtn(UssdAction mtn) {
-            this.mtn = mtn;
-        }
-    }
 }
 

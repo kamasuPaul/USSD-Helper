@@ -113,5 +113,12 @@ public abstract class MyRoomDatabase extends RoomDatabase {
 
 
    }
+    private void addOtherCodes() {
+//        superActionsOthers = new ArrayList<>();
+//        superActionsOthers.add(simpleAction("Pay Umeme", "*175*2", "*131"));
+//        superActionsOthers.add(simpleAction("Pay Tv", "*175*4", "*131"));
+//        superActionsOthers.add(simpleAction("School Fees", "*175*9*2", "*131"));
+//        superActionsOthers.add(simpleAction("Sports Betting", "*175*9*2", "*131"));
+    }
 
 }

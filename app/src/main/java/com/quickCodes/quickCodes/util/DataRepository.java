@@ -36,7 +36,7 @@ public class DataRepository {
 
         //Worker
         PeriodicWorkRequest workRequest =
-            new PeriodicWorkRequest.Builder(DownloadWorker.class,16, TimeUnit.MINUTES)
+            new PeriodicWorkRequest.Builder(DownloadWorker.class,15,TimeUnit.MINUTES)
                 .setConstraints(constraints)
                 .build();
         WorkManager.getInstance(application).enqueue(workRequest);
