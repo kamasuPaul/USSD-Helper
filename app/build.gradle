@@ -73,6 +73,10 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
 
+    //volley
+    implementation 'com.android.volley:volley:1.1.1'
+
+
     //work manager
     def work_version = "2.2.0"
     implementation "androidx.work:work-runtime:$work_version"

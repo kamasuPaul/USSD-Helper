@@ -27,6 +27,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.Step;
@@ -35,6 +39,10 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,25 +67,59 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class MainFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
-    Dialog dialog;
-
     private static final int CONTACT_PICKER_REQUEST = 29;
+    Dialog dialog;
     String mode = null;
     int slot = -1;
     int subscriptionId = 0;
     List<SubscriptionInfo> subList;
     List<SuperAction> superActionsAirtime, superActionsData, superActionsMMoney, superActionsOthers;
-    LinearLayout linearLayoutAirtime,linearLayoutData,linearLayoutMMoney,linearLayoutOthers;
+    LinearLayout linearLayoutAirtime, linearLayoutData, linearLayoutMMoney, linearLayoutOthers;
     EditText phoneNumber;
+    RecyclerView airtimeRecyclerView, dataRecyclerView, mmRecyclerView;
+    private OnFragmentInteractionListener mListener;
     private UssdActionsViewModel viewModel;
-    private AdapterUssdCodes adapterUssdCodes,adapterUssdCodes1,adapterUssdCodes2;
-    RecyclerView airtimeRecyclerView,dataRecyclerView,mmRecyclerView;
-
+    private AdapterUssdCodes adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
 
 
     public MainFragment() {
         // Required empty public constructor
+    }
+
+    //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
+    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup) child, tag));
+            }
+
+            final Object tagObj = child.getTag();
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+
+        }
+        return views;
+    }
+
+    /**
+     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
+     *
+     * @param v the  view whose layout is to be set
+     * @param l left
+     * @param t top
+     * @param r right
+     * @param b bottom
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
     }
 
     @Override
@@ -87,19 +129,19 @@ public class MainFragment extends Fragment {
         adapterUssdCodes = new AdapterUssdCodes(getActivity());
         adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
         adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
-        viewModel  = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
-            List<UssdActionWithSteps>airtimeCodes = new ArrayList<>();
-            List<UssdActionWithSteps>dataCodes = new ArrayList<>();
-            List<UssdActionWithSteps>mmoneyCodes = new ArrayList<>();
-            for(UssdActionWithSteps us: ussdActionWithSteps){
-                if(us.action.getSection()== SEC_AIRTIME){
+            List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+            List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+            List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+            for (UssdActionWithSteps us : ussdActionWithSteps) {
+                if (us.action.getSection() == SEC_AIRTIME) {
                     airtimeCodes.add(us);
                 }
-                if(us.action.getSection()== SEC_DATA){
+                if (us.action.getSection() == SEC_DATA) {
                     dataCodes.add(us);
                 }
-                if(us.action.getSection()== SEC_MMONEY){
+                if (us.action.getSection() == SEC_MMONEY) {
                     mmoneyCodes.add(us);
                 }
             }
@@ -113,9 +155,10 @@ public class MainFragment extends Fragment {
         adapterUssdCodes.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION",obj.steps.toString());
-                executeSuperAction(obj);
+//                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
+//                Log.d("ACTION",obj.steps.toString());
+//                executeSuperAction(obj);
+                download();
             }
 
             @Override
@@ -131,8 +174,8 @@ public class MainFragment extends Fragment {
         adapterUssdCodes1.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION",obj.steps.toString());
+                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION", obj.steps.toString());
                 executeSuperAction(obj);
             }
 
@@ -149,8 +192,8 @@ public class MainFragment extends Fragment {
         adapterUssdCodes2.setOnItemClickListener(new AdapterUssdCodes.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Toast.makeText(getActivity(), "Test"+obj.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("ACTION",obj.steps.toString());
+                Toast.makeText(getActivity(), "Test" + obj.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("ACTION", obj.steps.toString());
                 executeSuperAction(obj);
             }
 
@@ -171,42 +214,58 @@ public class MainFragment extends Fragment {
 
         setUpDialog();
 
+        download();
+
     }
 
-    private void addOtherCodes() {
-        superActionsOthers = new ArrayList<>();
-        superActionsOthers.add(simpleAction("Pay Umeme", "*175*2", "*131"));
-        superActionsOthers.add(simpleAction("Pay Tv", "*175*4", "*131"));
-        superActionsOthers.add(simpleAction("School Fees", "*175*9*2", "*131"));
-        superActionsOthers.add(simpleAction("Sports Betting", "*175*9*2", "*131"));
-    }
+    public void download() {
 
-    private void addAirtimeCodes() {
-//        superActionsAirtime = new ArrayList<>();
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url = "http://10.0.2.2:8000/api/quickcodes";
+        //
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            s -> {
+                try {
+                    JSONArray codes = new JSONArray(s);
+                    for(int i=0;i<codes.length();i++){
+                        JSONObject code = codes.getJSONObject(i);
+                        Log.d("CODES",code.toString());
+                        int id = code.optInt("id");
+                        String name = code.optString("name");
+                        String airtelCode = code.optString("airtelCode");
+                        String mtnCode = code.optString("mtnCode");
+                        String africellCode = code.optString("africellCode");
+                        int section = code.optInt("section");
+                        UssdAction ussdAction = new UssdAction(id, name, airtelCode, mtnCode, africellCode, section);
 
+                        JSONArray steps = code.getJSONArray("steps");
+                        List<Step>stepList = new ArrayList<>();
+                        for(int j=0;j<steps.length();j++){
+                            JSONObject step = steps.getJSONObject(j);
+                            int type = step.optInt("type");
+                            int weight = step.optInt("weight");
+                            String desc = step.optString("description");
+                            String defaultValue = step.optString("defaultValue");
+                            int ussd_action_id = step.optInt("ussd_action_id");
+                            Step step1 = new Step(ussd_action_id, type, weight, desc, defaultValue);
+                            stepList.add(step1);
+                        }
+                        viewModel.insert(ussdAction,stepList);
 
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-//        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
-//        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-//        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
-//        SuperAction superAction = new SuperAction(action1, action2);
-//        superActionsAirtime.add(superAction);
+            },
+            volleyError -> {
+                Log.d("API","error");
+            });
 
-//        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
 
-//        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
-
-//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-//            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
-//            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
-//                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
-//                )));
-
-//        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
-
-//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
-//            new Step[]{new Step(0, "Tel No", null, -1)}),
-//            new UssdAction(0, "Call Me Back", "", "", null)));
     }
 
 //    private void addDataCodes() {
@@ -236,6 +295,41 @@ public class MainFragment extends Fragment {
 //        superActionsMMoney.add(simpleAction("Get a loan", "*185*8", "*185*5*1*2"));
 //    }
 
+    private void addOtherCodes() {
+        superActionsOthers = new ArrayList<>();
+        superActionsOthers.add(simpleAction("Pay Umeme", "*175*2", "*131"));
+        superActionsOthers.add(simpleAction("Pay Tv", "*175*4", "*131"));
+        superActionsOthers.add(simpleAction("School Fees", "*175*9*2", "*131"));
+        superActionsOthers.add(simpleAction("Sports Betting", "*175*9*2", "*131"));
+    }
+
+    private void addAirtimeCodes() {
+//        superActionsAirtime = new ArrayList<>();
+
+
+//        Step[] tel_nos = {new Step(2, "Text", "Amount", -1)};
+//        UssdAction action1 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
+//        UssdAction action2 = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "", tel_nos);
+//        SuperAction superAction = new SuperAction(action1, action2);
+//        superActionsAirtime.add(superAction);
+
+//        superActionsAirtime.add(simpleAction("Check Balance", "*131", "*131"));
+
+//        superActionsAirtime.add(simpleAction(" PakaLast  ", "*100*2*1", "*160*1"));
+
+//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+//            new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}),
+//            new UssdAction(0, "Buy For Another", "*185*2*1*2", "",
+//                new Step[]{new Step(0, "Tel No", null, -1),new Step(2, "Text", "Amount", -2)}
+//                )));
+
+//        superActionsAirtime.add(simpleAction("Borrow Airtime", "*100*4*1", "*160"));
+
+//        superActionsAirtime.add(new SuperAction(new UssdAction(0, "Call Me Back", "*100*7*7", "",
+//            new Step[]{new Step(0, "Tel No", null, -1)}),
+//            new UssdAction(0, "Call Me Back", "", "", null)));
+    }
+
     private void setUpDialog() {
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -254,22 +348,22 @@ public class MainFragment extends Fragment {
 
         //setup airtime
         airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
-        airtimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        airtimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         airtimeRecyclerView.setAdapter(adapterUssdCodes);
 
 
         linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
-         linearLayoutData = root.findViewById(R.id.linearLayout_data);
-         linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
+        linearLayoutData = root.findViewById(R.id.linearLayout_data);
+        linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
         linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
 
         //setup data
         dataRecyclerView = root.findViewById(R.id.dataRecylerView);
-        dataRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        dataRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         dataRecyclerView.setAdapter(adapterUssdCodes1);
         //setup mobile money
         mmRecyclerView = root.findViewById(R.id.mmoneyRecylerView);
-        mmRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+        mmRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mmRecyclerView.setAdapter(adapterUssdCodes2);
 //        myInflator(linearLayoutAirtime, superActionsAirtime);
 //        myInflator(linearLayoutData, superActionsData);
@@ -277,10 +371,10 @@ public class MainFragment extends Fragment {
 //        myInflator(linearLayoutOthers, superActionsOthers);
 
         //TRIAL CODE TO USE MCC AND MNC
-        TelephonyManager t = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager t = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 //            if(t.getPhoneType()!= TelephonyManager.PHONE_TYPE_CDMA){
         Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
-        Log.d("TELEPHONE",t.getNetworkOperator());
+        Log.d("TELEPHONE", t.getNetworkOperator());
 
 //            }
         //iniatize chip views
@@ -335,7 +429,7 @@ public class MainFragment extends Fragment {
                 final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
                 //set margin for the chip
                 chip1.setText(networkName);
-                if (networkName.contains("MTN")){
+                if (networkName.contains("MTN")) {
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
                     hideNonMtnAction();
                 }
@@ -359,10 +453,10 @@ public class MainFragment extends Fragment {
 //
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if(mode.contains("MTN")){
+                        if (mode.contains("MTN")) {
 //                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
                             hideNonMtnAction();
-                        }else{
+                        } else {
                             unHideNonMtnAction();
 
                         }
@@ -386,9 +480,9 @@ public class MainFragment extends Fragment {
                             }
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if(mode.contains("MTN")){
+                        if (mode.contains("MTN")) {
                             hideNonMtnAction();
-                        }else{
+                        } else {
                             unHideNonMtnAction();
                         }
                         //notify the user of their action
@@ -417,18 +511,19 @@ public class MainFragment extends Fragment {
     private void hideNonMtnAction() {
         List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
             linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
-        for(LinearLayout l : linearLayouts){
+        for (LinearLayout l : linearLayouts) {
             ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
-            for(View v :hiddenViews) v.setVisibility(View.GONE);
+            for (View v : hiddenViews) v.setVisibility(View.GONE);
 
         }
     }
-    private void unHideNonMtnAction(){
+
+    private void unHideNonMtnAction() {
         List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
             linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
-        for(LinearLayout l : linearLayouts){
+        for (LinearLayout l : linearLayouts) {
             ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
-            for(View v :hiddenViews) v.setVisibility(View.VISIBLE);
+            for (View v : hiddenViews) v.setVisibility(View.VISIBLE);
         }
     }
 
@@ -439,7 +534,7 @@ public class MainFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             //TODO if api level is greater than 26 do background codes,do this later,not important right now
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
- //            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                //            TelephonyManager manager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 //            manager.createForSubscriptionId(subscriptionId).sendUssdRequest("*131#", new TelephonyManager.UssdResponseCallback() {
 //                /**
 //                 * Called when a USSD request has succeeded.  The {@code response} contains the USSD
@@ -497,6 +592,7 @@ public class MainFragment extends Fragment {
         }
 
     }
+
     /**
      * this mthd checks a super action  for the network and  ussdAction and executes it
      *
@@ -509,9 +605,9 @@ public class MainFragment extends Fragment {
         String mode1 = mode.toUpperCase();
         UssdAction ussdAction = ussdActionWithSteps.action;
         String code = "";
-        if(mode1.contains("MTN"))       code = ussdAction.getMtnCode();
-        if(mode1.contains("AIRTEL"))    code = ussdAction.getAirtelCode();
-        if(mode1.contains("AFRICELL"))  code = ussdAction.getAfricellCode();
+        if (mode1.contains("MTN")) code = ussdAction.getMtnCode();
+        if (mode1.contains("AIRTEL")) code = ussdAction.getAirtelCode();
+        if (mode1.contains("AFRICELL")) code = ussdAction.getAfricellCode();
 
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
@@ -527,7 +623,7 @@ public class MainFragment extends Fragment {
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
             //else check for steps and construct the layout
             for (Step step : ussdActionWithSteps.steps) {
-                if (step.getType()== TEXT) {
+                if (step.getType() == TEXT) {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId((int) step.getStepId());
@@ -537,7 +633,7 @@ public class MainFragment extends Fragment {
 
 
                 }
-                if (step.getType()==TELEPHONE) {
+                if (step.getType() == TELEPHONE) {
                     View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
 
                     ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
@@ -557,7 +653,7 @@ public class MainFragment extends Fragment {
 
 
                 }
-                if (step.getType()== NUMBER) {
+                if (step.getType() == NUMBER) {
                     View rowAmount = inflater.inflate(R.layout.row_amount, null);
                     rowAmount.setId((int) step.getStepId());
                     final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
@@ -621,6 +717,7 @@ public class MainFragment extends Fragment {
             customDialog.show();
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
@@ -634,10 +731,10 @@ public class MainFragment extends Fragment {
                     int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberIdex);
                     if (phoneNumber != null) {
-                        if(number.startsWith("+256")){
-                            number = number.replace("+256","0");
+                        if (number.startsWith("+256")) {
+                            number = number.replace("+256", "0");
                         }
-                        number = number.replace(" ","");
+                        number = number.replace(" ", "");
                         phoneNumber.setText(number);
                     }
 
@@ -675,12 +772,23 @@ public class MainFragment extends Fragment {
 //                    + " must implement OnFragmentInteractionListener");
 //        }
     }
+    //************************ UTILITY METHODS *************************************************
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-     }
+    }
+
+    public SuperAction simpleAction(String name, String airtelCode, String mtnCode) {
+        Step[] tel_nos = {};
+//        UssdAction action1 = new UssdAction(0, name, airtelCode, "", tel_nos);
+//        UssdAction action2 = new UssdAction(0, name, mtnCode, "", tel_nos);
+
+//        SuperAction superAction = new SuperAction(action1, action2);
+        SuperAction superAction = null;
+        return superAction;
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -695,54 +803,6 @@ public class MainFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
-    //************************ UTILITY METHODS *************************************************
-
-    public SuperAction simpleAction(String name, String airtelCode, String mtnCode) {
-        Step[] tel_nos = {};
-//        UssdAction action1 = new UssdAction(0, name, airtelCode, "", tel_nos);
-//        UssdAction action2 = new UssdAction(0, name, mtnCode, "", tel_nos);
-
-//        SuperAction superAction = new SuperAction(action1, action2);
-        SuperAction superAction = null;
-        return superAction;
-    }
-
-    //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
-    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
-        ArrayList<View> views = new ArrayList<View>();
-        final int childCount = root.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = root.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                views.addAll(getViewsByTag((ViewGroup) child, tag));
-            }
-
-            final Object tagObj = child.getTag();
-            if (tagObj != null && tagObj.equals(tag)) {
-                views.add(child);
-            }
-
-        }
-        return views;
-    }
-
-    /**
-     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
-     *
-     * @param v the  view whose layout is to be set
-     * @param l left
-     * @param t top
-     * @param r right
-     * @param b bottom
-     */
-    public static void setMargins(View v, int l, int t, int r, int b) {
-        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            p.setMargins(l, t, r, b);
-            v.requestLayout();
-        }
-    }
-
 
     //TODO change its location
     class SuperAction {

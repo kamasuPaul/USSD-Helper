@@ -3,16 +3,14 @@ package com.quickCodes.quickCodes.modals;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(foreignKeys = @ForeignKey(entity = UssdAction.class,
-        parentColumns = "actionId",
-        childColumns ="ussd_action_id",
-        onDelete = ForeignKey.CASCADE),
-        indices = {@Index("ussd_action_id")}
-)
+    parentColumns = "actionId",
+    childColumns ="ussd_action_id",
+    onDelete = ForeignKey.CASCADE))
 public class Step{
+
     @PrimaryKey(autoGenerate = true) private  long stepId;
     private long ussd_action_id;
     private int type;
@@ -20,32 +18,20 @@ public class Step{
     private String defaultValue = null;
     private int weight;
     @Ignore
-    public Step(){
-
-    }
-
-    /**
-     *
-     * @param ussd_action_id
-     * @param type Telephone or text or number
-     * @param weight
-     * @param description decription of the step
-     */
-    @Ignore
     public Step(long ussd_action_id, int type, int weight,String description) {
         this.ussd_action_id = ussd_action_id;
         this.type = type;
         this.weight = weight;
         this.description = description;
     }
-
-    public Step(long ussd_action_id, int type, int weight,String description, String defaultValue) {
+    public Step(long ussd_action_id, int type, int weight,String description,String defaultValue) {
         this.ussd_action_id = ussd_action_id;
         this.type = type;
+        this.weight = weight;
         this.description = description;
         this.defaultValue = defaultValue;
-        this.weight = weight;
     }
+
 
     public long getStepId() {
         return stepId;

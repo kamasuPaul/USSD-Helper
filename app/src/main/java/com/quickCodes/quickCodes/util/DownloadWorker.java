@@ -1,10 +1,11 @@
 package com.quickCodes.quickCodes.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.quickCodes.quickCodes.modals.CustomAction;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionApi;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 
 import java.util.List;
 
@@ -29,24 +30,35 @@ public class DownloadWorker extends Worker {
         return Result.success();
     }
 
-    private void download() {
+    public void download() {
         //reftrofit
         APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
-        Call<List<CustomAction>> call = apiInterface.getAllCustomActions();
-        call.enqueue(new Callback<List<CustomAction>>() {
+        Call<List<UssdActionApi>> call = apiInterface.getAllCustomActions();
+        call.enqueue(new Callback<List<UssdActionApi>>() {
             @Override
-            public void onResponse(Call<List<CustomAction>> call, Response<List<CustomAction>> response) {
-                DataRepository r = new DataRepository((Application) context);
-                for (CustomAction w: response.body()
-                ) {
-                    r.insert(w);
-                }
+            public void onResponse(Call<List<UssdActionApi>> call, Response<List<UssdActionApi>> response) {
+//                DataRepository r = new DataRepository((Application) context);
+//                Log.d("API",response.toString());
+//                Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+//                for (UssdActionApi w: response.body()
+//                ) {
+//                    r.insertAll(convert(w));
+//                    Toast.makeText(getApplicationContext(), w.toString(), Toast.LENGTH_SHORT).show();
+//
+//                }
             }
 
             @Override
-            public void onFailure(Call<List<CustomAction>> call, Throwable t) {
+            public void onFailure(Call<List<UssdActionApi>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
 
+                t.printStackTrace();
             }
         });
+    }
+    public static UssdActionWithSteps convert(UssdActionApi data){
+        UssdAction s = new UssdAction(data.actionId,data.getName(),data.getAirtelCode(),
+            data.getMtnCode(),data.getAfricellCode(),data.section);
+        return new UssdActionWithSteps(s,data.getSteps());
     }
 }

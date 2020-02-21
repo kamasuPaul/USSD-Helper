@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes.util;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
@@ -22,6 +23,7 @@ public class UssdActionsViewModel extends AndroidViewModel {
     public LiveData<List<UssdActionWithSteps>> getAllCustomActions(){return ussdActions;}
 
     public void insert(UssdAction action,List<Step>steps) {
+        Toast.makeText(getApplication(), "inserted", Toast.LENGTH_SHORT).show();
         repository.insertAll(new UssdActionWithSteps(action,steps));
     }
     public void delete(UssdActionWithSteps actionWithSteps){ repository.delete(actionWithSteps.action);}

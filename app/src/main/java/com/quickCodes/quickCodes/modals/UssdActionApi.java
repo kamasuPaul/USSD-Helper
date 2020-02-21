@@ -2,26 +2,28 @@ package com.quickCodes.quickCodes.modals;
 
 import com.google.gson.annotations.SerializedName;
 
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import java.util.List;
 
-@Entity(tableName = "ussd_actions")
-public class UssdAction {
+import androidx.room.Ignore;
+
+public class UssdActionApi {
     @SerializedName("id")
-    @PrimaryKey public long actionId;
+    public long actionId;
     private String name;
     private String airtelCode;
     private String mtnCode;
     private String africellCode;
     public int section;
 
+    @SerializedName("steps")
+    List<Step>steps;
+
     @Ignore
-    public UssdAction(){
+    public UssdActionApi(){
 
     }
 
-    public UssdAction(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section) {
+    public UssdActionApi(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section) {
         this.actionId = actionId;
         this.name = name;
         this.airtelCode = airtelCode;
@@ -89,5 +91,11 @@ public class UssdAction {
             '}';
     }
 
+    public List<Step> getSteps() {
+        return steps;
+    }
 
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
 }
