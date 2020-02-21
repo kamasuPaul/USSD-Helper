@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.util;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -78,6 +79,7 @@ public class DownloadWorker extends Worker {
                         dataRepository.insertAll(new UssdActionWithSteps(ussdAction,stepList));
 
                     }
+                    Toast.makeText(context, "Codes have updated", Toast.LENGTH_SHORT).show();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
