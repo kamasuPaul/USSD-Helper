@@ -2,17 +2,17 @@ package com.quickCodes.quickCodes.ui.main;
 
 import android.content.Context;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.fragments.MainFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -29,13 +29,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         mContext = context;
         fragmentList.add(new MainFragment());
-        fragmentList.add(PlaceholderFragment.newInstance(1));
+        fragmentList.add(CustomCodesFragment.newInstance(1));
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
+        // Return a CustomCodesFragment (defined as a static inner class below).
         return fragmentList.get(position);
     }
 

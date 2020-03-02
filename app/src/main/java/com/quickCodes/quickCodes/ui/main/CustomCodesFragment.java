@@ -53,7 +53,7 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class CustomCodesFragment extends Fragment {
 
     UssdActionsViewModel ussdActionsViewModel;
 
@@ -68,8 +68,8 @@ public class PlaceholderFragment extends Fragment {
     private EditText phoneNumber;
 
 
-    public static PlaceholderFragment newInstance(int index) {
-        PlaceholderFragment fragment = new PlaceholderFragment();
+    public static CustomCodesFragment newInstance(int index) {
+        CustomCodesFragment fragment = new CustomCodesFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);

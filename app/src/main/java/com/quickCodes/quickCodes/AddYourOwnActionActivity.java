@@ -146,8 +146,8 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 //        db.addUssdAction(ussdAction);
 
         //for now update the ui from here
-//        PlaceholderFragment.ussdActions.add(ussdAction);
-//        PlaceholderFragment.mAdapter.notifyDataSetChanged();
+//        CustomCodesFragment.ussdActions.add(ussdAction);
+//        CustomCodesFragment.mAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, ussdAction.getName()+" Has been added", Toast.LENGTH_SHORT).show();
         finish();
