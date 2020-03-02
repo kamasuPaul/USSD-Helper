@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +15,12 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.ui.main.PageViewModel;
 import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -64,16 +67,23 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
            }
        });
 
-//        db = new SQLiteDatabaseHandler(this);
 
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
-        String[] COUNTRIES = new String[] {"Airtel", "Mtn", "Africell"};
+        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        HashMap<String, String> simcards = pageViewModel.getSimcards();
+        String [] a = (String[]) simcards.values().toArray(new String[0]);
+        Log.d("SIMCARDS", (String.valueOf(simcards.values().size())));
 
+        for (String d:simcards.values()
+             ) {
+            Log.d("SIMCARDS",d);
+
+        }
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
                 this,
                 R.layout.dropdown_menu_popup_item,
-                COUNTRIES);
+               a);
 
         AutoCompleteTextView editTextFilledExposedDropdown =
             findViewById(R.id.action_network);

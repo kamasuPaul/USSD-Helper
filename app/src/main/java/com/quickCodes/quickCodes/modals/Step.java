@@ -3,12 +3,15 @@ package com.quickCodes.quickCodes.modals;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(foreignKeys = @ForeignKey(entity = UssdAction.class,
     parentColumns = "actionId",
     childColumns ="ussd_action_id",
-    onDelete = ForeignKey.CASCADE))
+    onDelete = ForeignKey.CASCADE),
+    indices = {@Index("ussd_action_id")}
+)
 public class Step{
 
     @PrimaryKey(autoGenerate = true) private  long stepId;

@@ -1,26 +1,29 @@
 package com.quickCodes.quickCodes.ui.main;
 
-import androidx.arch.core.util.Function;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
+import android.util.Log;
+
+import java.util.HashMap;
+
 import androidx.lifecycle.ViewModel;
 
 public class PageViewModel extends ViewModel {
 
-    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
-    private LiveData<String> mText = Transformations.map(mIndex, new Function<Integer, String>() {
-        @Override
-        public String apply(Integer input) {
-            return "Hello world from section: " + input;
-        }
-    });
+    HashMap<String,String>simcards = new HashMap<>();
+    String selectedSimcard = null;
 
-    public void setIndex(int index) {
-        mIndex.setValue(index);
+    public String getSelectedSimcard() {
+        return selectedSimcard;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void setSelectedSimcard(String selectedSimcard) {
+        this.selectedSimcard = selectedSimcard;
+    }
+    public  void addSimcard(String operatorId,String operatorName){
+        simcards.put(operatorId,operatorName);
+        Log.d("ADDED",operatorName);
+    }
+
+    public HashMap<String, String> getSimcards() {
+        return simcards;
     }
 }

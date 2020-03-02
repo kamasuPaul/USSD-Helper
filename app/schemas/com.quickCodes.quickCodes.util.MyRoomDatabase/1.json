@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f886823a371d7187f7f30f3294209fef",
+    "identityHash": "848a820bfdc8dbb77bfac3aec27eb9b7",
     "entities": [
       {
         "tableName": "custom_actions",
@@ -133,7 +133,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_Step_ussd_action_id",
+            "unique": false,
+            "columnNames": [
+              "ussd_action_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Step_ussd_action_id` ON `${TABLE_NAME}` (`ussd_action_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "ussd_actions",
@@ -152,7 +161,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f886823a371d7187f7f30f3294209fef')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '848a820bfdc8dbb77bfac3aec27eb9b7')"
     ]
   }
 }

@@ -32,6 +32,7 @@ import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.ui.main.PageViewModel;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
@@ -239,6 +240,10 @@ public class MainFragment extends Fragment {
 //            if(t.getPhoneType()!= TelephonyManager.PHONE_TYPE_CDMA){
         Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
         Log.d("TELEPHONE", t.getNetworkOperator());
+        Log.d("TELEPHONE", t.getNetworkOperatorName());
+        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        pageViewModel.addSimcard(t.getNetworkOperator(),t.getNetworkOperatorName());
+
 
 //            }
         //iniatize chip views
