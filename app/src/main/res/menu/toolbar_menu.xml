@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     >
-
+    <item android:id="@+id/contacts"
+        android:title="Contacts"
+        android:icon="@drawable/ic_see_contacts"
+        app:showAsAction="always"
+        />
     <item android:id="@+id/add_action"
         android:title="Add"
         android:icon="@drawable/ic_add"

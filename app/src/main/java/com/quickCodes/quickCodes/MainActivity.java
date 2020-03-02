@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -152,7 +153,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.add_action:
                 startActivity(new Intent(getApplicationContext(),AddYourOwnActionActivity.class));
-
+                break;
+            case R.id.contacts:
+                Intent contactsIntent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
+                startActivity(contactsIntent);
         }
 
         return super.onOptionsItemSelected(item);
