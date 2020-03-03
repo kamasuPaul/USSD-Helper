@@ -60,12 +60,12 @@ public abstract class MyRoomDatabase extends RoomDatabase {
 
    public  static void addAirtimeCode(Context context){
        UssdActionDao dao = getDatabase(context).ussdActionDao();
-       UssdAction action = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "*185*2*1*1","*185*2*1*1",SEC_AIRTIME);
+       UssdAction action = new UssdAction(0, "Buy Airtime", "*185*2*1*1", "*185*2*1*1","*144",SEC_AIRTIME);
        UssdAction action1 = new UssdAction(1, "Check Balance", "*131", "*131","*131",SEC_AIRTIME);
-       UssdAction action2 = new UssdAction(2, "PakaLast", "*100*2*1", "*160*1","not",SEC_AIRTIME);
+       UssdAction action2 = new UssdAction(2, "PakaLast", "*100*2*1", "*160*1","*134",SEC_AIRTIME);
        UssdAction action3 = new UssdAction(3, "Buy For Another", "*185*2*1*2", "*185*2*1*2","not",SEC_AIRTIME);
        UssdAction action4 = new UssdAction(4, "Borrow Airtime", "*100*4*1", "*160","not",SEC_AIRTIME);
-       UssdAction action5 = new UssdAction(5, "Call Me Back", "*100*7*7",null,"not",SEC_AIRTIME);
+       UssdAction action5 = new UssdAction(5, "Call Me Back", "*100*7*7",null,"*100*8",SEC_AIRTIME);
 
        dao.insertStepsForAction(new UssdActionWithSteps(action,Arrays.asList(new Step(0,NUMBER,0,"Amount"))));
        dao.insertStepsForAction(new UssdActionWithSteps(action1,null));
@@ -79,9 +79,9 @@ public abstract class MyRoomDatabase extends RoomDatabase {
     public  static void addDataCode(Context context){
         UssdActionDao dao = getDatabase(context).ussdActionDao();
 
-        UssdAction action = new UssdAction(100, "Data Bundles","*175*2","*160*2*2*1","not",SEC_DATA);
-        UssdAction action1 = new UssdAction(101, "Check Balance", "*175*4", "*131","*131",SEC_DATA);
-        UssdAction action2 = new UssdAction(102, "Data OTT", "*185*2*5*1", "*165*2*6*1","not",SEC_DATA);
+        UssdAction action = new UssdAction(100, "Data Bundles","*175*2","*160*2*2*1","*133",SEC_DATA);
+        UssdAction action1 = new UssdAction(101, "Check Balance", "*175*4", "*131","*100*9*2",SEC_DATA);
+        UssdAction action2 = new UssdAction(102, "Data OTT", "*185*2*5*1", "*165*2*6*1","*133*8",SEC_DATA);
         UssdAction action3 = new UssdAction(103, "Data PakaLast", "*175*3", "*160*1","not",SEC_DATA);
         UssdAction action4 = new UssdAction(104, "Free Monthly", "*175*9*2", null,"not",SEC_DATA);
         UssdAction action5 = new UssdAction(105, "Send Data", "*175*5*2",null,"not",SEC_DATA);
@@ -99,11 +99,11 @@ public abstract class MyRoomDatabase extends RoomDatabase {
    private static void addMobileMoneyCodes(Context context) {
        UssdActionDao dao = getDatabase(context).ussdActionDao();
 
-       UssdAction action = new UssdAction(200, "Check Balance", "*185*10*1","*185*10*1","not",SEC_MMONEY);
-        UssdAction action1 = new UssdAction(201,  "Send Money", "*185*1*1","*185*1*1","not",SEC_MMONEY);
+       UssdAction action = new UssdAction(200, "Check Balance", "*185*10*1","*185*10*1","*144",SEC_MMONEY);
+        UssdAction action1 = new UssdAction(201,  "Send Money", "*185*1*1","*185*1*1","*144",SEC_MMONEY);
 
-       UssdAction action2 = new UssdAction(202, "Withdraw Cash", "*185*3",null,"not",SEC_MMONEY);
-       UssdAction action3 = new UssdAction(203, "Get a loan", "*185*8","*185*5*1*2","not",SEC_MMONEY);
+       UssdAction action2 = new UssdAction(202, "Withdraw Cash", "*185*3",null,null,SEC_MMONEY);
+       UssdAction action3 = new UssdAction(203, "Get a loan", "*185*8","*185*5*1*2",null,SEC_MMONEY);
 
        dao.insertStepsForAction(new UssdActionWithSteps(action,null));
        dao.insertStepsForAction(new UssdActionWithSteps(action1,Arrays.asList(new Step(201,TELEPHONE,0,"Telephone"),

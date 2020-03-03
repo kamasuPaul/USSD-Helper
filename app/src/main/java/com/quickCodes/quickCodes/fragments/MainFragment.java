@@ -337,8 +337,12 @@ public class MainFragment extends Fragment {
                             }
                         }
                         if (mode.contains("AFRICELL")){
-                            if (us.action.getAfricellCode().contains("not")) {
+                            if ((us.action.getAfricellCode()==null)) {
                                 continue;
+                            }
+                            String code = us.action.getAfricellCode();
+                            if(code!=null){
+                                if(code.contains("not"))continue;
                             }
                         }
                         if (us.action.getSection() == SEC_AIRTIME) {
