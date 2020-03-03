@@ -73,6 +73,7 @@ public class AdapterUssdCodes extends RecyclerView.Adapter<RecyclerView.ViewHold
                 final UssdAction p = items.get(position).action;
 
                 //set title of action
+
                 view.title.setText(p.getName());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
@@ -93,7 +94,7 @@ public class AdapterUssdCodes extends RecyclerView.Adapter<RecyclerView.ViewHold
                 //view.image.setImageDrawable(drawable);
                 //get the screen width
                 int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
+//                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
 
 
 

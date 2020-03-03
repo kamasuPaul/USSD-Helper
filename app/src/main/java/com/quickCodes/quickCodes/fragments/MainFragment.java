@@ -91,9 +91,16 @@ public class MainFragment extends Fragment {
             List<UssdActionWithSteps> dataCodes = new ArrayList<>();
             List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
-                if (us.action.getMtnCode()==null){
-//                    continue;
+                Log.d("SIZE", String.valueOf( us.action.getName().length()));
+                if(us.action.getName().length()<15){
+                    int len = 15- us.action.getName().length();
+                    String d = "";
+                    for(int i=0;i<len;i++){
+                        d = d+" ";
+                    }
+                    us.action.setName(us.action.getName()+d);
                 }
+
                 if (us.action.getSection() == SEC_AIRTIME) {
                     airtimeCodes.add(us);
                 }
