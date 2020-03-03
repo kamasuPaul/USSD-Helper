@@ -66,7 +66,6 @@ public class MainFragment extends Fragment {
     int slot = -1;
     int subscriptionId = 0;
     List<SubscriptionInfo> subList;
-    LinearLayout linearLayoutAirtime, linearLayoutData, linearLayoutMMoney, linearLayoutOthers;
     EditText phoneNumber;
     RecyclerView airtimeRecyclerView, dataRecyclerView, mmRecyclerView;
     private OnFragmentInteractionListener mListener;
@@ -78,41 +77,6 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-    //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
-    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
-        ArrayList<View> views = new ArrayList<View>();
-        final int childCount = root.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = root.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                views.addAll(getViewsByTag((ViewGroup) child, tag));
-            }
-
-            final Object tagObj = child.getTag();
-            if (tagObj != null && tagObj.equals(tag)) {
-                views.add(child);
-            }
-
-        }
-        return views;
-    }
-
-    /**
-     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
-     *
-     * @param v the  view whose layout is to be set
-     * @param l left
-     * @param t top
-     * @param r right
-     * @param b bottom
-     */
-    public static void setMargins(View v, int l, int t, int r, int b) {
-        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            p.setMargins(l, t, r, b);
-            v.requestLayout();
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,6 +91,9 @@ public class MainFragment extends Fragment {
             List<UssdActionWithSteps> dataCodes = new ArrayList<>();
             List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
+                if (us.action.getMtnCode()==null){
+//                    continue;
+                }
                 if (us.action.getSection() == SEC_AIRTIME) {
                     airtimeCodes.add(us);
                 }
@@ -219,12 +186,6 @@ public class MainFragment extends Fragment {
         airtimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         airtimeRecyclerView.setAdapter(adapterUssdCodes);
 
-
-        linearLayoutAirtime = root.findViewById(R.id.linearLayout_airtime);
-        linearLayoutData = root.findViewById(R.id.linearLayout_data);
-        linearLayoutMMoney = root.findViewById(R.id.linearLayout_mmoney);
-        linearLayoutOthers = root.findViewById(R.id.linearLayout_others);
-
         //setup data
         dataRecyclerView = root.findViewById(R.id.dataRecylerView);
         dataRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -246,35 +207,30 @@ public class MainFragment extends Fragment {
 
 
 //            }
-        //iniatize chip views
+//*****************************************SIMCARDS IN PHONE*********************************************************
+        //initialize chip views
         final LinearLayout rootLinearLayoutChips = root.findViewById(R.id.linearLayout_root_chips);
         com.robertlevonyan.views.chip.Chip chipAirtel = root.findViewById(R.id.chip_airel);
         com.robertlevonyan.views.chip.Chip chipMtn = root.findViewById(R.id.chip_mtn);
         com.robertlevonyan.views.chip.Chip chipAfricell = root.findViewById(R.id.chip_africell);
         List<Chip> chips = Arrays.asList(chipAirtel, chipAfricell, chipMtn);
+
         //set click listeners on chips
         for (final com.robertlevonyan.views.chip.Chip chip : chips) {
-            chip.setOnSelectClickListener(new OnSelectClickListener() {
-                @Override
-                public void onSelectClick(View v, boolean selected) {
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-                        }
+            chip.setOnSelectClickListener((v, selected) -> {
+                for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                    if (!v.equals(v1)) {
+                        ((Chip) v1).setChipSelected(false);
                     }
                 }
             });
-            chip.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
-                @Override
-                public void onClick(View v) {
-                    ((com.robertlevonyan.views.chip.Chip) v).setChipSelected(true);
+            chip.setOnClickListener(v -> {
+                ((Chip) v).setChipSelected(true);
 
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
+                for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                    if (!v.equals(v1)) {
+                        ((Chip) v1).setChipSelected(false);
 
-                        }
                     }
                 }
             });
@@ -322,13 +278,7 @@ public class MainFragment extends Fragment {
 //
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if (mode.contains("MTN")) {
-//                            Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT).show();
-                            hideNonMtnAction();
-                        } else {
-                            unHideNonMtnAction();
-
-                        }
+                            filterAndHideActions(mode);
                         Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
 
                     }
@@ -349,11 +299,7 @@ public class MainFragment extends Fragment {
                             }
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                        if (mode.contains("MTN")) {
-                            hideNonMtnAction();
-                        } else {
-                            unHideNonMtnAction();
-                        }
+                        filterAndHideActions(mode);
                         //notify the user of their action
                         Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
 
@@ -362,6 +308,9 @@ public class MainFragment extends Fragment {
                 //add detected chips
                 rootLinearLayoutChips.addView(chip1);
                 setMargins(chip1, 0, 0, 15, 0);
+
+                //filter out actions that dont apply for the currently selected network
+                filterAndHideActions(mode);
 
 
                 //hide default chips
@@ -374,13 +323,50 @@ public class MainFragment extends Fragment {
         return root;
     }
 
+    private void filterAndHideActions(String mode) {
+        if(mode!=null){
+
+                viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+                    List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                    List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                    List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                    for (UssdActionWithSteps us : ussdActionWithSteps) {
+                        if(mode.contains("MTN")) {
+                            if (us.action.getMtnCode() == null) {
+                                continue;
+                            }
+                        }
+                        if (mode.contains("AFRICELL")){
+                            if (us.action.getAfricellCode().contains("not")) {
+                                continue;
+                            }
+                        }
+                        if (us.action.getSection() == SEC_AIRTIME) {
+                            airtimeCodes.add(us);
+                        }
+                        if (us.action.getSection() == SEC_DATA) {
+                            dataCodes.add(us);
+                        }
+                        if (us.action.getSection() == SEC_MMONEY) {
+                            mmoneyCodes.add(us);
+                        }
+                    }
+                    adapterUssdCodes.setUssdActions(airtimeCodes);
+                    adapterUssdCodes1.setUssdActions(dataCodes);
+                    adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
+                });
+            }
+
+    }
+
     /**
      * methods to remove cards with codes that are not supported on mtn
      */
     private void hideNonMtnAction() {
-        List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
-            linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
-        for (LinearLayout l : linearLayouts) {
+        List<RecyclerView> recyclerViews = Arrays.asList(airtimeRecyclerView,
+            dataRecyclerView, mmRecyclerView);
+        for (RecyclerView l : recyclerViews) {
             ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
             for (View v : hiddenViews) v.setVisibility(View.GONE);
 
@@ -388,9 +374,9 @@ public class MainFragment extends Fragment {
     }
 
     private void unHideNonMtnAction() {
-        List<LinearLayout> linearLayouts = Arrays.asList(linearLayoutAirtime,
-            linearLayoutData, linearLayoutMMoney, linearLayoutOthers);
-        for (LinearLayout l : linearLayouts) {
+        List<RecyclerView> recyclerViews = Arrays.asList(airtimeRecyclerView,
+            dataRecyclerView, mmRecyclerView);
+        for (RecyclerView l : recyclerViews) {
             ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
             for (View v : hiddenViews) v.setVisibility(View.VISIBLE);
         }
@@ -641,12 +627,49 @@ public class MainFragment extends Fragment {
 //                    + " must implement OnFragmentInteractionListener");
 //        }
     }
-    //************************ UTILITY METHODS *************************************************
+    //************************ UTILITY METHODS *******************************************************************************
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+
+    //adopted from statck overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
+    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup) child, tag));
+            }
+
+            final Object tagObj = child.getTag();
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+
+        }
+        return views;
+    }
+
+    /**
+     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
+     *
+     * @param v the  view whose layout is to be set
+     * @param l left
+     * @param t top
+     * @param r right
+     * @param b bottom
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
     }
 
     /**
