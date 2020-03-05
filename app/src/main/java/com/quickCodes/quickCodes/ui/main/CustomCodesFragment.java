@@ -256,6 +256,7 @@ public class CustomCodesFragment extends Fragment {
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
+            //TODO execute code with selected simcard instead for prompting the user to select sim
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
 
 

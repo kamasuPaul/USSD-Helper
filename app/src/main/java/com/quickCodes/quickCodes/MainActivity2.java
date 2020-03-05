@@ -156,7 +156,7 @@ ArrayList<String> numberlist = new ArrayList<> ();
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         getApplicationContext ().getPackageName());
                 if (hasPerm != PackageManager.PERMISSION_GRANTED) {
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "*131"+Uri.encode("#"))));
+                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + userinput)));
 
                 }
 
