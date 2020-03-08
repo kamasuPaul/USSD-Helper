@@ -2,40 +2,8 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "848a820bfdc8dbb77bfac3aec27eb9b7",
+    "identityHash": "ca9eaf2dd0cb2b98fede794d815c2895",
     "entities": [
-      {
-        "tableName": "custom_actions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `code` TEXT)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
       {
         "tableName": "ussd_actions",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actionId` INTEGER NOT NULL, `name` TEXT, `airtelCode` TEXT, `mtnCode` TEXT, `africellCode` TEXT, `section` INTEGER NOT NULL, PRIMARY KEY(`actionId`))",
@@ -161,7 +129,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '848a820bfdc8dbb77bfac3aec27eb9b7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca9eaf2dd0cb2b98fede794d815c2895')"
     ]
   }
 }

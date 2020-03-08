@@ -3,7 +3,6 @@ package com.quickCodes.quickCodes.util;
 import android.app.Application;
 import android.os.AsyncTask;
 
-import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 
@@ -17,15 +16,11 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 public class DataRepository {
-    CustomActionDao customActionDao;
     UssdActionDao ussdActionDao;
-    LiveData<List<CustomAction>> allActions;
     LiveData<List<UssdActionWithSteps>> allUssdActions;
     public DataRepository(Application application){
         MyRoomDatabase db = MyRoomDatabase.getDatabase( application);
-        customActionDao = db.customActionDao();
         ussdActionDao = db.ussdActionDao();
-        allActions = customActionDao.getAll();
         allUssdActions = ussdActionDao.getActionsWithSteps();
 
 
@@ -43,12 +38,8 @@ public class DataRepository {
     }
 
     public LiveData<List<UssdActionWithSteps>> getAllUssdActions(){return allUssdActions;}
-    public LiveData<List<CustomAction>> getAllCustomActions(){return allActions;}
     public void delete(UssdAction ussdAction){
         new deleteAsyncTask(ussdActionDao).execute(ussdAction);
-    }
-    public void insert(CustomAction action){
-        new insertAsyncTask(customActionDao).execute(action);
     }
     public void insert(UssdAction action){
         new insertUssdAsyncTask(ussdActionDao).execute(action);
@@ -82,17 +73,6 @@ public class DataRepository {
         @Override
         protected Void doInBackground(UssdAction... customActions) {
             d.delete(customActions[0]);
-            return null;
-        }
-    }
-    private static class insertAsyncTask extends AsyncTask<CustomAction,Void,Void>{
-        CustomActionDao d;
-        insertAsyncTask(CustomActionDao dao){
-            d =dao;
-        }
-        @Override
-        protected Void doInBackground(CustomAction... customActions) {
-            d.insert(customActions[0]);
             return null;
         }
     }

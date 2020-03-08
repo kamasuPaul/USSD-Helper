@@ -3,7 +3,6 @@ package com.quickCodes.quickCodes.util;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,7 +10,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.modals.UssdActionApi;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 
 import org.json.JSONArray;
@@ -79,7 +77,7 @@ public class DownloadWorker extends Worker {
                         dataRepository.insertAll(new UssdActionWithSteps(ussdAction,stepList));
 
                     }
-                    Toast.makeText(context, "Codes have updated", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Codes have updated", Toast.LENGTH_SHORT).show();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -93,38 +91,5 @@ public class DownloadWorker extends Worker {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
-    }
-
-
-    public void download1() {
-        //reftrofit
-//        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
-//        Call<List<UssdActionApi>> call = apiInterface.getAllCustomActions();
-//        call.enqueue(new Callback<List<UssdActionApi>>() {
-//            @Override
-//            public void onResponse(Call<List<UssdActionApi>> call, Response<List<UssdActionApi>> response) {
-////                DataRepository r = new DataRepository((Application) context);
-////                Log.d("API",response.toString());
-////                Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
-////                for (UssdActionApi w: response.body()
-////                ) {
-////                    r.insertAll(convert(w));
-////                    Toast.makeText(getApplicationContext(), w.toString(), Toast.LENGTH_SHORT).show();
-////
-////                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<UssdActionApi>> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
-//
-//                t.printStackTrace();
-//            }
-//        });
-    }
-    public static UssdActionWithSteps convert(UssdActionApi data){
-        UssdAction s = new UssdAction(data.actionId,data.getName(),data.getAirtelCode(),
-            data.getMtnCode(),data.getAfricellCode(),data.section);
-        return new UssdActionWithSteps(s,data.getSteps());
     }
 }

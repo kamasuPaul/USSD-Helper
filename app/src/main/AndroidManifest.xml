@@ -21,7 +21,6 @@
             android:name=".HelpActivity"
             android:label="@string/title_activity_help" />
         <activity android:name=".AddYourOwnActionActivity" />
-        <activity android:name=".MainActivity2" />
         <activity android:name=".dialpad.MainActivity3" />
         <activity
             android:name=".MainActivity"

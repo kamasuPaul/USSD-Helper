@@ -16,7 +16,6 @@ import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.ui.main.PageViewModel;
-import com.quickCodes.quickCodes.util.SQLiteDatabaseHandler;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class AddYourOwnActionActivity extends AppCompatActivity {
 
-    SQLiteDatabaseHandler db;
     MaterialButton button;
     EditText actionName,actionCode;
     AutoCompleteTextView actionNetwork;
@@ -153,11 +151,6 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         UssdAction ussdAction = new UssdAction(codeId, actionNameText, code,code,code, SEC_CUSTOM_CODES);
         v.insert(ussdAction,steps);
-//        db.addUssdAction(ussdAction);
-
-        //for now update the ui from here
-//        CustomCodesFragment.ussdActions.add(ussdAction);
-//        CustomCodesFragment.mAdapter.notifyDataSetChanged();
 
         Toast.makeText(this, ussdAction.getName()+" Has been added", Toast.LENGTH_SHORT).show();
         finish();

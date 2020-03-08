@@ -2,7 +2,6 @@ package com.quickCodes.quickCodes.util;
 
 import android.content.Context;
 
-import com.quickCodes.quickCodes.modals.CustomAction;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
@@ -24,7 +23,7 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 
 
-@Database(entities = {CustomAction.class, UssdAction.class, Step.class},version = 1)
+@Database(entities = {UssdAction.class, Step.class},version = 1)
 public abstract class MyRoomDatabase extends RoomDatabase {
     private UssdActionsViewModel viewModel;
 
@@ -55,7 +54,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
        }
        return INSTANCE;
    }
-   public abstract CustomActionDao customActionDao();
    public abstract UssdActionDao ussdActionDao();
 
    public  static void addAirtimeCode(Context context){
@@ -76,7 +74,8 @@ public abstract class MyRoomDatabase extends RoomDatabase {
        dao.insertStepsForAction(new UssdActionWithSteps(action5,Arrays.asList(new Step(5,TELEPHONE,0,"Telephone"))));
 
    }
-    public  static void addDataCode(Context context){
+
+   public  static void addDataCode(Context context){
         UssdActionDao dao = getDatabase(context).ussdActionDao();
 
         UssdAction action = new UssdAction(100, "Data Bundles","*175*2","*160*2*2*1","*133",SEC_DATA);

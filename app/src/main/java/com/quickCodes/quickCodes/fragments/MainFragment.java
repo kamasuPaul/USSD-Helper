@@ -87,11 +87,11 @@ public class MainFragment extends Fragment {
         adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
         viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+
             List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
             List<UssdActionWithSteps> dataCodes = new ArrayList<>();
             List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
-                Log.d("SIZE", String.valueOf( us.action.getName().length()));
                 if(us.action.getName().length()<15){
                     int len = 15- us.action.getName().length();
                     String d = "";
@@ -168,10 +168,6 @@ public class MainFragment extends Fragment {
 
     }
 
-
-
-
-
     private void setUpDialog() {
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
@@ -206,7 +202,7 @@ public class MainFragment extends Fragment {
         //TRIAL CODE TO USE MCC AND MNC
         TelephonyManager t = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
 //            if(t.getPhoneType()!= TelephonyManager.PHONE_TYPE_CDMA){
-        Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
         Log.d("TELEPHONE", t.getNetworkOperator());
         Log.d("TELEPHONE", t.getNetworkOperatorName());
         PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
@@ -222,7 +218,7 @@ public class MainFragment extends Fragment {
         com.robertlevonyan.views.chip.Chip chipAfricell = root.findViewById(R.id.chip_africell);
         List<Chip> chips = Arrays.asList(chipAirtel, chipAfricell, chipMtn);
 
-        //set click listeners on chips
+//        //set click listeners on chips
         for (final com.robertlevonyan.views.chip.Chip chip : chips) {
             chip.setOnSelectClickListener((v, selected) -> {
                 for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
@@ -242,9 +238,8 @@ public class MainFragment extends Fragment {
                 }
             });
         }
-        ;
         //make the first chip selected
-        chipAirtel.setChipSelected(true);
+//        chipAirtel.setChipSelected(true);
         //set default mode to airtel
         mode = "Airtel";
         slot = 0;
@@ -319,7 +314,6 @@ public class MainFragment extends Fragment {
                 //filter out actions that dont apply for the currently selected network
                 filterAndHideActions(mode);
 
-
                 //hide default chips
                 for (Chip chip : chips) chip.setVisibility(View.GONE);
 
@@ -381,15 +375,6 @@ public class MainFragment extends Fragment {
             ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
             for (View v : hiddenViews) v.setVisibility(View.GONE);
 
-        }
-    }
-
-    private void unHideNonMtnAction() {
-        List<RecyclerView> recyclerViews = Arrays.asList(airtimeRecyclerView,
-            dataRecyclerView, mmRecyclerView);
-        for (RecyclerView l : recyclerViews) {
-            ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
-            for (View v : hiddenViews) v.setVisibility(View.VISIBLE);
         }
     }
 
