@@ -77,15 +77,19 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             Log.d("SIMCARDS",d);
 
         }
+                String[] networks = new String[] {"Airtel", "MTN", "Africell"};
+
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
                 this,
                 R.layout.dropdown_menu_popup_item,
-               a);
+               networks);
 
         AutoCompleteTextView editTextFilledExposedDropdown =
             findViewById(R.id.action_network);
+        editTextFilledExposedDropdown.setKeyListener(null);
         editTextFilledExposedDropdown.setAdapter(adapter);
+
         //**************************************************************************************//
 
     }
