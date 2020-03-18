@@ -15,6 +15,7 @@ public class UssdAction {
     private String mtnCode;
     private String africellCode;
     public int section;
+    private String network = ""; //this is to be used for custom codes to define which network they run on
 
     @Ignore
     public UssdAction(){
@@ -28,6 +29,16 @@ public class UssdAction {
         this.mtnCode = mtnCode;
         this.africellCode = africellCode;
         this.section = section;
+    }
+    @Ignore
+    public UssdAction(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section,String network) {
+        this.actionId = actionId;
+        this.name = name;
+        this.airtelCode = airtelCode;
+        this.mtnCode = mtnCode;
+        this.africellCode = africellCode;
+        this.section = section;
+        this.network = network;
     }
 
     public long getActionId() {
@@ -77,6 +88,15 @@ public class UssdAction {
     public void setAfricellCode(String africellCode) {
         this.africellCode = africellCode;
     }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
+    }
+
     @Override
     public String toString() {
         return "UssdAction{" +

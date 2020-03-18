@@ -32,7 +32,6 @@ import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.ui.main.PageViewModel;
 import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
@@ -40,6 +39,7 @@ import com.robertlevonyan.views.chip.OnSelectClickListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -73,6 +73,13 @@ public class MainFragment extends Fragment {
     private UssdActionsViewModel viewModel;
     private AdapterUssdCodes adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
 
+    //for sharing selected network with the add action activity
+    public static HashMap<String, String> simcards = new HashMap<>();
+    public static String selectedSimcard = null;
+
+    public static HashMap<String, String> simcardsSlots = new HashMap<>();//contains the simcard mnc and its slot in the phone
+
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -93,13 +100,13 @@ public class MainFragment extends Fragment {
             List<UssdActionWithSteps> dataCodes = new ArrayList<>();
             List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
-                if(us.action.getName().length()<15){
-                    int len = 15- us.action.getName().length();
+                if (us.action.getName().length() < 15) {
+                    int len = 15 - us.action.getName().length();
                     String d = "";
-                    for(int i=0;i<len;i++){
-                        d = d+" ";
+                    for (int i = 0; i < len; i++) {
+                        d = d + " ";
                     }
-                    us.action.setName(us.action.getName()+d);
+                    us.action.setName(us.action.getName() + d);
                 }
 
                 if (us.action.getSection() == SEC_AIRTIME) {
@@ -206,8 +213,9 @@ public class MainFragment extends Fragment {
 //        Toast.makeText(getActivity(), t.getNetworkOperator(), Toast.LENGTH_SHORT).show();
         Log.d("TELEPHONE", t.getNetworkOperator());
         Log.d("TELEPHONE", t.getNetworkOperatorName());
-        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        pageViewModel.addSimcard(t.getNetworkOperator(),t.getNetworkOperatorName());
+//         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+//        pageViewModel.addSimcard(t.getNetworkOperator(),t.getNetworkOperatorName());
+        //add the newtork operator to hashmpa ,to be used in addyourOwnActionActivity
 
 
 //            }
@@ -252,13 +260,16 @@ public class MainFragment extends Fragment {
             subList = subscriptionManager.getActiveSubscriptionInfoList();
 
             for (final SubscriptionInfo subscriptionInfo : subList) {
-                Log.d("MCC",String.valueOf(subscriptionInfo.getMcc()));
-                Log.d("MNC",String.valueOf(subscriptionInfo.getMnc()));
+                Log.d("MCC", String.valueOf(subscriptionInfo.getMcc()));
+                Log.d("MNC", String.valueOf(subscriptionInfo.getMnc()));
 
                 final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
+                String hnc = String.valueOf(subscriptionInfo.getMcc())+ subscriptionInfo.getMnc();
+                simcards.put(networkName,hnc);
+                simcardsSlots.put(hnc,String.valueOf(subscriptionInfo.getSimSlotIndex()));
 
                 final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
-                //set margin for the chip
+
                 chip1.setText(networkName);
                 if (networkName.contains("MTN")) {
                     chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
@@ -284,7 +295,7 @@ public class MainFragment extends Fragment {
 //
                         }
                         //if the selected mode is mtn remove non mtn action cards
-                            filterAndHideActions(mode);
+                        filterAndHideActions(mode);
                         Toast.makeText(getActivity(), "You have changed to " + mode + " codes", Toast.LENGTH_SHORT).show();
 
                     }
@@ -329,43 +340,43 @@ public class MainFragment extends Fragment {
     }
 
     private void filterAndHideActions(String mode) {
-        if(mode!=null){
+        if (mode != null) {
 
-                viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
-                    List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
-                    List<UssdActionWithSteps> dataCodes = new ArrayList<>();
-                    List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
-                    for (UssdActionWithSteps us : ussdActionWithSteps) {
-                        if(mode.contains("MTN")) {
-                            if (us.action.getMtnCode() == null) {
-                                continue;
-                            }
-                        }
-                        if (mode.contains("AFRICELL")){
-                            if ((us.action.getAfricellCode()==null)) {
-                                continue;
-                            }
-                            String code = us.action.getAfricellCode();
-                            if(code!=null){
-                                if(code.contains("not"))continue;
-                            }
-                        }
-                        if (us.action.getSection() == SEC_AIRTIME) {
-                            airtimeCodes.add(us);
-                        }
-                        if (us.action.getSection() == SEC_DATA) {
-                            dataCodes.add(us);
-                        }
-                        if (us.action.getSection() == SEC_MMONEY) {
-                            mmoneyCodes.add(us);
+            viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    if (mode.contains("MTN")) {
+                        if (us.action.getMtnCode() == null) {
+                            continue;
                         }
                     }
-                    adapterUssdCodes.setUssdActions(airtimeCodes);
-                    adapterUssdCodes1.setUssdActions(dataCodes);
-                    adapterUssdCodes2.setUssdActions(mmoneyCodes);
+                    if (mode.contains("AFRICELL")) {
+                        if ((us.action.getAfricellCode() == null)) {
+                            continue;
+                        }
+                        String code = us.action.getAfricellCode();
+                        if (code != null) {
+                            if (code.contains("not")) continue;
+                        }
+                    }
+                    if (us.action.getSection() == SEC_AIRTIME) {
+                        airtimeCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_DATA) {
+                        dataCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_MMONEY) {
+                        mmoneyCodes.add(us);
+                    }
+                }
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
 
-                });
-            }
+            });
+        }
 
     }
 
@@ -384,7 +395,7 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void executeUssd(String fullCode) {
-        Log.d("CODE",fullCode);
+        Log.d("CODE", fullCode);
         TelecomManager telecomManager = null;
         List<PhoneAccountHandle> phoneAccountHandleList = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -468,7 +479,7 @@ public class MainFragment extends Fragment {
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
-            Log.d("NO STEPS",code);
+            Log.d("NO STEPS", code);
 
             executeUssd(code + Uri.encode("#"));
 

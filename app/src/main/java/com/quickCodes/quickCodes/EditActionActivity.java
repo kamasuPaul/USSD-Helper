@@ -20,12 +20,14 @@ import com.quickCodes.quickCodes.util.UssdActionsViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
+import static com.quickCodes.quickCodes.AddYourOwnActionActivity.containsIgnoreCase;
+import static com.quickCodes.quickCodes.fragments.MainFragment.simcards;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
@@ -76,27 +78,41 @@ public class EditActionActivity extends AppCompatActivity {
         });
 
         actionName.setText(lastAction.action.getName());
-        actionNetwork.setText(lastAction.action.getName());
+        //retrieve the selected network if the simcard is still inside the phone orthiwe ignore it
+        if(simcards.containsValue(lastAction.action.getNetwork())){
+            String networkName = getKey(simcards, lastAction.action.getNetwork());
+            actionNetwork.setText(networkName.toUpperCase());
+        }else{
+            Toast.makeText(this, lastAction.action.getNetwork(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, simcards.toString(), Toast.LENGTH_SHORT).show();
+        }
         actionCode.setText(lastAction.action.getAirtelCode());
 
 
-
-
-
-
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
-        String[] COUNTRIES = new String[] {"Airtel", "Mtn", "Africell"};
+        //get available networks from main activity
+        for (Map.Entry<String, String> entry : simcards.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+        }
+
+        //add all networks to the array
+        String[] networks = simcards.keySet().toArray(new String[simcards.keySet().size()]);
 
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
                 this,
                 R.layout.dropdown_menu_popup_item,
-                COUNTRIES);
+                networks);
 
         AutoCompleteTextView editTextFilledExposedDropdown =
             findViewById(R.id.action_network);
+        editTextFilledExposedDropdown.setKeyListener(null);
         editTextFilledExposedDropdown.setAdapter(adapter);
+
         //**************************************************************************************//
+
 
         //**********************ADD PREVIOUSLY ADDED STEPS IN THE ACTION**************************//
         //sort the steps according to weight and display them
@@ -125,54 +141,67 @@ public class EditActionActivity extends AppCompatActivity {
     }
     public void addNewAction(){
         int count = parentlayout.getChildCount();
-
-        Random r  = new Random();
         Long codeId = lastAction.action.getActionId();
 
         List<Step> steps = new ArrayList<>();
-        for(int i=0;i<count;i++){
+        for (int i = 0; i < count; i++) {
 
             final View row = parentlayout.getChildAt(i);
             EditText editText = row.findViewById(R.id.number_edit_text);
             Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
 
             String t = stepTypeSpinner.getSelectedItem().toString();
-            int type = TEXT;
-            if(t.equalsIgnoreCase(getString(R.string.text)))  type = TEXT;
-            if(t.equalsIgnoreCase(getString(R.string.number)))  type = NUMBER;
-            if(t.equalsIgnoreCase(getString(R.string.contact)))  type = TELEPHONE;
 
-            int weight = 0;
+            int type = TEXT;
+            if (t.equalsIgnoreCase(getString(R.string.text))) type = TEXT;
+            if (t.equalsIgnoreCase(getString(R.string.number))) type = NUMBER;
+            if (t.equalsIgnoreCase(getString(R.string.contact))) type = TELEPHONE;
+            int weight = i;
 
             String des = editText.getText().toString();
             String defaultValue = "";
-            Step step =  new Step(codeId,type,weight,des,defaultValue);
+            Step step = new Step(codeId, type, weight, des, defaultValue);
 
             steps.add(step);
         }
 
         //insert the data into the database
-        String code = actionCode.getText().toString().replaceAll("#","");
+        String code = actionCode.getText().toString().replaceAll("#", "");
         //TODO check if the code starts with a *
 
         //check if the code is not empty
         //check if the name is not empty
         String actionNameText = actionName.getText().toString();
 
-        if(actionNameText.isEmpty()){
+        if (actionNameText.isEmpty()) {
             Toast.makeText(this, "A name is required to save", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(code.isEmpty()){
+        if (code.isEmpty()) {
             Toast.makeText(this, "A code is required to save", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        //get newtork
+        //store the action code in the correct network
+        //store the chosen network ie its MNC in on of the other networks
+        String networkName = actionNetwork.getText().toString();
+        String hnc = simcards.get(networkName);
+        Toast.makeText(this, networkName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, hnc, Toast.LENGTH_SHORT).show();
+        String airtelCode = "", mtnCode = "", africellCode = "";
+        if (containsIgnoreCase(networkName, "MTN")) {
+            mtnCode = code;
+        }
+        if (containsIgnoreCase(networkName, "AIRTEL")) {
+            airtelCode = code;
+        }
+        if (containsIgnoreCase(networkName, "AFRICELL")) {
+            africellCode = code;
+        }
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        UssdAction ussdAction = new UssdAction(codeId, actionNameText, code,code,code, SEC_CUSTOM_CODES);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText,airtelCode,mtnCode,africellCode, SEC_CUSTOM_CODES,hnc);
         v.update(new UssdActionWithSteps(ussdAction,steps));
-
-
+        //TODO go to custom codes fragment
         Toast.makeText(this, ussdAction.getName()+" Has been Edited", Toast.LENGTH_SHORT).show();
         finish();
 
@@ -187,5 +216,16 @@ public class EditActionActivity extends AppCompatActivity {
         final View rowView = inflater.inflate(R.layout.field,null);
         parentlayout.addView(rowView,parentlayout.getChildCount()-1);
 
+    }
+    /*
+    adopted from https://techiedelight.com/get-map-key-from-value-java/
+     */
+    public static <K, V> K getKey(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

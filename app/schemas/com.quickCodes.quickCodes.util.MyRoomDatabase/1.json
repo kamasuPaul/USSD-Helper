@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ca9eaf2dd0cb2b98fede794d815c2895",
+    "identityHash": "7ded880c3dc4df678855af50a3b1de02",
     "entities": [
       {
         "tableName": "ussd_actions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actionId` INTEGER NOT NULL, `name` TEXT, `airtelCode` TEXT, `mtnCode` TEXT, `africellCode` TEXT, `section` INTEGER NOT NULL, PRIMARY KEY(`actionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`actionId` INTEGER NOT NULL, `name` TEXT, `airtelCode` TEXT, `mtnCode` TEXT, `africellCode` TEXT, `section` INTEGER NOT NULL, `network` TEXT, PRIMARY KEY(`actionId`))",
         "fields": [
           {
             "fieldPath": "actionId",
@@ -43,6 +43,12 @@
             "columnName": "section",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -129,7 +135,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca9eaf2dd0cb2b98fede794d815c2895')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ded880c3dc4df678855af50a3b1de02')"
     ]
   }
 }

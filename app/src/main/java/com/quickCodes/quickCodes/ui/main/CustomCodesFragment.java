@@ -1,5 +1,6 @@
 package com.quickCodes.quickCodes.ui.main;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.quickCodes.quickCodes.fragments.MainFragment.simcardsSlots;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
@@ -65,7 +68,7 @@ public class CustomCodesFragment extends Fragment {
     private PageViewModel pageViewModel;
     public static AdapterGridCustomCodes mAdapter;
     private RecyclerView recyclerView;
-    public static List<UssdAction>  ussdActions;
+    public static List<UssdAction> ussdActions;
     private EditText phoneNumber;
 
 
@@ -87,8 +90,8 @@ public class CustomCodesFragment extends Fragment {
         ussdActionsViewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
             @Override
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
-                List<UssdActionWithSteps>customCodes = new ArrayList<>();
-                for(UssdActionWithSteps us: ussdActionWithSteps) {
+                List<UssdActionWithSteps> customCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : ussdActionWithSteps) {
                     if (us.action.getSection() == SEC_CUSTOM_CODES) {
                         customCodes.add(us);
                     }
@@ -98,11 +101,11 @@ public class CustomCodesFragment extends Fragment {
         });
 
         SharedPreferences prefs = getActivity().getSharedPreferences(sharedPrefString, Context.MODE_PRIVATE);
-        if(!prefs.contains("first")){
+        if (!prefs.contains("first")) {
             //TODO add ussd action to db;as custom action
             //UssdAction ussdAction = new UssdAction(3434, "Airtime Balance", "*131","Airtel",);
 
-            prefs.edit().putBoolean("first",true)
+            prefs.edit().putBoolean("first", true)
                 .commit();
         }
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
@@ -114,8 +117,8 @@ public class CustomCodesFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+        @NonNull LayoutInflater inflater, ViewGroup container,
+        Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_custom_codes, container, false);
 
         if (ussdActions != null) {
@@ -130,6 +133,7 @@ public class CustomCodesFragment extends Fragment {
 
         return root;
     }
+
     public void createDialog(UssdActionWithSteps ussdActionWithSteps) {
 
         //use codes for the selected network mode
@@ -137,20 +141,25 @@ public class CustomCodesFragment extends Fragment {
 //        String mode1 = "AIRTEL";//TODO get mode in a better way
 //        UssdAction ussdAction = ussdActionWithSteps.action;
 //        String code = "";
-//        if(mode1.contains("MTN"))       code = ussdAction.getMtnCode();
-//        if(mode1.contains("AIRTEL"))    code = ussdAction.getAirtelCode();
-//        if(mode1.contains("AFRICELL"))  code = ussdAction.getAfricellCode();
+        String uscode1 = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
+        UssdAction action = ussdActionWithSteps.action;
+        if (!action.getMtnCode().isEmpty()) {
+            uscode1 = action.getMtnCode();
+        }
+        if (!action.getAirtelCode().isEmpty()) {
+            uscode1 = action.getAirtelCode();
+        }
+        if (!action.getAfricellCode().isEmpty()) {
+            uscode1 = action.getAfricellCode();
 
-        String uscode = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
-        Log.d("CODE",uscode);
-
-
+        }
+        final String uscode = uscode1;
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
             //TODO execute code with selected simcard instead for prompting the user to select sim
-            String code = uscode+ Uri.encode("#");
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
+            String code = uscode1 + Uri.encode("#");
+            executeUssd(code, ussdActionWithSteps.action);
 
 
         } else {
@@ -162,7 +171,7 @@ public class CustomCodesFragment extends Fragment {
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
             //else check for steps and construct the layout
             for (Step step : ussdActionWithSteps.steps) {
-                if (step.getType()== TEXT) {
+                if (step.getType() == TEXT) {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId((int) step.getStepId());
@@ -172,7 +181,7 @@ public class CustomCodesFragment extends Fragment {
 
 
                 }
-                if (step.getType()==TELEPHONE) {
+                if (step.getType() == TELEPHONE) {
                     View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
 
                     ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
@@ -192,7 +201,7 @@ public class CustomCodesFragment extends Fragment {
 
 
                 }
-                if (step.getType()== NUMBER) {
+                if (step.getType() == NUMBER) {
                     View rowAmount = inflater.inflate(R.layout.row_amount, null);
                     rowAmount.setId((int) step.getStepId());
                     final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
@@ -235,11 +244,10 @@ public class CustomCodesFragment extends Fragment {
                     //generate the code with the values inserted
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
-                    Log.d("FULL CODE",fullCode);
-
                     customDialog.dismiss();
-                    //execute the ussd code
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+                    //execute the ussd
+                    executeUssd(fullCode, ussdActionWithSteps.action);
+//                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
 
 
                 }
@@ -258,9 +266,9 @@ public class CustomCodesFragment extends Fragment {
     }
 
     private void initComponent(View root) {
-        recyclerView = (RecyclerView)root. findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.addItemDecoration(new MyItemDecorator(2,5));
+        recyclerView.addItemDecoration(new MyItemDecorator(2, 5));
 //        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 8), true));
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
@@ -275,7 +283,7 @@ public class CustomCodesFragment extends Fragment {
 
                 //TODO first look into custom codes
                 String initialCode = obj.action.getAirtelCode();
-                String cd = initialCode+ Uri.encode("#");
+                String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
             }
 
@@ -287,10 +295,47 @@ public class CustomCodesFragment extends Fragment {
             @Override
             public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
                 Intent i = new Intent(getActivity(), EditActionActivity.class);
-                i.putExtra("action_id",String.valueOf(obj.action.getActionId()));
+                i.putExtra("action_id", String.valueOf(obj.action.getActionId()));
                 startActivity(i);
             }
         });
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void executeUssd(String fullCode, UssdAction action) {
+        String hnc = action.getNetwork();
+        String simcardSlot = simcardsSlots.get(hnc);
+
+        TelecomManager telecomManager = null;
+        List<PhoneAccountHandle> phoneAccountHandleList = null;
+        // if the users phone is android is  Marshmallow or above
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (simcardsSlots.containsKey(hnc)) {//if the network choosen by user when saving code is still available in simcard
+                //TODO if api level is greater than 26 do background codes,do this later,not important right now
+                telecomManager = (TelecomManager) getActivity().getSystemService(Context.TELECOM_SERVICE);
+                phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
+                for (int i = 0; i < phoneAccountHandleList.size(); i++) {
+                    PhoneAccountHandle phoneAccountHandle = phoneAccountHandleList.get(i);
+                    if (i == Integer.valueOf(simcardSlot)) {
+                        Uri uri = Uri.parse("tel:" + fullCode);
+                        Bundle extras = new Bundle();
+                        extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccountHandle);
+                        telecomManager.placeCall(uri, extras);
+                        break;//break out of the loop
+                    }
+                }
+            } else {
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+
+            }
+
+        } else {
+            //use normal way of dialing ussd code,because their is not an easy way of getting user selected simcard
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
+
+        }
 
     }
 
@@ -306,10 +351,10 @@ public class CustomCodesFragment extends Fragment {
                     int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberIdex);
                     if (phoneNumber != null) {
-                        if(number.startsWith("+256")){
-                            number = number.replace("+256","0");
+                        if (number.startsWith("+256")) {
+                            number = number.replace("+256", "0");
                         }
-                        number = number.replace(" ","");
+                        number = number.replace(" ", "");
                         phoneNumber.setText(number);
                     }
 
@@ -331,6 +376,7 @@ public class CustomCodesFragment extends Fragment {
         }
     }
 //********************************************UTILITY METHODS ****************************
+
     /**
      * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
      *
@@ -348,13 +394,15 @@ public class CustomCodesFragment extends Fragment {
         }
     }
 
-    class MyItemDecorator extends RecyclerView.ItemDecoration{
-        private  int margin,columns;
-        public MyItemDecorator(int columns,int margin) {
+    class MyItemDecorator extends RecyclerView.ItemDecoration {
+        private int margin, columns;
+
+        public MyItemDecorator(int columns, int margin) {
             this.columns = columns;
             this.margin = margin;
 
         }
+
         @Override
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             int position = parent.getChildLayoutPosition(view);
@@ -363,15 +411,15 @@ public class CustomCodesFragment extends Fragment {
             //set bottom margin to all
             outRect.bottom = margin;
             //we only add top margin to the first row
-            if (position <columns) {
+            if (position < columns) {
                 outRect.top = margin;
             }
             //add left margin only to the first column
-            if(position%columns==0){
+            if (position % columns == 0) {
                 outRect.left = margin;
             }
         }
-        }
     }
+}
 
 
