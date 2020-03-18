@@ -39,6 +39,7 @@ import com.robertlevonyan.views.chip.OnSelectClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -251,6 +252,9 @@ public class MainFragment extends Fragment {
             subList = subscriptionManager.getActiveSubscriptionInfoList();
 
             for (final SubscriptionInfo subscriptionInfo : subList) {
+                Log.d("MCC",String.valueOf(subscriptionInfo.getMcc()));
+                Log.d("MNC",String.valueOf(subscriptionInfo.getMnc()));
+
                 final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
 
                 final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
@@ -473,7 +477,10 @@ public class MainFragment extends Fragment {
             CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
             //else check for steps and construct the layout
-            for (Step step : ussdActionWithSteps.steps) {
+            List<Step> steps = ussdActionWithSteps.steps;
+            //sort the steps
+            Collections.sort(steps, (step1, step2) -> ((Integer) step1.getWeight()).compareTo(step2.getWeight()));
+            for (Step step : steps) {
                 if (step.getType() == TEXT) {
 
                     View rowText = inflater.inflate(R.layout.row_text, null);

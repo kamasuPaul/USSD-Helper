@@ -8,9 +8,14 @@
 
     <string-array name="types">
         <item>Text</item>
-        <item>Tel No</item>
+        <item>Contact</item>
         <item>Number</item>
     </string-array>
+    <string name="text">Text</string>
+    <string name="contact">Contact</string>
+    <string name="number">Number</string>
+
+
     <string name="title_activity_help">HelpActivity</string>
     <string name="HIDE">HIDE</string>
     <string name="use_of_plus_btn"> You can use it to save your own codes for later use \n
@@ -31,6 +36,7 @@
     <string name="which_simcards">We currently support two networks in uganda.\n
         1.Mtn uganda \n
         2.Airtel uganda \n
+        3.Africell uganda \n
         \n
 
         but other networks will be supported soon.

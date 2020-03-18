@@ -118,10 +118,11 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
 
             String t = stepTypeSpinner.getSelectedItem().toString();
+
             int type = TEXT;
-            if(t.equalsIgnoreCase("Text"))  type = TEXT;
-            if(t.equalsIgnoreCase("Number"))  type = NUMBER;
-            if(t.equalsIgnoreCase("Tel No"))  type = TELEPHONE;
+            if(t.equalsIgnoreCase(getString(R.string.text)))  type = TEXT;
+            if(t.equalsIgnoreCase(getString(R.string.number)))  type = NUMBER;
+            if(t.equalsIgnoreCase(getString(R.string.contact)))  type = TELEPHONE;
             int weight = i;
 
             String des = editText.getText().toString();

@@ -1,9 +1,10 @@
 package com.quickCodes.quickCodes.modals;
 
 public class Constants {
-    public static int TELEPHONE =0;
-    public static int TEXT =1;
+    public static int TEXT =0;
+    public static int TELEPHONE =1;
     public static int NUMBER =2;
+
 
     public static int AIRTEL = 0;
     public static int MTN = 1;
