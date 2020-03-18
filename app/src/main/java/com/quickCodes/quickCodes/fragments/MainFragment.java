@@ -384,6 +384,7 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void executeUssd(String fullCode) {
+        Log.d("CODE",fullCode);
         TelecomManager telecomManager = null;
         List<PhoneAccountHandle> phoneAccountHandleList = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -467,6 +468,8 @@ public class MainFragment extends Fragment {
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
+            Log.d("NO STEPS",code);
+
             executeUssd(code + Uri.encode("#"));
 
         } else {

@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,115 +130,6 @@ public class CustomCodesFragment extends Fragment {
 
         return root;
     }
-//    public void createDialog(final UssdActionWithSteps ussdAction, final String cd) {
-//        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
-//        return ;
-//
-//
-//        if (ussdAction.getSteps() == null || ussdAction.getSteps().length == 0) {
-//            //execute the code immediately
-//            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cd)));
-//
-//
-//        } else {
-//
-//
-//            final Dialog customDialog;
-//            //inflate the root dialog
-//            LayoutInflater inflater = getLayoutInflater();
-//            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
-//            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
-//            //else check for steps and construct the layout
-//            for (Step step : ussdAction.getSteps()) {
-//                if (step.getType().equals("Text")) {
-//
-//                    View rowText = inflater.inflate(R.layout.row_text, null);
-//                    rowText.setId(step.getId());
-//                    final EditText editText = rowText.findViewById(R.id.editText_text);
-//                    editText.setHint(step.getDescription());
-//                    root.addView(rowText);
-//
-//
-//                }
-//                if (step.getType().equals("Tel No")) {
-//                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
-//                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
-//                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
-//                    imageButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            // TODO pick contact
-//                            phoneNumber = editText;
-//                            Intent i = new Intent(Intent.ACTION_PICK);
-//                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-//                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
-//                        }
-//                    });
-//
-//                    rowTelephone.setId(step.getId());
-//                    root.addView(rowTelephone);
-//
-//
-//                }
-//                if (step.getType().equals("Number")) {
-//                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
-//                    rowAmount.setId(step.getId());
-//                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
-//                    editText.setHint(step.getDescription());
-//                    root.addView(rowAmount);
-//
-//                }
-//
-//            }
-//
-//            //inflate each row that should be contained in the dialog box
-//            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
-//            //add each row to the root
-//            root.addView(rowButtons);
-//
-//
-//            customDialog = new Dialog(getActivity());
-//            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-//            customDialog.setContentView(cardView);
-//            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            customDialog.setCancelable(true);
-//
-//
-//            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    StringBuilder stringBuilder = new StringBuilder(ussdAction.getCode());
-//                    //get all the user entered values
-//                    for(Step step: ussdAction.getSteps()){
-//                        //get the user entered value of each step using its id
-//                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById(step.getId());
-//
-//                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
-//                        stringBuilder.append("*"+value);
-//
-//                    }
-//                    //generate the code with the values inserted
-//                    //run the code
-//                    String fullCode = stringBuilder.toString()+ Uri.encode("#");
-//
-//                    customDialog.dismiss();
-//                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-//
-//                }
-//
-//
-//            });
-//
-//            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    customDialog.dismiss();
-//                }
-//            });
-//            customDialog.show();
-////            return customDialog;
-//        }
-//    }
     public void createDialog(UssdActionWithSteps ussdActionWithSteps) {
 
         //use codes for the selected network mode
@@ -250,13 +142,14 @@ public class CustomCodesFragment extends Fragment {
 //        if(mode1.contains("AFRICELL"))  code = ussdAction.getAfricellCode();
 
         String uscode = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
-        String code = uscode+ Uri.encode("#");
+        Log.d("CODE",uscode);
 
 
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //execute the code immediately
             //TODO execute code with selected simcard instead for prompting the user to select sim
+            String code = uscode+ Uri.encode("#");
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
 
 
@@ -324,11 +217,10 @@ public class CustomCodesFragment extends Fragment {
 
 
             final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
-            String finalCode = code;
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    StringBuilder stringBuilder = new StringBuilder(finalCode);
+                    StringBuilder stringBuilder = new StringBuilder(uscode);
                     //get all the user entered values
                     for (Step step : finalUssdAction.steps) {
                         //get the user entered value of each step using its id
@@ -343,6 +235,7 @@ public class CustomCodesFragment extends Fragment {
                     //generate the code with the values inserted
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
+                    Log.d("FULL CODE",fullCode);
 
                     customDialog.dismiss();
                     //execute the ussd code
@@ -381,8 +274,8 @@ public class CustomCodesFragment extends Fragment {
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
 
                 //TODO first look into custom codes
-                String uscode = obj.action.getAirtelCode();
-                String cd = uscode+ Uri.encode("#");
+                String initialCode = obj.action.getAirtelCode();
+                String cd = initialCode+ Uri.encode("#");
                 createDialog(obj);
             }
 
