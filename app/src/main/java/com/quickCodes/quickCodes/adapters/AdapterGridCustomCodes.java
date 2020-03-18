@@ -80,8 +80,9 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                 view.title.setText(p.getName());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
-
-                int color1 = ColorGenerator.MATERIAL.getRandomColor();
+                ColorGenerator generator = ColorGenerator.MATERIAL;
+//                int color1 = ColorGenerator.MATERIAL.getRandomColor();//generate random color
+                int color1 = generator.getColor(p.getName());
 
                 // declare the builder object once.
                 TextDrawable.IBuilder builder = TextDrawable.builder()

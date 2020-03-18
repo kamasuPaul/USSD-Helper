@@ -186,8 +186,6 @@ public class EditActionActivity extends AppCompatActivity {
         //store the chosen network ie its MNC in on of the other networks
         String networkName = actionNetwork.getText().toString();
         String hnc = simcards.get(networkName);
-        Toast.makeText(this, networkName, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, hnc, Toast.LENGTH_SHORT).show();
         String airtelCode = "", mtnCode = "", africellCode = "";
         if (containsIgnoreCase(networkName, "MTN")) {
             mtnCode = code;
