@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
@@ -31,7 +32,7 @@ public abstract class MyRoomDatabase extends RoomDatabase {
    public static synchronized MyRoomDatabase getDatabase(Context context){
        if(INSTANCE==null){
           INSTANCE = Room.databaseBuilder(context,MyRoomDatabase.class,"custom_actions_db")
-               .fallbackToDestructiveMigration()
+               .addMigrations(Migration_1_2)
                 .addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
@@ -119,5 +120,10 @@ public abstract class MyRoomDatabase extends RoomDatabase {
 //        superActionsOthers.add(simpleAction("School Fees", "*175*9*2", "*131"));
 //        superActionsOthers.add(simpleAction("Sports Betting", "*175*9*2", "*131"));
     }
-
+    static final Migration Migration_1_2 = new Migration(0,1) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //table not altered nothing to do,its just not to delete tables on update
+        }
+    };
 }
