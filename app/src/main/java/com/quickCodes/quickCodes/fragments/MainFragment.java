@@ -56,6 +56,7 @@ import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
@@ -117,6 +118,9 @@ public class MainFragment extends Fragment {
                 }
                 if (us.action.getSection() == SEC_MMONEY) {
                     mmoneyCodes.add(us);
+                }
+                if(us.action.getSection() == SEC_USER_DIALED){
+                    Toast.makeText(getActivity(), us.action.getAirtelCode(), Toast.LENGTH_SHORT).show();
                 }
             }
             adapterUssdCodes.setUssdActions(airtimeCodes);

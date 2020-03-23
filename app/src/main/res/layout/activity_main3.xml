@@ -1,35 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".dialpad.MainActivity3">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/matched_items_recylerview"
+        android:layout_width="match_parent"
+        android:layout_height="294dp"
+
+
+        app:layout_constraintBottom_toTopOf="@+id/matchedname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.145" />
 
     <TextView
         android:id="@+id/matchedname"
-        android:layout_width="match_parent"
+        android:layout_width="397dp"
         android:layout_height="50dp"
+        android:layout_marginTop="300dp"
         android:gravity="center"
+        android:onClick="clickAction"
         android:textAlignment="center"
         android:textColor="@color/grey_500"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/matchednumber"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/matchednumber"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/matchednumber"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="398dp"
+        android:layout_height="55dp"
         android:layout_below="@+id/matchedname"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
+        android:onClick="clickAction"
         android:textAlignment="center"
         android:textColor="@color/grey_500"
-        android:textSize="20sp" />
-
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/constraintLayout"
+        android:layout_width="387dp"
+        android:layout_height="289dp"
+
         android:layout_marginTop="24dp"
         android:paddingRight="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,30 +69,29 @@
         app:layout_constraintVertical_bias="1.0">
 
 
-
-
         <TextView
             android:id="@+id/edit_text"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="213dp"
+            android:layout_height="39dp"
             android:gravity="bottom"
             android:inputType="none"
             android:textSize="30dp"
             app:layout_constraintBottom_toTopOf="@+id/two"
             app:layout_constraintEnd_toStartOf="@id/clear"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.631" />
 
         <View
             android:id="@+id/line"
             android:layout_width="266dp"
             android:layout_height="2dp"
             android:background="@color/grey_10"
-            app:layout_constraintTop_toBottomOf="@id/edit_text"
             app:layout_constraintEnd_toEndOf="@id/hash"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/star" />
+            app:layout_constraintStart_toStartOf="@id/star"
+            app:layout_constraintTop_toBottomOf="@id/edit_text" />
 
         <ImageView
             android:id="@+id/clear"
@@ -81,9 +110,9 @@
             android:layout_marginLeft="30dp"
             android:src="@drawable/one"
             android:tint="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@id/line"
             app:layout_constraintBottom_toTopOf="@id/four"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line" />
 
         <ImageView
             android:id="@+id/two"
@@ -93,8 +122,7 @@
             android:src="@drawable/two"
             android:tint="@color/colorPrimary"
             app:layout_constraintBottom_toTopOf="@id/five"
-            app:layout_constraintStart_toEndOf="@id/one"
-            />
+            app:layout_constraintStart_toEndOf="@id/one" />
 
         <ImageView
             android:id="@+id/three"
@@ -103,9 +131,9 @@
             android:layout_marginLeft="30dp"
             android:src="@drawable/three"
             android:tint="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@id/line"
             app:layout_constraintBottom_toTopOf="@id/six"
-            app:layout_constraintStart_toEndOf="@id/two" />
+            app:layout_constraintStart_toEndOf="@id/two"
+            app:layout_constraintTop_toBottomOf="@id/line" />
 
         <ImageView
             android:id="@+id/four"
@@ -208,4 +236,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,6 @@ package com.quickCodes.quickCodes;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.Menu;
@@ -18,6 +17,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.quickCodes.quickCodes.dialpad.MainActivity3;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 
 import java.util.Iterator;
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-//                                startActivity(new Intent(MainActivity.this, MainActivity3.class));
-                                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+"")));
+                                startActivity(new Intent(MainActivity.this, MainActivity3.class));
+//                                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+"")));
                             }
                         });
 
@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }

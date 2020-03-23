@@ -303,7 +303,7 @@ public class CustomCodesFragment extends Fragment {
     }
 
     @SuppressLint("MissingPermission")
-    private void executeUssd(String fullCode, UssdAction action) {
+    public  void executeUssd(String fullCode, UssdAction action) {
         String hnc = action.getNetwork();
         String simcardSlot = simcardsSlots.get(hnc);
 
@@ -394,7 +394,7 @@ public class CustomCodesFragment extends Fragment {
         }
     }
 
-    class MyItemDecorator extends RecyclerView.ItemDecoration {
+    public static class MyItemDecorator extends RecyclerView.ItemDecoration {
         private int margin, columns;
 
         public MyItemDecorator(int columns, int margin) {
