@@ -1,239 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/grey_5"
     tools:context=".dialpad.MainActivity3">
-
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/matched_items_recylerview"
-        android:layout_width="match_parent"
-        android:layout_height="294dp"
-
-
-        app:layout_constraintBottom_toTopOf="@+id/matchedname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.145" />
-
-    <TextView
-        android:id="@+id/matchedname"
-        android:layout_width="397dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="300dp"
-        android:gravity="center"
-        android:onClick="clickAction"
-        android:textAlignment="center"
-        android:textColor="@color/grey_500"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/matchednumber"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/matchednumber"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/matchednumber"
-        android:layout_width="398dp"
-        android:layout_height="55dp"
-        android:layout_below="@+id/matchedname"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:gravity="center"
-        android:onClick="clickAction"
-        android:textAlignment="center"
-        android:textColor="@color/grey_500"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="387dp"
-        android:layout_height="289dp"
-
-        android:layout_marginTop="24dp"
-        android:paddingRight="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-
-
-        <TextView
-            android:id="@+id/edit_text"
-            android:layout_width="213dp"
-            android:layout_height="39dp"
-            android:gravity="bottom"
-            android:inputType="none"
-            android:textSize="30dp"
-            app:layout_constraintBottom_toTopOf="@+id/two"
-            app:layout_constraintEnd_toStartOf="@id/clear"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:id="@+id/matched_items_recylerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.631" />
+            app:layout_constraintVertical_bias="0.145" />
 
-        <View
-            android:id="@+id/line"
-            android:layout_width="266dp"
-            android:layout_height="2dp"
-            android:background="@color/grey_10"
-            app:layout_constraintEnd_toEndOf="@id/hash"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/star"
-            app:layout_constraintTop_toBottomOf="@id/edit_text" />
+    <include
+        android:id="@+id/bottom_sheet"
+        layout="@layout/sheet_map"
+        android:layout_width="match_parent"
+        android:layout_height="302dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/grey_500"
+        android:paddingRight="30dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
 
-        <ImageView
-            android:id="@+id/clear"
-            android:layout_width="49dp"
-            android:layout_height="36dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/clear"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/three"
-            app:layout_constraintEnd_toEndOf="parent" />
+        />
 
-        <ImageView
-            android:id="@+id/one"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/one"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/four"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line" />
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/bottom_sheet"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="342dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:background="@color/grey_80"-->
+<!--        android:paddingRight="30dp"-->
+<!--        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">-->
 
-        <ImageView
-            android:id="@+id/two"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/two"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/five"
-            app:layout_constraintStart_toEndOf="@id/one" />
+<!--        <TextView-->
+<!--            android:id="@+id/edit_text"-->
+<!--            android:layout_width="307dp"-->
+<!--            android:layout_height="43dp"-->
+<!--            android:gravity="bottom"-->
+<!--            android:inputType="none"-->
+<!--            android:textSize="30dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/two"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/clear"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.631" />-->
 
-        <ImageView
-            android:id="@+id/three"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/three"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/six"
-            app:layout_constraintStart_toEndOf="@id/two"
-            app:layout_constraintTop_toBottomOf="@id/line" />
+<!--        <View-->
+<!--            android:id="@+id/line"-->
+<!--            android:layout_width="266dp"-->
+<!--            android:layout_height="2dp"-->
+<!--            android:background="@color/grey_10"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/hash"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="@id/star"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/edit_text" />-->
 
-        <ImageView
-            android:id="@+id/four"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/four"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/seven"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <ImageView-->
+<!--            android:id="@+id/clear"-->
+<!--            android:layout_width="49dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:src="@drawable/clear"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/three"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/five"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/five"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/eight"
-            app:layout_constraintStart_toEndOf="@id/four" />
+<!--        <ImageView-->
+<!--            android:id="@+id/one"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/one"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/four"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/line" />-->
 
-        <ImageView
-            android:id="@+id/six"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/six"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/nine"
-            app:layout_constraintStart_toEndOf="@id/five" />
+<!--        <ImageView-->
+<!--            android:id="@+id/two"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/two"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/five"-->
+<!--            app:layout_constraintStart_toEndOf="@id/one" />-->
 
-        <ImageView
-            android:id="@+id/seven"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/seven"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/star"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <ImageView-->
+<!--            android:id="@+id/three"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/three"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/six"-->
+<!--            app:layout_constraintStart_toEndOf="@id/two"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/line" />-->
 
-        <ImageView
-            android:id="@+id/eight"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/eight"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/zero"
-            app:layout_constraintStart_toEndOf="@id/seven" />
+<!--        <ImageView-->
+<!--            android:id="@+id/four"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/four"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/seven"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/nine"
-            android:layout_width="41dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/nine"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/hash"
-            app:layout_constraintStart_toEndOf="@id/eight" />
+<!--        <ImageView-->
+<!--            android:id="@+id/five"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/five"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/eight"-->
+<!--            app:layout_constraintStart_toEndOf="@id/four" />-->
 
-        <ImageView
-            android:id="@+id/star"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/star"
-            app:layout_constraintBottom_toTopOf="@id/sim1"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <ImageView-->
+<!--            android:id="@+id/six"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/six"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/nine"-->
+<!--            app:layout_constraintStart_toEndOf="@id/five" />-->
 
-        <ImageView
-            android:id="@+id/zero"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/zero"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/sim1"
-            app:layout_constraintStart_toEndOf="@id/star" />
+<!--        <ImageView-->
+<!--            android:id="@+id/seven"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/seven"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/star"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/hash"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/hash"
-            app:layout_constraintBottom_toTopOf="@id/sim1"
-            app:layout_constraintStart_toEndOf="@id/zero" />
+<!--        <ImageView-->
+<!--            android:id="@+id/eight"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/eight"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/zero"-->
+<!--            app:layout_constraintStart_toEndOf="@id/seven" />-->
 
-        <ImageView
-            android:id="@+id/sim1"
-            android:layout_width="70dp"
-            android:layout_height="53dp"
-            android:layout_marginBottom="4dp"
-            android:src="@drawable/call"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/hash"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/star" />
+<!--        <ImageView-->
+<!--            android:id="@+id/nine"-->
+<!--            android:layout_width="41dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/nine"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/hash"-->
+<!--            app:layout_constraintStart_toEndOf="@id/eight" />-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <ImageView-->
+<!--            android:id="@+id/star"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/star"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/sim1"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <ImageView-->
+<!--            android:id="@+id/zero"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/zero"-->
+<!--            android:tint="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/sim1"-->
+<!--            app:layout_constraintStart_toEndOf="@id/star" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/hash"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:src="@drawable/hash"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/sim1"-->
+<!--            app:layout_constraintStart_toEndOf="@id/zero" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/sim1"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="53dp"-->
+<!--            android:layout_marginBottom="4dp"-->
+<!--            android:src="@drawable/call"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/hash"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="@id/star" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

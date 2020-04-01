@@ -10,18 +10,174 @@
     app:behavior_peekHeight="85dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:cardCornerRadius="1dp"
-        app:cardElevation="20dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="kamsu"
-            android:textSize="30sp"
-            />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/edit_text"
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_500"
+            android:gravity="bottom"
+            android:inputType="none"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/clear"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_500"
+            android:src="@drawable/clear"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:background="@color/green_900"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            >
+
+            <ImageView
+                android:id="@+id/star"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/star"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.53" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <GridLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:columnCount="3"
+
+            android:useDefaultMargins="true">
+
+            <ImageView
+                android:id="@+id/one"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/one"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/two"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/two"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/three"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/three"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/four"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/four"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/five"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/five"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/six"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/six"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/seven"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/seven"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/eight"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/eight"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/nine"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/nine"
+                android:tint="@color/colorPrimary" />
+
+
+            <ImageView
+                android:id="@+id/sim1"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/call"
+                app:layout_constraintStart_toStartOf="@id/star" />
+
+            <ImageView
+                android:id="@+id/zero"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/zero"
+                android:tint="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/sim2"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/call"
+                app:layout_constraintStart_toStartOf="@id/star" />
+
+
+        </GridLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/hash"
+                android:layout_width="70dp"
+                android:layout_height="53dp"
+                android:src="@drawable/hash"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 </LinearLayout>

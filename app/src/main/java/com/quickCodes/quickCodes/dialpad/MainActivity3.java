@@ -29,8 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.quickCodes.quickCodes.R;
-import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
-import com.quickCodes.quickCodes.adapters.AdapterWithFilter;
+import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
@@ -76,7 +75,7 @@ public class MainActivity3 extends AppCompatActivity {
     UssdActionsViewModel ussdActionsViewModel;
     List<UssdActionWithSteps> airtimeCodes;
     private RecyclerView recyclerView;
-    private AdapterGridCustomCodes mAdapter;
+    private AdapterDialer mAdapter;
     private EditText phoneNumber;
 
 
@@ -86,7 +85,7 @@ public class MainActivity3 extends AppCompatActivity {
         setContentView(R.layout.activity_main3);
 
         airtimeCodes = new ArrayList<>();
-        mAdapter = new AdapterGridCustomCodes(this);
+        mAdapter = new AdapterDialer(this);
 
 
         ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
@@ -107,42 +106,47 @@ public class MainActivity3 extends AppCompatActivity {
                 airtimeCodes.add(us);
 //                }
             }
-            mAdapter.setCustomActions(airtimeCodes);
+            mAdapter.setUssdActions(airtimeCodes);
 
         });
 
         getContactList();
         initComponent();
+        initalizeDialerButtons();
 
-//        // get the bottom sheet view
-//        LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-//
-//        // init the bottom sheet behavior
-//        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
-//
-//        // change the state of the bottom sheet
-//        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//
-//        // set callback for changes
-//        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
+
+        // get the bottom sheet view
+        LinearLayout BottomSheet = findViewById(R.id.bottom_sheet);
+
+        // init the bottom sheet behavior
+        bottomSheetBehavior = BottomSheetBehavior.from(BottomSheet);
+
+        // change the state of the bottom sheet
+        bottomSheetBehavior.setPeekHeight(300);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+
+        // set callback for changes
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
         edit_text = (TextView) findViewById(R.id.edit_text);
         edit_text.setOnClickListener(null);
-        tname = findViewById(R.id.matchedname);
-        tnumber = findViewById(R.id.matchednumber);
+
+
+    }
+
+    private void initalizeDialerButtons() {
         one = (ImageView) findViewById(R.id.one);
-
-
         one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +163,7 @@ public class MainActivity3 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                edit_text.setTextColor(getResources().getColor(R.color.green_50));
+                edit_text.setText(edit_text.getText().toString()+"2");
                 matchContact(edit_text.getText().toString());
 
 
@@ -427,46 +431,36 @@ public class MainActivity3 extends AppCompatActivity {
 
     public void matchContact(String contact) {
 
-        for (UssdActionWithSteps action : airtimeCodes) {
-            String code = action.action.getAirtelCode();
-            if (code.contains(contact)) {
-                tnumber.setText(code);
-                tname.setText(action.action.getName());
-            }
-
-        }
         mAdapter.getFilter().filter(contact);
-
-//        if (namelist.size () != 0 && numberlist.size () != 0){
-//            for (String num: numberlist){
-//                if (num.contains (contact)){
-//                    //tname.setText ();
-//                    tnumber.setText (num);
-//                    int nameindex = numberlist.indexOf (num);
-//                    tname.setText (namelist.get (nameindex));
-//                }
-//            }
-//        }
-
     }
 
     private void initComponent() {
 
         recyclerView = (RecyclerView) findViewById(R.id.matched_items_recylerview);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         recyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
 //        recyclerView.addItemDecoration(new SpacingItemDecoration(2, Tools.dpToPx(this, 8), true));
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>0){
+                    //scrolling up
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                }else{
+                    //scrolling down
+                }
+            }
+        });
 
         //set data and list adapter
         recyclerView.setAdapter(mAdapter);
-
-        // on item list clicked
-        mAdapter.setOnItemClickListener(new AdapterWithFilter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-
                 //TODO first look into custom codes
                 String initialCode = obj.action.getAirtelCode();
                 String cd = initialCode + Uri.encode("#");
@@ -480,11 +474,10 @@ public class MainActivity3 extends AppCompatActivity {
 
             @Override
             public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
-//                Intent i = new Intent(getActivity(), EditActionActivity.class);
-//                i.putExtra("action_id", String.valueOf(obj.action.getActionId()));
-//                startActivity(i);
+
             }
         });
+
 
     }
 
