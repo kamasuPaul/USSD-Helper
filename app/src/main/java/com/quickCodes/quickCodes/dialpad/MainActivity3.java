@@ -407,6 +407,7 @@ public class MainActivity3 extends AppCompatActivity {
 
                                     namelist.add(name);
                                     numberlist.add(phoneNo);
+                                    mAdapter.setContactList(namelist,numberlist);
 
                                     Log.i("TAG----", "Name: " + name);
                                     Log.i("TAG----", "Phone Number: " + phoneNo);
@@ -497,6 +498,11 @@ public class MainActivity3 extends AppCompatActivity {
 //        UssdAction ussdAction = ussdActionWithSteps.action;
 //        String code = "";
         String uscode1 = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
+
+        //check for phone number clicks
+        if(!uscode1.contains("*")){//if it doesnt contain a * its aphone number, exececute it immediately
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + uscode1)));
+        }
         UssdAction action = ussdActionWithSteps.action;
         if (!action.getMtnCode().isEmpty()) {
             uscode1 = action.getMtnCode();

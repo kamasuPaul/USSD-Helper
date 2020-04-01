@@ -23,6 +23,7 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
@@ -31,6 +32,8 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<UssdActionWithSteps> items = new ArrayList<>();
     private Context ctx;
+    ArrayList<String> namelist;
+    ArrayList<String> numberlist;
     private OnItemClickListener mOnItemClickListener;
     private List<UssdActionWithSteps> ussdActionWithStepsFiltered;
 
@@ -48,6 +51,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public AdapterDialer(Context context) {
         ctx = context;
+
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
@@ -87,7 +91,11 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 view.title.setText(p.getName());
                 view.code.setText(p.getAirtelCode());
-                view.section.setText(getSectionFromId(p.getSection()));
+                if(String.valueOf(p.getActionId())!= null){
+                    view.section.setText(getSectionFromId(p.getSection()));
+                }else{
+                    view.section.setText("TELPHONE");
+                }
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
 
@@ -135,6 +143,10 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.ussdActionWithStepsFiltered = actions;
         notifyDataSetChanged();
     }
+    public void setContactList(ArrayList<String> nameList, ArrayList<String> numberList){
+        this.namelist = nameList;
+        this.numberlist = numberList;
+    }
 
     @Override
     public int getItemCount() {
@@ -158,6 +170,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }else {
                     List<UssdActionWithSteps> l = new ArrayList<>();
                     Log.d("QUERY", words);
+                    //loop through ussd codes
                     for(UssdActionWithSteps action: items){
 
                         if(action.action.getAirtelCode()!=null) {
@@ -171,20 +184,30 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         //else{
 //                            Log.d("ACTION NULL", action.action.getAirtelCode());
 //                        }
-//                        if(action.action.getMtnCode()!=null) {
-//                            if(action.action.getMtnCode().contains(words)) {
-//                                l.add(action);
-//                                continue;
-//                            }
-//                        }
-//                        if(action.action.getAfricellCode()!=null) {
-//                            if(action.action.getAfricellCode().contains(words)) {
-//                                l.add(action);
-//                                continue;
-//                            }
-//                        }
+                        if(action.action.getMtnCode()!=null) {
+                            if(action.action.getMtnCode().contains(words)) {
+                                l.add(action);
+                                continue;
+                            }
+                        }
+                        if(action.action.getAfricellCode()!=null) {
+                            if(action.action.getAfricellCode().contains(words)) {
+                                l.add(action);
+                                continue;
+                            }
+                        }
 
                     }
+                    //loop through contacts
+                    for (int i = 0; i <numberlist.size() ; i++) {
+                        if(numberlist.get(i).contains(words)){
+                            UssdAction ussdAction = new UssdAction(-1, namelist.get(i).toString(),
+                                numberlist.get(i).toString(),null,null, SEC_CUSTOM_CODES);
+
+                            l.add(new UssdActionWithSteps(ussdAction,null));
+                        }
+                    }
+
                     ussdActionWithStepsFiltered = l;
                 }
                 FilterResults results = new FilterResults();
