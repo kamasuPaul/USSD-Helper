@@ -9,11 +9,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/actionBarSize"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.01999998">
 
 
         <androidx.core.widget.NestedScrollView
@@ -51,15 +55,15 @@
                     android:text="Network" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint=" e.g Airtel">
 
                     <AutoCompleteTextView
                         android:id="@+id/action_network"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,8 +81,8 @@
                         android:id="@+id/action_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text|number"
-                        android:hint=" e.g *175*1*4#" />
+                        android:hint=" e.g *175*1*4#"
+                        android:inputType="text|number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
 

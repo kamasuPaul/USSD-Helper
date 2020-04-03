@@ -6,10 +6,21 @@
     android:layout_height="match_parent"
     android:background="@color/grey_5"
     tools:context=".dialpad.MainActivity3">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_dialer"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matched_items_recylerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
