@@ -366,7 +366,7 @@ public class MainActivity3 extends AppCompatActivity {
                 UssdActionsViewModel viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
                 Random r = new Random();
                 Long codeId = r.nextLong();//TODO change random number generator
-                UssdAction action = new UssdAction(codeId, "Recent", num, null, null, Constants.SEC_USER_DIALED);
+                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23",""), null, null, Constants.SEC_USER_DIALED);
                 viewModel.insert(action, null);
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
@@ -407,7 +407,6 @@ public class MainActivity3 extends AppCompatActivity {
 
                                     namelist.add(name);
                                     numberlist.add(phoneNo);
-                                    mAdapter.setContactList(namelist,numberlist);
 
                                     Log.i("TAG----", "Name: " + name);
                                     Log.i("TAG----", "Phone Number: " + phoneNo);
@@ -419,6 +418,13 @@ public class MainActivity3 extends AppCompatActivity {
                     if (cur != null) {
                         cur.close();
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //add contatcts to list of searchable items
+                            mAdapter.setContactList(namelist,numberlist);
+                        }
+                    });
 
 
                 } catch (SecurityException e) {
@@ -463,6 +469,7 @@ public class MainActivity3 extends AppCompatActivity {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 //TODO first look into custom codes
+                Toast.makeText(MainActivity3.this, obj.toString(), Toast.LENGTH_SHORT).show();
                 String initialCode = obj.action.getAirtelCode();
                 String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
@@ -501,19 +508,42 @@ public class MainActivity3 extends AppCompatActivity {
 
         //check for phone number clicks
         if(!uscode1.contains("*")){//if it doesnt contain a * its aphone number, exececute it immediately
+            Toast.makeText(this, "insided phone if", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + uscode1)));
+            return;
         }
-        UssdAction action = ussdActionWithSteps.action;
-        if (!action.getMtnCode().isEmpty()) {
-            uscode1 = action.getMtnCode();
-        }
-        if (!action.getAirtelCode().isEmpty()) {
-            uscode1 = action.getAirtelCode();
-        }
-        if (!action.getAfricellCode().isEmpty()) {
-            uscode1 = action.getAfricellCode();
 
+        UssdAction action = ussdActionWithSteps.action;
+
+        if (action.getAirtelCode() != null) {
+            if (!action.getAirtelCode().isEmpty()) {
+                uscode1 = action.getAirtelCode();
+            }
         }
+        if (action.getMtnCode() != null) {
+            if (!action.getMtnCode().isEmpty()) {
+                uscode1 = action.getMtnCode();
+            }
+        }
+        if (action.getAfricellCode() != null) {
+            if (!action.getAfricellCode().isEmpty()) {
+                uscode1 = action.getAfricellCode();
+            }
+        }
+
+
+
+
+//        if (!action.getMtnCode().isEmpty()) {
+//            uscode1 = action.getMtnCode();
+//        }
+//        if (!action.getAirtelCode().isEmpty()) {
+//            uscode1 = action.getAirtelCode();
+//        }
+//        if (!action.getAfricellCode().isEmpty()) {
+//            uscode1 = action.getAfricellCode();
+//
+//        }
         final String uscode = uscode1;
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {

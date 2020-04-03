@@ -49,6 +49,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.quickCodes.quickCodes.fragments.MainFragment.simcardsSlots;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
@@ -92,7 +93,7 @@ public class CustomCodesFragment extends Fragment {
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 List<UssdActionWithSteps> customCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
-                    if (us.action.getSection() == SEC_CUSTOM_CODES) {
+                    if (us.action.getSection() == SEC_CUSTOM_CODES ||us.action.getSection() == SEC_USER_DIALED) {
                         customCodes.add(us);
                     }
                 }

@@ -187,6 +187,7 @@ public class EditActionActivity extends AppCompatActivity {
         String networkName = actionNetwork.getText().toString();
         String hnc = simcards.get(networkName);
         String airtelCode = "", mtnCode = "", africellCode = "";
+
         if (containsIgnoreCase(networkName, "MTN")) {
             mtnCode = code;
         }
@@ -196,6 +197,10 @@ public class EditActionActivity extends AppCompatActivity {
         if (containsIgnoreCase(networkName, "AFRICELL")) {
             africellCode = code;
         }
+        if(airtelCode==""&&mtnCode==""&&africellCode==""){
+            airtelCode = code;
+        }
+
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         UssdAction ussdAction = new UssdAction(codeId, actionNameText,airtelCode,mtnCode,africellCode, SEC_CUSTOM_CODES,hnc);
         v.update(new UssdActionWithSteps(ussdAction,steps));
