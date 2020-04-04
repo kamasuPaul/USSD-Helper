@@ -1,10 +1,13 @@
 package com.quickCodes.quickCodes.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -21,11 +24,12 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     private List<UssdActionWithSteps> items = new ArrayList<>();
     private Context ctx;
-    private OnItemClickListener mOnItemClickListener;
+    public OnItemClickListener mOnItemClickListener;
+    private List<UssdActionWithSteps> ussdActionWithStepsFiltered;
 
     public interface OnItemClickListener {
         void onItemClick(View view, UssdActionWithSteps obj, int position);
@@ -71,12 +75,12 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(items!=null) {
+        if(ussdActionWithStepsFiltered!=null) {
             if (holder instanceof OriginalViewHolder) {
                 final OriginalViewHolder view = (OriginalViewHolder) holder;
 
 
-                final UssdAction p = items.get(position).action;
+                final UssdAction p = ussdActionWithStepsFiltered.get(position).action;
                 view.title.setText(p.getName());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
@@ -132,10 +136,11 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
     }
     public void setCustomActions(List<UssdActionWithSteps>actions){
         this.items = actions;
+        this.ussdActionWithStepsFiltered = actions;
         notifyDataSetChanged();
     }
 
-    private void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
+    public void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
         //inflate options menu
         PopupMenu popupMenu = new PopupMenu(ctx, view.optionsMenu);
         //inflate the menu from layout resource file
@@ -165,11 +170,61 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        if(items!=null){
-            return items.size();
+        if(ussdActionWithStepsFiltered!=null){
+            return ussdActionWithStepsFiltered.size();
         }else{
             return 0;
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                String words = constraint.toString();
+                if(words.isEmpty()){
+                    ussdActionWithStepsFiltered = items;
+                }else {
+                    List<UssdActionWithSteps> l = new ArrayList<>();
+                    Log.d("COD3I", words);
+                    for(UssdActionWithSteps action: items){
+                        Log.d("QUERY", action.action.getAirtelCode());
+
+                        if(action.action.getAirtelCode()!=null) {
+                            if(action.action.getAirtelCode().contains(words)) {
+                                l.add(action);
+                                continue;
+                            }
+                        }
+                        if(action.action.getMtnCode()!=null) {
+                            if(action.action.getMtnCode().contains(words)) {
+                                l.add(action);
+                                continue;
+                            }
+                        }
+                        if(action.action.getAfricellCode()!=null) {
+                            if(action.action.getAfricellCode().contains(words)) {
+                                l.add(action);
+                                continue;
+                            }
+                        }
+
+                    }
+                    ussdActionWithStepsFiltered = l;
+                }
+                FilterResults results = new FilterResults();
+                results.values = ussdActionWithStepsFiltered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                ussdActionWithStepsFiltered = (List<UssdActionWithSteps>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 }
