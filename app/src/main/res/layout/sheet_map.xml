@@ -150,14 +150,20 @@
                 android:layout_height="53dp"
                 android:src="@drawable/zero"
                 android:tint="@color/colorPrimary" />
-
-            <ImageView
-                android:id="@+id/sim2"
+            <com.quickCodes.quickCodes.dialpad.MyCustomView
                 android:layout_width="70dp"
                 android:layout_height="53dp"
-                android:layout_marginBottom="4dp"
-                android:src="@drawable/call"
-                app:layout_constraintStart_toStartOf="@id/star" />
+                app:circleColor="@color/grey_500"
+                app:circleLabel="test"
+                app:labelColor="@color/red_A400" />
+
+<!--            <ImageView-->
+<!--                android:id="@+id/sim2"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="53dp"-->
+<!--                android:layout_marginBottom="4dp"-->
+<!--                android:src="@drawable/call"-->
+<!--                app:layout_constraintStart_toStartOf="@id/star" />-->
 
 
         </GridLayout>

@@ -185,17 +185,18 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     //loop through ussd codes
                     for (UssdActionWithSteps action : items) {
 
+                        if(containsIgnoreCase(action.action.getName(),words)){
+                            l.add(action);
+                            continue;
+                        }
+
                         if (action.action.getAirtelCode() != null) {
                             if (action.action.getAirtelCode().contains(words)) {
                                 l.add(action);
-                                Log.d("CODE", action.action.getName());
-                                Log.d("CODE", action.action.getAirtelCode());
-//                                continue;
+                                continue;
                             }
                         }
-                        //else{
-//                            Log.d("ACTION NULL", action.action.getAirtelCode());
-//                        }
+
                         if (action.action.getMtnCode() != null) {
                             if (action.action.getMtnCode().contains(words)) {
                                 l.add(action);
@@ -250,5 +251,12 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return "ME";
         }
         return "";//TODO change the ifs to a switch
+    }
+
+    /*
+ adapted from mkyong.com
+ */
+    public static boolean containsIgnoreCase(String str, String subString) {
+        return str.toLowerCase().trim().replaceAll(" ","").contains(subString.toLowerCase().trim().replaceAll(" ",""));
     }
 }

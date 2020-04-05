@@ -144,16 +144,32 @@ public class CustomCodesFragment extends Fragment {
 //        String code = "";
         String uscode1 = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
         UssdAction action = ussdActionWithSteps.action;
-        if (!action.getMtnCode().isEmpty()) {
-            uscode1 = action.getMtnCode();
-        }
-        if (!action.getAirtelCode().isEmpty()) {
-            uscode1 = action.getAirtelCode();
-        }
-        if (!action.getAfricellCode().isEmpty()) {
-            uscode1 = action.getAfricellCode();
 
+        if (action.getAirtelCode() != null) {
+            if (!action.getAirtelCode().isEmpty()) {
+                uscode1 = action.getAirtelCode();
+            }
         }
+        if (action.getMtnCode() != null) {
+            if (!action.getMtnCode().isEmpty()) {
+                uscode1 = action.getMtnCode();
+            }
+        }
+        if (action.getAfricellCode() != null) {
+            if (!action.getAfricellCode().isEmpty()) {
+                uscode1 = action.getAfricellCode();
+            }
+        }
+//        if (!action.getMtnCode().isEmpty()) {
+//            uscode1 = action.getMtnCode();
+//        }
+//        if (!action.getAirtelCode().isEmpty()) {
+//            uscode1 = action.getAirtelCode();
+//        }
+//        if (!action.getAfricellCode().isEmpty()) {
+//            uscode1 = action.getAfricellCode();
+//
+//        }
         final String uscode = uscode1;
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {

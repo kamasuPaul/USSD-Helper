@@ -47,6 +47,7 @@ import java.util.concurrent.Executors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -61,7 +62,7 @@ import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 
-public class MainActivity3 extends AppCompatActivity {
+public class DialPadActivity extends AppCompatActivity {
     private static final int CONTACT_PICKER_REQUEST = 200;
     String num;
     TextView edit_text, tname, tnumber;
@@ -79,12 +80,14 @@ public class MainActivity3 extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterDialer mAdapter;
     private EditText phoneNumber;
+    private SearchView searchView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main3);
+        setContentView(R.layout.activity_dialpad);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar_dialer);
         setSupportActionBar(toolbar);
@@ -149,6 +152,24 @@ public class MainActivity3 extends AppCompatActivity {
         edit_text = (TextView) findViewById(R.id.edit_text);
         edit_text.setOnClickListener(null);
 
+
+        //search view implementation
+        searchView = findViewById(R.id.SearchView_dialpad);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                matchContact(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                matchContact(newText);
+                return true;
+            }
+        });
 
     }
 
@@ -361,10 +382,10 @@ public class MainActivity3 extends AppCompatActivity {
 
         //if there is already number we have to call and if the is no number we have to ask permmision
         if (num.trim().length() > 0) {
-            if (ContextCompat.checkSelfPermission(MainActivity3.this, Manifest.permission.CALL_PHONE)
+            if (ContextCompat.checkSelfPermission(DialPadActivity.this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
                 //ask for permission
-                ActivityCompat.requestPermissions(MainActivity3.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                ActivityCompat.requestPermissions(DialPadActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
 
             } else {
                 String dial = "tel:" + num;
@@ -476,7 +497,7 @@ public class MainActivity3 extends AppCompatActivity {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 //TODO first look into custom codes
-                Toast.makeText(MainActivity3.this, obj.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DialPadActivity.this, obj.toString(), Toast.LENGTH_SHORT).show();
                 String initialCode = obj.action.getAirtelCode();
                 String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
@@ -740,7 +761,7 @@ public class MainActivity3 extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (ActivityCompat.checkSelfPermission(MainActivity3.this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(DialPadActivity.this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == 1) {
                 makePhoneCall();
             }
@@ -757,4 +778,5 @@ public class MainActivity3 extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

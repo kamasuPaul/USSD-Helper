@@ -5,16 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_5"
-    tools:context=".dialpad.MainActivity3">
+    tools:context=".dialpad.DialPadActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_dialer"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@android:color/white" >
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/SearchView_dialpad"
+                app:queryBackground="@android:color/white"
+                android:background="@android:color/white"
+                app:queryHint="Search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.appcompat.widget.Toolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/matched_items_recylerview"
