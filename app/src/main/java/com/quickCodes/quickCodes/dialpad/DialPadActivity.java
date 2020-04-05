@@ -36,7 +36,7 @@ import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
-import com.quickCodes.quickCodes.util.UssdActionsViewModel;
+import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -497,7 +497,6 @@ public class DialPadActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 //TODO first look into custom codes
-                Toast.makeText(DialPadActivity.this, obj.toString(), Toast.LENGTH_SHORT).show();
                 String initialCode = obj.action.getAirtelCode();
                 String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
@@ -536,7 +535,6 @@ public class DialPadActivity extends AppCompatActivity {
 
         //check for phone number clicks
         if(!uscode1.contains("*")){//if it doesnt contain a * its aphone number, exececute it immediately
-            Toast.makeText(this, "insided phone if", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + uscode1)));
             return;
         }

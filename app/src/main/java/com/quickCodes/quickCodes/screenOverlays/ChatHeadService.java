@@ -1,4 +1,4 @@
-package com.quickCodes.quickCodes.util;
+package com.quickCodes.quickCodes.screenOverlays;
 
 import android.app.Service;
 import android.content.Intent;

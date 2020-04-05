@@ -32,7 +32,8 @@ import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.util.UssdActionsViewModel;
+import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
+import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnSelectClickListener;
 
@@ -63,6 +64,8 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 public class MainFragment extends Fragment {
 
     private static final int CONTACT_PICKER_REQUEST = 29;
+    public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101 ;
+
     Dialog dialog;
     String mode = null;
     int slot = -1;
@@ -630,6 +633,21 @@ public class MainFragment extends Fragment {
         } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
             Toast.makeText(getActivity(), "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
         }
+
+        //draw over other apps
+        if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+
+            //Check if the permission is granted or not.
+            if (resultCode == RESULT_OK) {
+                initializeView();
+            } else { //Permission is not available
+                Toast.makeText(getActivity(),
+                    "Draw over other app permission not available. Closing the application",
+                    Toast.LENGTH_LONG).show();
+
+                getActivity().finish();
+            }
+        }
     }
 
     public void onButtonPressed(Uri uri) {
@@ -705,6 +723,14 @@ public class MainFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    /**
+     * Set and initialize the view elements.
+     */
+    private void initializeView() {
+        getActivity().startService(new Intent(getActivity(), ChatHeadService.class));
+//                finish();
     }
 
 }

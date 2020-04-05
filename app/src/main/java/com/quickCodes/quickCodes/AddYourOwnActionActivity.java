@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.util.UssdActionsViewModel;
+import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

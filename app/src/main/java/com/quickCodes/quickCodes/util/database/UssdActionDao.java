@@ -1,4 +1,4 @@
-package com.quickCodes.quickCodes.util;
+package com.quickCodes.quickCodes.util.database;
 
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;

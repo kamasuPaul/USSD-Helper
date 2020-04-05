@@ -30,7 +30,7 @@ import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.util.UssdActionsViewModel;
+import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.quickCodes.quickCodes.util;
+package com.quickCodes.quickCodes.util.database;
 
 import android.app.Application;
 import android.content.Context;

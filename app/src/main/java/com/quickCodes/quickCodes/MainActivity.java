@@ -2,6 +2,7 @@ package com.quickCodes.quickCodes;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -22,7 +23,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
-import com.quickCodes.quickCodes.util.ChatHeadService;
+import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
 
 import java.util.Iterator;
 import java.util.List;
@@ -69,19 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
                         setupToolBar();
 
-                        //Check if the application has draw over other apps permission or not?
-                        //This permission is by default available for API<23. But for API > 23
-                        //you have to ask for the permission in runtime.
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(MainActivity.this)) {
+                            //draw over other apps
+//                            initializeView(getApplicationContext());
 
-                            //If the draw over permission is not available open the settings screen
-                            //to grant the permission.
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:" + getPackageName()));
-                            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-                        } else {
-                            initializeView();
-                        }
 
 
                         fab.setOnClickListener(new View.OnClickListener() {
@@ -121,9 +112,21 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Set and initialize the view elements.
      */
-    private void initializeView() {
-                startService(new Intent(MainActivity.this, ChatHeadService.class));
+    public void initializeView(Context context) {
+        //Check if the application has draw over other apps permission or not?
+        //This permission is by default available for API<23. But for API > 23
+        //you have to ask for the permission in runtime.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        } else {
+            startService(new Intent(context, ChatHeadService.class));
 //                finish();
+        }
     }
     private void setupToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar1);
@@ -158,19 +161,6 @@ public class MainActivity extends AppCompatActivity {
             Iterator iterator = keys.iterator();
             while(iterator.hasNext()){
                 Toast.makeText(this, iterator.next().toString(), Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
-
-            //Check if the permission is granted or not.
-            if (resultCode == RESULT_OK) {
-                initializeView();
-            } else { //Permission is not available
-                Toast.makeText(this,
-                    "Draw over other app permission not available. Closing the application",
-                    Toast.LENGTH_LONG).show();
-
-                finish();
             }
         }
     }
