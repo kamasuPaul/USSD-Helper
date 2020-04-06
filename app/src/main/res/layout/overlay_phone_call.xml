@@ -1,30 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_head_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+>
 
-    <!--Profile image for the chat head.-->
-    <ImageView
-        android:background="@color/red_A400"
-        android:id="@+id/chat_head_profile_iv"
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="208dp"
+        android:layout_marginTop="32dp"
+
+        android:background="@color/grey_400"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--Profile image for the chat head.-->
+
+        <!--Close button-->
+
+        <ImageView
+            android:id="@+id/chat_head_profile_iv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:src="@mipmap/ic_launcher_foreground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/close_btn"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/close_btn"
+            android:layout_width="26dp"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="125dp"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toTopOf="@+id/chat_head_profile_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
         android:src="@mipmap/ic_launcher_foreground"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.018"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08"
         tools:ignore="ContentDescription" />
 
-    <!--Close button-->
-    <ImageView
-        android:id="@+id/close_btn"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginLeft="40dp"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/ic_close"
-        tools:ignore="ContentDescription"
-        android:layout_marginStart="40dp" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

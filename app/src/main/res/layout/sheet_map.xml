@@ -153,9 +153,9 @@
             <com.quickCodes.quickCodes.dialpad.MyCustomView
                 android:layout_width="70dp"
                 android:layout_height="53dp"
-                app:circleColor="@color/grey_500"
-                app:circleLabel="test"
-                app:labelColor="@color/red_A400" />
+                app:circleColor="@color/green_800"
+                app:circleLabel="TEST"
+                app:labelColor="@android:color/white" />
 
 <!--            <ImageView-->
 <!--                android:id="@+id/sim2"-->

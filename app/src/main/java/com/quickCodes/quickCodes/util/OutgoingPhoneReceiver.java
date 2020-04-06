@@ -3,6 +3,8 @@ package com.quickCodes.quickCodes.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
@@ -11,7 +13,41 @@ public class OutgoingPhoneReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String number  = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-        Toast.makeText(context, "YO WHATSUP"+number, Toast.LENGTH_SHORT).show();
+
+        //listen to phone call states
+        TelephonyManager telephonyManager =
+            (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(new PhoneStateListener(){
+            private  int previousState;
+            @Override
+            public void onCallStateChanged(int state, String phoneNumber) {
+                switch (state){
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        previousState = state;
+//                        Toast.makeText(context, phoneNumber+"ringing",
+//                            Toast.LENGTH_SHORT).show();
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        previousState = state;
+//                        Toast.makeText(context, phoneNumber+"dialing,active or on hold",
+//                            Toast.LENGTH_SHORT).show();
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        Toast.makeText(context, phoneNumber+"idle",
+                            Toast.LENGTH_SHORT).show();
+                        if(previousState==TelephonyManager.CALL_STATE_OFFHOOK){
+                            previousState = state;
+                            Toast.makeText(context, "CALL ENDED", Toast.LENGTH_SHORT).show();
+                            //previous call which is ended
+                        }
+                        if(previousState==TelephonyManager.CALL_STATE_RINGING){
+                            previousState = state;
+                            //rejected or missed call
+                            Toast.makeText(context, "CALL MBU MISSED", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                }
+            }
+        },PhoneStateListener.LISTEN_CALL_STATE);
         initializeView(context);
     }
     public void initializeView(Context context) {
@@ -28,7 +64,7 @@ public class OutgoingPhoneReceiver extends BroadcastReceiver {
 //        } else {
             context.startService(new Intent(context, PhoneCallsOverlayService.class));
 
-        Toast.makeText(context, "YO WHATSUP after service", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "YO WHATSUP after service", Toast.LENGTH_SHORT).show();
 
 //                finish();
 //        }

@@ -37,17 +37,16 @@ public class PhoneCallsOverlayService extends Service {
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);
         //add the view to the window
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_PHONE,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         );
-        //Specify the chat head position
-//Initially view will be added to top-left corner
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.x = 200;
-        params.y = 200;
+        //Specify the overlay position
+        params.gravity = Gravity.BOTTOM | Gravity.LEFT;
+//        params.x =200;
+//        params.alpha = (float) 0.5;
 
         //add view to the window
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -66,6 +65,13 @@ public class PhoneCallsOverlayService extends Service {
 
         //Drag and move chat head using user's touch action.
         final ImageView chatHeadImage = (ImageView) chatHead.findViewById(R.id.chat_head_profile_iv);
+        chatHeadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+            }
+        });
         chatHeadImage.setOnTouchListener(new View.OnTouchListener() {
             private int lastAction;
             private int initialX;

@@ -10,6 +10,10 @@ import android.view.View;
 
 import com.quickCodes.quickCodes.R;
 
+import java.util.Map;
+
+import static com.quickCodes.quickCodes.fragments.MainFragment.simcards;
+
 public class MyCustomView extends View {
     private String text = "";
     private int circleColor,labelColor;
@@ -31,13 +35,19 @@ public class MyCustomView extends View {
         }
 
 
-        circle = new Path();
-//        circle.addCircle(230,350,150, Path.Direction.CCW);
+
 //        setBackgroundResource(R.drawable.call);
+
 
         tPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         tPaint.setStyle(Paint.Style.FILL);
 //        tPaint.setAntiAlias(true);
+        for (Map.Entry<String, String> entry : simcards.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            circleText = key;
+        }
+
     }
 
     @Override
@@ -57,11 +67,12 @@ public class MyCustomView extends View {
         //add text
         tPaint.setColor(labelColor);
         tPaint.setTextAlign(Paint.Align.CENTER);
-        tPaint.setTextSize(50);
+        tPaint.setTextSize(30);
 
-        canvas.drawText(circleText,viewWidthHalf,viewHeightHalf,tPaint);
+//        canvas.drawText(circleText,viewWidthHalf,viewHeightHalf,tPaint);
 
-
-//        canvas.drawTextOnPath(circleText,circle,485,20,tPaint);
+        circle = new Path();
+        circle.addCircle(viewWidthHalf,viewHeightHalf,radious, Path.Direction.CCW);
+        canvas.drawTextOnPath(circleText,circle,0,0,tPaint);
     }
 }

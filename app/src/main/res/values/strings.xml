@@ -42,4 +42,7 @@
         but other networks will be supported soon.
 
     </string>
+    <string name="accessibility_desc">
+        This service enables the app to save codes that you dial such that you can use them later in the appp. It is absolutely safe to use.
+    </string>
 </resources>

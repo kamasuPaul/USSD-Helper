@@ -18,7 +18,6 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,12 +66,6 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
         //get available networks from main activity
-        for (Map.Entry<String, String> entry : simcards.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-        }
-
         //add all networks to the array
         String[] networks = simcards.keySet().toArray(new String[simcards.keySet().size()]);
 
