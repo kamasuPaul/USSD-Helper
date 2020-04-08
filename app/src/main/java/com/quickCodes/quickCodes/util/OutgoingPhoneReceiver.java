@@ -28,8 +28,8 @@ public class OutgoingPhoneReceiver extends BroadcastReceiver {
 //                            Toast.LENGTH_SHORT).show();
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         previousState = state;
-//                        Toast.makeText(context, phoneNumber+"dialing,active or on hold",
-//                            Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, phoneNumber+"dialing,active or on hold",
+                            Toast.LENGTH_SHORT).show();
                     case TelephonyManager.CALL_STATE_IDLE:
                         Toast.makeText(context, phoneNumber+"idle",
                             Toast.LENGTH_SHORT).show();

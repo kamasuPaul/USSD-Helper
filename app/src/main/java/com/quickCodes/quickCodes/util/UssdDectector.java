@@ -17,7 +17,7 @@ public class UssdDectector extends AccessibilityService {
 //        performGlobalAction()
         //lauch overlay
         if (event.getClassName().equals("android.app.AlertDialog")) {
-            performGlobalAction(GLOBAL_ACTION_BACK);
+//            performGlobalAction(GLOBAL_ACTION_BACK);
             Log.d(TAG, text);
 //            Intent intent = new Intent("com.times.ussd.action.REFRESH");
 //            intent.putExtra("message", text);

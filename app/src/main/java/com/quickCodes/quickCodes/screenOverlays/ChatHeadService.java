@@ -1,5 +1,6 @@
 package com.quickCodes.quickCodes.screenOverlays;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -18,6 +19,8 @@ import androidx.annotation.Nullable;
 
 public class ChatHeadService extends Service {
     View chatHead;
+    boolean app_runing_in_foreground = false;
+
     private WindowManager windowManager;
     public ChatHeadService(){
 
@@ -29,9 +32,29 @@ public class ChatHeadService extends Service {
         return null;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate() {
         super.onCreate();
+//        //check if the entire application is in background or not
+//        Log.d("SERVICE ","INSIDE SERVICE");
+//
+//        ActivityManager activityManager =
+//            (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningAppProcessInfo> runningAppProcesses =
+//            activityManager.getRunningAppProcesses();
+//        String packageName = getApplicationContext().getPackageName();
+//        for(ActivityManager.RunningAppProcessInfo appProcessInfo: runningAppProcesses){
+//            Log.d("APP ",appProcessInfo.processName);
+//            Log.d("APP ",packageName);
+//
+//            if(appProcessInfo.processName.equalsIgnoreCase(packageName)){
+//                //app in foreground stop service
+//                Log.d("APP RUNNING",appProcessInfo.processName);
+//                stopSelf();
+//
+//            }
+//        }
         //inflate the chat head layout
         chatHead = LayoutInflater.from(this).inflate(R.layout.chat_head, null);
         //add the view to the window
@@ -46,7 +69,7 @@ public class ChatHeadService extends Service {
 //Initially view will be added to top-left corner
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 0;
-        params.y = 100;
+        params.y = 400;
 
         //add view to the window
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -74,6 +97,7 @@ public class ChatHeadService extends Service {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                chatHeadImage.setBackgroundColor(getResources().getColor(R.color.grey_100));
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
@@ -86,6 +110,7 @@ public class ChatHeadService extends Service {
                         initialTouchY = event.getRawY();
 
                         lastAction = event.getAction();
+                        chatHeadImage.setBackgroundColor(getResources().getColor(R.color.transparent));
                         return true;
                     case MotionEvent.ACTION_UP:
                         //As we implemented on touch listener with ACTION_MOVE,
@@ -101,8 +126,10 @@ public class ChatHeadService extends Service {
                             stopSelf();
                         }
                         lastAction = event.getAction();
+                        chatHeadImage.setBackgroundColor(getResources().getColor(R.color.transparent));
                         return true;
                     case MotionEvent.ACTION_MOVE:
+                        //set background of chat head
                         //Calculate the X and Y coordinates of the view.
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
@@ -110,6 +137,7 @@ public class ChatHeadService extends Service {
                         //Update the layout with new X & Y coordinate
                         windowManager.updateViewLayout(chatHead, params);
                         lastAction = event.getAction();
+                        chatHeadImage.setBackgroundColor(getResources().getColor(R.color.grey_100));
                         return true;
                 }
                 return false;

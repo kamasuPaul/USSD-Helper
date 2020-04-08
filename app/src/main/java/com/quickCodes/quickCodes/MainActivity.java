@@ -22,8 +22,9 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
-import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
+import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
+import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +32,11 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.viewpager.widget.ViewPager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LifecycleOwner {
 
     private static final int REQUEST_CONTACT = 20 ;
     private static final int REQUEST_CODE = 40 ;
@@ -46,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         edit = intent.getStringExtra("edit");
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(this));
+
+
         //ask for permissions
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
@@ -71,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                         setupToolBar();
 
                             //draw over other apps
-//                            initializeView(getApplicationContext());
 
 
 
@@ -93,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 //                            .build();
                         Toast.makeText(MainActivity.this, "This app requires the  requested permissions to work", Toast.LENGTH_LONG).show();
 //                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
-
 
 
                     }
@@ -192,7 +197,23 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 
 
 }
