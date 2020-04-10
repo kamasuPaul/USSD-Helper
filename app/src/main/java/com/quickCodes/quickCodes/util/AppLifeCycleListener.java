@@ -2,7 +2,6 @@ package com.quickCodes.quickCodes.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
 
@@ -22,7 +21,6 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     //register lifecylce callbacks
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void stopOverlay(){
-        Toast.makeText(context, "RESUME", Toast.LENGTH_SHORT).show();
         //stop the screen overlay
         context.stopService(new Intent(context, ChatHeadService.class));
 
@@ -31,7 +29,6 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void startOverlay(){
         //start the screen overlay
-        Toast.makeText(context, "STOP", Toast.LENGTH_SHORT).show();
         context.startService(new Intent(context, ChatHeadService.class));
 
 

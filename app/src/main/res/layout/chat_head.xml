@@ -10,19 +10,18 @@
     <!--Profile image for the chat head.-->
     <ImageView
         android:id="@+id/chat_head_profile_iv"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="43dp"
+        android:layout_height="53dp"
+        android:foregroundTint="@color/colorPrimary"
         android:src="@drawable/ic_dots"
-        tools:ignore="ContentDescription"/>
+        tools:ignore="ContentDescription" />
 
     <!--Close button-->
-    <ImageView
-        android:id="@+id/close_btn"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginLeft="40dp"
-        android:src="@drawable/ic_close"
-        android:visibility="gone"
-        tools:ignore="ContentDescription"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/close_btn"-->
+<!--        android:layout_width="26dp"-->
+<!--        android:layout_height="26dp"-->
+<!--        android:layout_marginLeft="40dp"-->
+<!--        android:src="@drawable/ic_close"-->
+<!--        tools:ignore="ContentDescription"/>-->
 </RelativeLayout>

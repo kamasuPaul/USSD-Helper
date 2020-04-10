@@ -24,7 +24,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
-import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 
 import java.util.Iterator;
 import java.util.List;
@@ -32,11 +31,9 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.viewpager.widget.ViewPager;
 
-public class MainActivity extends AppCompatActivity implements LifecycleOwner {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CONTACT = 20 ;
     private static final int REQUEST_CODE = 40 ;
@@ -50,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
         Intent intent = getIntent();
         edit = intent.getStringExtra("edit");
 
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(this));
 
 
         //ask for permissions
@@ -78,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
                         setupToolBar();
 
                             //draw over other apps
+//                        initializeView(getApplicationContext());
+
 
 
 
@@ -196,23 +194,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
     }
 
 
