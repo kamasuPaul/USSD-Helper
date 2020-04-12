@@ -169,6 +169,14 @@ public class DialPadActivity extends AppCompatActivity {
                 matchContact(newText);
                 return true;
             }
+
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                return false;
+            }
         });
 
     }
