@@ -13,12 +13,12 @@ android {
 //        vectorDrawables {
 //            useSupportLibrary true
 //        }
-        javaCompileOptions{
-            annotationProcessorOptions{
-                arguments =["room.schemaLocation": "$projectDir/schemas".toString()]
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-        compileOptions{
+        compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }

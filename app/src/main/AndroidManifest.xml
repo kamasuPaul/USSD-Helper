@@ -20,6 +20,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".util.PermissionsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/config_service" />
@@ -34,11 +42,11 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/BaseTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <meta-data
@@ -53,13 +61,16 @@
             android:name=".screenOverlays.PhoneCallsOverlayService"
             android:enabled="true"
             android:exported="false" />
-        <service android:name=".util.UssdDectector"
+        <service
+            android:name=".util.UssdDectector"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-            <meta-data android:name="android.accessibilityservice"
-                android:resource="@xml/config_service" /> // created below
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/config_service" />
         </service>
 
         <receiver android:name=".util.OutgoingPhoneReceiver">
