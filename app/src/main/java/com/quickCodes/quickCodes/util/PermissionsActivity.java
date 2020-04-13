@@ -27,13 +27,12 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.quickCodes.quickCodes.fragments.MainFragment.CODE_DRAW_OVER_OTHER_APP_PERMISSION;
-
 public class PermissionsActivity extends AppCompatActivity {
 
-    private Button btn_permissins,btn_drawOverApps;
+    public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
+    private Button btn_permissions, btn_drawOverApps;
     private Button btn_continue;
-    private ImageView imgView_permissions,imageView_draw;
+    private ImageView imgView_permissions, imageView_draw;
     private boolean drawGranted;
 
     @Override
@@ -46,22 +45,22 @@ public class PermissionsActivity extends AppCompatActivity {
 
 
         //permissions
-        btn_permissins = findViewById(R.id.button_set_permissions);
+        btn_permissions = findViewById(R.id.button_set_permissions);
         btn_drawOverApps = findViewById(R.id.button_draw_overApps);
         btn_continue = findViewById(R.id.button_continue);
 
         imgView_permissions = findViewById(R.id.imageView_set_permissions);
-        imageView_draw =      findViewById(R.id.imageView_draw_overApps);
+        imageView_draw = findViewById(R.id.imageView_draw_overApps);
 
         //request permissions on click
-        btn_permissins.setOnClickListener(v -> {
+        btn_permissions.setOnClickListener(v -> {
             requestPermissions();
             updateUi();
 
         });
 
         //REQUEST DRAW OVER OTHER APPS PERMISSION
-        btn_drawOverApps.setOnClickListener(v->{
+        btn_drawOverApps.setOnClickListener(v -> {
             requestToDrawOverApps(getApplicationContext());
             updateUi();
         });
@@ -84,12 +83,12 @@ public class PermissionsActivity extends AppCompatActivity {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
                     //if permission granted
-                    if(report.areAllPermissionsGranted()){
+                    if (report.areAllPermissionsGranted()) {
                         updateUi();
-                            all_granted[0] = true;
-                    }else if (report.isAnyPermissionPermanentlyDenied()){
+                        all_granted[0] = true;
+                    } else if (report.isAnyPermissionPermanentlyDenied()) {
                         //TODO open setting activity , where permissions can be set
-                    } else{
+                    } else {
                         DialogOnAnyDeniedMultiplePermissionsListener dialog = DialogOnAnyDeniedMultiplePermissionsListener.Builder
                             .withContext(PermissionsActivity.this)
                             .withTitle("Contacts and Phone State")
@@ -109,7 +108,7 @@ public class PermissionsActivity extends AppCompatActivity {
 
                         Toast.makeText(PermissionsActivity.this, "This app requires the  requested permissions to work", Toast.LENGTH_LONG).show();
 //                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
-                    all_granted[0] = false;
+                        all_granted[0] = false;
 
                     }
                 }
@@ -130,6 +129,7 @@ public class PermissionsActivity extends AppCompatActivity {
      * Check if the application has draw over other apps permission or not?,
      * This permission is by default available for API<23. But for API > 23,
      * If the draw over permission is not available open the settings screen to grant the permission.
+     *
      * @return
      */
     private void requestToDrawOverApps(Context context) {
@@ -148,9 +148,9 @@ public class PermissionsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==CODE_DRAW_OVER_OTHER_APP_PERMISSION){
+        if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
             //permission granted
-            if(resultCode==RESULT_OK)            drawGranted = true;
+            if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
             Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
@@ -160,46 +160,47 @@ public class PermissionsActivity extends AppCompatActivity {
         boolean permission = false;
         boolean draw = false;
         //check if permissions have been granted
-        if(checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE)== PackageManager.PERMISSION_GRANTED){
-            if(checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS)== PackageManager.PERMISSION_GRANTED){
-                if(checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE)== PackageManager.PERMISSION_GRANTED){
-                        permission = true;//all permissions have been granted;
+        if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                if (checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    permission = true;//all permissions have been granted;
                     imgView_permissions.setVisibility(View.VISIBLE);
-                    btn_permissins.setVisibility(View.GONE);
+                    btn_permissions.setVisibility(View.GONE);
 
                 }
             }
         }
         //check if draw over other apps has been granted
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
             draw = true;
             imageView_draw.setVisibility(View.VISIBLE);
             btn_drawOverApps.setVisibility(View.GONE);
         }
 
         //update ui if both them are true
-        if(permission&&draw){
+        if (permission && draw) {
             btn_continue.setEnabled(true);
         }
     }
+
     private void checkPermissions() {
         boolean permission = false;
         boolean draw = false;
         //check if permissions have been granted
-        if(checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE)== PackageManager.PERMISSION_GRANTED){
-            if(checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS)== PackageManager.PERMISSION_GRANTED){
-                if(checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE)== PackageManager.PERMISSION_GRANTED){
+        if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                if (checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     permission = true;//all permissions have been granted;
                 }
             }
         }
         //check if draw over other apps has been granted
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
             draw = true;
         }
 
         //update ui if both them are true
-        if(permission&&draw){
+        if (permission && draw) {
             startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
             finish();
         }
