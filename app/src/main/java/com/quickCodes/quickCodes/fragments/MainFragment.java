@@ -123,7 +123,7 @@ public class MainFragment extends Fragment {
                     mmoneyCodes.add(us);
                 }
                 if(us.action.getSection() == SEC_USER_DIALED){
-                    Toast.makeText(getActivity(), us.action.getAirtelCode(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), us.action.getAirtelCode(), Toast.LENGTH_SHORT).show();
                 }
             }
             adapterUssdCodes.setUssdActions(airtimeCodes);

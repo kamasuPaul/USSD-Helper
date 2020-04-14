@@ -44,7 +44,7 @@ public class PermissionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_permissions);
 
 
-        //permissions
+        //initalize buttons and image views
         btn_permissions = findViewById(R.id.button_set_permissions);
         btn_drawOverApps = findViewById(R.id.button_draw_overApps);
         btn_continue = findViewById(R.id.button_continue);

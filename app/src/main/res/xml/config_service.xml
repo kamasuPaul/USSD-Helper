@@ -6,5 +6,5 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_desc"
     android:notificationTimeout="100"
-    android:packageNames="com.quickCodes.quickCodes"
+    android:packageNames="com.android.phone"
     android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity" />
