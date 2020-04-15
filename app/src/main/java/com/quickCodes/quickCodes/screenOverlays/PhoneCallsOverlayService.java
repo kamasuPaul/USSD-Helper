@@ -42,6 +42,8 @@ public class PhoneCallsOverlayService extends Service {
         SharedPreferences preferences =
             this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         String code = preferences.getString("code", null);
+        //make preference null suchthat the same code is not shown again
+        preferences.edit().putString("code", null).commit();
 
         //inflate the chat head layout
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);

@@ -25,7 +25,7 @@ public class UssdDetector extends AccessibilityService {
                     this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
                 String code = preferences.getString("code", null);
                 if (code != null) {
-                    showSummary(UssdDetector.this, code);
+                    showSummary(UssdDetector.this);
                 }
 
             }
@@ -93,9 +93,8 @@ public class UssdDetector extends AccessibilityService {
         super.onServiceConnected();
     }
 
-    public void showSummary(Context context, String code) {
+    public void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
-        intent.putExtra("code", code);
         context.startService(intent);
 
     }
