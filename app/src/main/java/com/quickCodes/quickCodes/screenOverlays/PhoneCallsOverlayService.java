@@ -2,7 +2,9 @@ package com.quickCodes.quickCodes.screenOverlays;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.view.Gravity;
@@ -11,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
@@ -19,6 +22,7 @@ import androidx.annotation.Nullable;
 
 public class PhoneCallsOverlayService extends Service {
     View chatHead;
+    String TAG = "PHONE OVERLAY SERVICE";
     private WindowManager windowManager;
     public PhoneCallsOverlayService(){
     }
@@ -33,6 +37,10 @@ public class PhoneCallsOverlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        SharedPreferences preferences =
+            this.getSharedPreferences("AUTOSAVED_CODES", Context.MODE_PRIVATE);
+        String code = preferences.getString("code", null);
+
         //inflate the chat head layout
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);
         //add the view to the window
@@ -51,6 +59,13 @@ public class PhoneCallsOverlayService extends Service {
         //add view to the window
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(chatHead, params);
+
+        //set the saved text
+        TextView textViewCode = chatHead.findViewById(R.id.textView_code_summary);
+        if (code != null) {
+            textViewCode.setText(code);
+        }
+
 
 
         //Set the close button.

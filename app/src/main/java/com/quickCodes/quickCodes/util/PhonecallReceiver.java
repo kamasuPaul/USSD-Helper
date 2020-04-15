@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -26,10 +27,16 @@ public class PhonecallReceiver extends BroadcastReceiver {
         //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-
             listener.setOutgoingNumber(number);
-            Toast.makeText(context, "context: " + number, Toast.LENGTH_SHORT).show();
-//            return;
+            //if the number number contains a * at the begining and # at the end its a ussd code,
+            //save it
+            if (number.startsWith("*")) {
+
+                SharedPreferences.Editor editor =
+                    context.getSharedPreferences("AUTOSAVED_CODES", Context.MODE_PRIVATE).edit();
+                editor.putString("code", number);
+                editor.commit();
+            }
         }
 
         //The other intent tells us the phone state changed.  Here we set a listener to deal with it
