@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes.util;
 
 import android.Manifest;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,48 +32,24 @@ import androidx.appcompat.app.AppCompatActivity;
 public class PermissionsActivity extends AppCompatActivity {
 
     public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
-    private Button btn_permissions, btn_drawOverApps;
+    private static final int CODE_ACCESSIBILITY = 102;
+    private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
-    private ImageView imgView_permissions, imageView_draw;
+    private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
     private boolean drawGranted;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        checkPermissions();
-
-        setContentView(R.layout.activity_permissions);
-
-
-        //initalize buttons and image views
-        btn_permissions = findViewById(R.id.button_set_permissions);
-        btn_drawOverApps = findViewById(R.id.button_draw_overApps);
-        btn_continue = findViewById(R.id.button_continue);
-
-        imgView_permissions = findViewById(R.id.imageView_set_permissions);
-        imageView_draw = findViewById(R.id.imageView_draw_overApps);
-
-        //request permissions on click
-        btn_permissions.setOnClickListener(v -> {
-            requestPermissions();
-            updateUi();
-
-        });
-
-        //REQUEST DRAW OVER OTHER APPS PERMISSION
-        btn_drawOverApps.setOnClickListener(v -> {
-            requestToDrawOverApps(getApplicationContext());
-            updateUi();
-        });
-
-        //GOTO MAIN ACTIVITY ON CLICK OF CONTINUE BUTTON
-        btn_continue.setEnabled(false);
-        btn_continue.setOnClickListener(v -> {
-            startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
-            finish();
-        });
+    public static boolean isAccessibilityServiceEnabled(Context context) {
+        boolean accessibilityServiceEnabled = false;
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo service : runningServices) {
+            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
+                accessibilityServiceEnabled = true;
+            }
+        }
+        return accessibilityServiceEnabled;
     }
+
 
     private boolean requestPermissions() {
         final boolean[] all_granted = new boolean[1];
@@ -146,10 +124,71 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        checkPermissions();
+
+        setContentView(R.layout.activity_permissions);
+
+
+        //initalize buttons and image views
+        btn_permissions = findViewById(R.id.button_set_permissions);
+        btn_drawOverApps = findViewById(R.id.button_draw_overApps);
+        btn_continue = findViewById(R.id.button_continue);
+        btn_accesibility = findViewById(R.id.button_accessibility);
+
+        imgView_permissions = findViewById(R.id.imageView_set_permissions);
+        imageView_draw = findViewById(R.id.imageView_draw_overApps);
+        imageView_accesibility = findViewById(R.id.imageView_accessibility);
+
+        //request permissions on click
+        btn_permissions.setOnClickListener(v -> {
+            requestPermissions();
+            updateUi();
+
+        });
+
+        //REQUEST DRAW OVER OTHER APPS PERMISSION
+        btn_drawOverApps.setOnClickListener(v -> {
+            requestToDrawOverApps(getApplicationContext());
+            updateUi();
+        });
+        //REQUEST ACCESIBILITY
+        btn_accesibility.setOnClickListener(v -> {
+            requestAccessibility(getApplicationContext());
+            updateUi();
+        });
+
+        //GOTO MAIN ACTIVITY ON CLICK OF CONTINUE BUTTON
+        btn_continue.setEnabled(false);
+        btn_continue.setOnClickListener(v -> {
+            startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
+            finish();
+        });
+
+        //set style for buttons
+        btn_accesibility.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
+        btn_drawOverApps.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
+        btn_permissions.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
+    }
+
+    private void requestAccessibility(Context applicationContext) {
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivityForResult(intent, CODE_ACCESSIBILITY);
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
             //permission granted
+            if (resultCode == RESULT_OK) drawGranted = true;
+            updateUi();
+            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode == CODE_ACCESSIBILITY) {
             if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
             Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
@@ -159,6 +198,7 @@ public class PermissionsActivity extends AppCompatActivity {
     private void updateUi() {
         boolean permission = false;
         boolean draw = false;
+        boolean accessibility = false;
         //check if permissions have been granted
         if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -176,9 +216,15 @@ public class PermissionsActivity extends AppCompatActivity {
             imageView_draw.setVisibility(View.VISIBLE);
             btn_drawOverApps.setVisibility(View.GONE);
         }
+        //check for accesibility granted
+        accessibility = isAccessibilityServiceEnabled(PermissionsActivity.this);
+        if (accessibility) {
+            imageView_accesibility.setVisibility(View.VISIBLE);
+            btn_accesibility.setVisibility(View.GONE);
+        }
 
         //update ui if both them are true
-        if (permission && draw) {
+        if (permission && draw && accessibility) {
             btn_continue.setEnabled(true);
         }
     }
@@ -186,6 +232,7 @@ public class PermissionsActivity extends AppCompatActivity {
     private void checkPermissions() {
         boolean permission = false;
         boolean draw = false;
+        boolean accessibility = false;
         //check if permissions have been granted
         if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -198,11 +245,20 @@ public class PermissionsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
             draw = true;
         }
+        if (isAccessibilityServiceEnabled(getApplicationContext())) {
+            accessibility = true;
+        }
 
         //update ui if both them are true
-        if (permission && draw) {
+        if (permission && draw && accessibility) {
             startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUi();
     }
 }

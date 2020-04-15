@@ -62,7 +62,7 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".util.UssdDectector"
+            android:name=".util.UssdDetector"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

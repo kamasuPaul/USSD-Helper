@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.util.UssdDetector;
 
 import androidx.annotation.Nullable;
 
@@ -24,6 +25,7 @@ public class PhoneCallsOverlayService extends Service {
     View chatHead;
     String TAG = "PHONE OVERLAY SERVICE";
     private WindowManager windowManager;
+
     public PhoneCallsOverlayService(){
     }
 
@@ -38,7 +40,7 @@ public class PhoneCallsOverlayService extends Service {
     public void onCreate() {
         super.onCreate();
         SharedPreferences preferences =
-            this.getSharedPreferences("AUTOSAVED_CODES", Context.MODE_PRIVATE);
+            this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         String code = preferences.getString("code", null);
 
         //inflate the chat head layout

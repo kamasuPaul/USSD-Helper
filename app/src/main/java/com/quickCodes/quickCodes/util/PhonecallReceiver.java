@@ -20,28 +20,29 @@ public class PhonecallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         savedContext = context;
-        if (listener == null) {
-            listener = new PhonecallStartEndDetector();
-        }
+//        if (listener == null) {
+//            listener = new PhonecallStartEndDetector();
+//        }
 
         //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
-        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+//        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-            listener.setOutgoingNumber(number);
+        Toast.makeText(context, "number " + number, Toast.LENGTH_SHORT).show();
+//            listener.setOutgoingNumber(number);
             //if the number number contains a * at the begining and # at the end its a ussd code,
             //save it
             if (number.startsWith("*")) {
 
                 SharedPreferences.Editor editor =
-                    context.getSharedPreferences("AUTOSAVED_CODES", Context.MODE_PRIVATE).edit();
+                    context.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
                 editor.putString("code", number);
                 editor.commit();
             }
-        }
+//        }
 
         //The other intent tells us the phone state changed.  Here we set a listener to deal with it
-        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        telephony.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+//        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//        telephony.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     //Derived classes should override these to respond to specific events of interest
