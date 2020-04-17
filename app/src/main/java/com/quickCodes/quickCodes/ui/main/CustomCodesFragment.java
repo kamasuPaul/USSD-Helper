@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
+import com.quickCodes.quickCodes.fragments.MainFragment;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
@@ -302,6 +303,7 @@ public class CustomCodesFragment extends Fragment {
                 String initialCode = obj.action.getAirtelCode();
                 String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
+                MainFragment.updateWeightOnClick(obj, ussdActionsViewModel);
             }
 
             @Override

@@ -1,5 +1,7 @@
 package com.quickCodes.quickCodes.util.database;
 
+import android.util.Log;
+
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
@@ -17,25 +19,38 @@ import androidx.room.Update;
 
 @Dao
 public abstract class UssdActionDao {
-    public void insertStepsForAction(UssdActionWithSteps a){
-        List<Step> steps = a.steps;
+    public void insertUssdActionWithSteps(UssdActionWithSteps a) {
         insert(a.action);
+        insertSteps(a.steps, a.action.getActionId());
+
+    }
+
+    /**
+     * for inserting steps into the database
+     *
+     * @param steps
+     * @param actionId
+     */
+    public void insertSteps(List<Step> steps, Long actionId) {
         //if steps = null there are no steps
-        if(steps!=null){
-            for(Step s: steps){
-                s.setUssd_action_id(a.action.getActionId());
+        if (steps != null) {
+            for (Step s : steps) {
+                s.setUssd_action_id(actionId);
             }
             insertAll(steps);
         }
     }
-    public void updateActionWithSteps(UssdActionWithSteps a){
+
+    public void updateUssdActionWithSteps(UssdActionWithSteps a) {
+        Log.d("WEIGHT", String.valueOf(a.action.getWeight()));
         deleteActionSteps(a.action.actionId);
-        insertStepsForAction(a);
+        update(a.action);
+        insertSteps(a.steps, a.action.getActionId());
     }
     @Insert(onConflict = OnConflictStrategy.REPLACE)//TODO change replace strategy
     abstract void insertAll(List<Step>steps);
     @Transaction
-    @Query("SELECT * FROM ussd_actions")
+    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC")
     public abstract LiveData<List<UssdActionWithSteps>> getActionsWithSteps();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -66,13 +66,13 @@ public abstract class MyRoomDatabase extends RoomDatabase {
        UssdAction action4 = new UssdAction(4, "Borrow Airtime", "*100*4*1", "*160","not",SEC_AIRTIME);
        UssdAction action5 = new UssdAction(5, "Call Me Back", "*100*7*7",null,"*100*8",SEC_AIRTIME);
 
-       dao.insertStepsForAction(new UssdActionWithSteps(action,Arrays.asList(new Step(0,NUMBER,0,"Amount"))));
-       dao.insertStepsForAction(new UssdActionWithSteps(action1,null));
-       dao.insertStepsForAction(new UssdActionWithSteps(action2,null));
-       dao.insertStepsForAction(new UssdActionWithSteps(action3,Arrays.asList(new Step(3,TELEPHONE,0,"Telephone"),
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action, Arrays.asList(new Step(0, NUMBER, 0, "Amount"))));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action1, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action2, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action3, Arrays.asList(new Step(3, TELEPHONE, 0, "Telephone"),
            new Step(3,NUMBER,1,"Amount") )));
-       dao.insertStepsForAction(new UssdActionWithSteps(action4,null));
-       dao.insertStepsForAction(new UssdActionWithSteps(action5,Arrays.asList(new Step(5,TELEPHONE,0,"Telephone"))));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action4, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action5, Arrays.asList(new Step(5, TELEPHONE, 0, "Telephone"))));
 
    }
 
@@ -86,12 +86,12 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         UssdAction action4 = new UssdAction(104, "Free Monthly", "*175*9*2", null,"not",SEC_DATA);
         UssdAction action5 = new UssdAction(105, "Send Data", "*175*5*2",null,"not",SEC_DATA);
 
-        dao.insertStepsForAction(new UssdActionWithSteps(action,null));
-        dao.insertStepsForAction(new UssdActionWithSteps(action1,null));
-        dao.insertStepsForAction(new UssdActionWithSteps(action2,null));
-        dao.insertStepsForAction(new UssdActionWithSteps(action3,null));
-        dao.insertStepsForAction(new UssdActionWithSteps(action4,null));
-        dao.insertStepsForAction(new UssdActionWithSteps(action5,Arrays.asList(new Step(105,TELEPHONE,0,"Telephone"),
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action1, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action2, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action3, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action4, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action5, Arrays.asList(new Step(105, TELEPHONE, 0, "Telephone"),
             new Step(105,NUMBER,1,"Mbs(50 to 2000)") )));
 
     }
@@ -105,11 +105,11 @@ public abstract class MyRoomDatabase extends RoomDatabase {
        UssdAction action2 = new UssdAction(202, "Withdraw Cash", "*185*3",null,null,SEC_MMONEY);
        UssdAction action3 = new UssdAction(203, "Get a loan", "*185*8","*185*5*1*2",null,SEC_MMONEY);
 
-       dao.insertStepsForAction(new UssdActionWithSteps(action,null));
-       dao.insertStepsForAction(new UssdActionWithSteps(action1,Arrays.asList(new Step(201,TELEPHONE,0,"Telephone"),
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action, null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action1, Arrays.asList(new Step(201, TELEPHONE, 0, "Telephone"),
            new Step(201,NUMBER,1,"Amount") )));
-       dao.insertStepsForAction(new UssdActionWithSteps(action2,Arrays.asList(new Step(202,NUMBER,0,"Amount"))));
-       dao.insertStepsForAction(new UssdActionWithSteps(action3,null));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action2, Arrays.asList(new Step(202, NUMBER, 0, "Amount"))));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action3, null));
 
 
    }

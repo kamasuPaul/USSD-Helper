@@ -6,18 +6,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.quickCodes.quickCodes.MainActivity;
+import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.modals.Constants;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdDetector;
+import com.quickCodes.quickCodes.util.database.DataRepository;
+
+import java.util.Random;
 
 import androidx.annotation.Nullable;
 
@@ -25,8 +33,13 @@ public class PhoneCallsOverlayService extends Service {
     View chatHead;
     String TAG = "PHONE OVERLAY SERVICE";
     private WindowManager windowManager;
+    String code;
+    DataRepository dataRepository;
+    Long codeId;
+    UssdAction action;
 
     public PhoneCallsOverlayService(){
+        dataRepository = new DataRepository(getApplication());
     }
 
     @Nullable
@@ -41,7 +54,8 @@ public class PhoneCallsOverlayService extends Service {
         super.onCreate();
         SharedPreferences preferences =
             this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
-        String code = preferences.getString("code", null);
+        code = preferences.getString("code", null);
+        code = code.replace("#", "").replace(",", "*").concat("#");
         //make preference null suchthat the same code is not shown again
         preferences.edit().putString("code", null).commit();
 
@@ -70,6 +84,22 @@ public class PhoneCallsOverlayService extends Service {
             textViewCode.setText(code);
         }
 
+        LinearLayout linearLayoutSaveCode = chatHead.findViewById(R.id.linearLayout_save_code);
+        LinearLayout linearLayoutEditCode = chatHead.findViewById(R.id.linearLayout_edit_code);
+        LinearLayout linearLayoutRedialCode = chatHead.findViewById(R.id.linearLayout_redial_code);
+        LinearLayout linearLayoutDeleteCode = chatHead.findViewById(R.id.linearLayout_delete_code);
+
+        linearLayoutSaveCode.setOnClickListener(v -> saveCode());
+        linearLayoutEditCode.setOnClickListener(v -> editCode());
+        linearLayoutRedialCode.setOnClickListener(v -> redialCode());
+        linearLayoutDeleteCode.setOnClickListener(v -> deleteCode());
+
+        //save the code to the database
+        Random r = new Random();
+        codeId = r.nextLong();//TODO change random number generator
+        action = new UssdAction(codeId, code, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
+        dataRepository.insertAll(new UssdActionWithSteps(action, null));
+
 
 
         //Set the close button.
@@ -81,68 +111,38 @@ public class PhoneCallsOverlayService extends Service {
                 stopSelf();
             }
         });
-
-        //Drag and move chat head using user's touch action.
-        final ImageView chatHeadImage = (ImageView) chatHead.findViewById(R.id.chat_head_profile_iv);
-        chatHeadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-            }
-        });
-        chatHeadImage.setOnTouchListener(new View.OnTouchListener() {
-            private int lastAction;
-            private int initialX;
-            private int initialY;
-            private float initialTouchX;
-            private float initialTouchY;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-
-                        //remember the initial position.
-                        initialX = params.x;
-                        initialY = params.y;
-
-                        //get the touch location
-                        initialTouchX = event.getRawX();
-                        initialTouchY = event.getRawY();
-
-                        lastAction = event.getAction();
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        //As we implemented on touch listener with ACTION_MOVE,
-                        //we have to check if the previous action was ACTION_DOWN
-                        //to identify if the user clicked the view or not.
-                        if (lastAction == MotionEvent.ACTION_DOWN) {
-                            //Open the chat conversation click.
-                            Intent intent = new Intent(PhoneCallsOverlayService.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-
-                            //close the service and remove the chat heads
-                            stopSelf();
-                        }
-                        lastAction = event.getAction();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        //Calculate the X and Y coordinates of the view.
-                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
-                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
-
-                        //Update the layout with new X & Y coordinate
-                        windowManager.updateViewLayout(chatHead, params);
-                        lastAction = event.getAction();
-                        return true;
-                }
-                return false;
-            }
-        });
     }
 
+    private void editCode() {
+        Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(PhoneCallsOverlayService.this, EditActionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("action_id", String.valueOf(codeId));
+        startActivity(intent);
+    }
+
+    private void saveCode() {
+        Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    private void redialCode() {
+        Toast.makeText(this, "redial", Toast.LENGTH_SHORT).show();
+        String fullCode = code.replace("#", "") + Uri.encode("#");
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+
+    }
+
+    private void deleteCode() {
+        Toast.makeText(this, "Successfully deleted", Toast.LENGTH_SHORT).show();
+        dataRepository.delete(action);
+        stopSelf();
+
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

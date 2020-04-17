@@ -95,7 +95,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(UssdActionWithSteps... ussdActionWithSteps) {
-            d.updateActionWithSteps(ussdActionWithSteps[0]);
+            d.updateUssdActionWithSteps(ussdActionWithSteps[0]);
             return null;
         }
     }
@@ -123,7 +123,7 @@ public class DataRepository {
 
         @Override
         protected Void doInBackground(UssdActionWithSteps... ussdActionWithSteps) {
-            dao.insertStepsForAction(ussdActionWithSteps[0]);
+            dao.insertUssdActionWithSteps(ussdActionWithSteps[0]);
             return null;
         }
     }

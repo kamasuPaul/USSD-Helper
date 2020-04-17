@@ -15,6 +15,7 @@ public class UssdAction {
     private String mtnCode;
     private String africellCode;
     public int section;
+    public int weight = 0;
     private String network = ""; //this is to be used for custom codes to define which network they run on
 
     @Ignore
@@ -97,6 +98,14 @@ public class UssdAction {
         this.network = network;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
         return "UssdAction{" +
@@ -106,8 +115,8 @@ public class UssdAction {
             ", mtnCode='" + mtnCode + '\'' +
             ", africellCode='" + africellCode + '\'' +
             ", section=" + section +
+            ", weight=" + weight +
+            ", network='" + network + '\'' +
             '}';
     }
-
-
 }

@@ -171,6 +171,7 @@ public class PermissionsActivity extends AppCompatActivity {
         btn_accesibility.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
         btn_drawOverApps.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
         btn_permissions.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
+        btn_continue.setBackground(getResources().getDrawable(R.drawable.btn_rounded_white_outline));
     }
 
     private void requestAccessibility(Context applicationContext) {
@@ -198,7 +199,7 @@ public class PermissionsActivity extends AppCompatActivity {
     private void updateUi() {
         boolean permission = false;
         boolean draw = false;
-        boolean accessibility = false;
+        boolean accessibility;
         //check if permissions have been granted
         if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {

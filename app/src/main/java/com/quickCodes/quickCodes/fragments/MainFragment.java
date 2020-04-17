@@ -90,6 +90,11 @@ public class MainFragment extends Fragment {
     }
 
 
+    public static void updateWeightOnClick(UssdActionWithSteps obj, UssdActionsViewModel viewModel) {
+        obj.action.setWeight(obj.action.getWeight() + 1);
+        viewModel.update(obj);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +140,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 executeSuperAction(obj);
+                updateWeightOnClick(obj, viewModel);
+
             }
 
             @Override
@@ -151,6 +158,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 executeSuperAction(obj);
+                updateWeightOnClick(obj, viewModel);
             }
 
             @Override
@@ -167,6 +175,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 executeSuperAction(obj);
+                updateWeightOnClick(obj, viewModel);
+
             }
 
             @Override
