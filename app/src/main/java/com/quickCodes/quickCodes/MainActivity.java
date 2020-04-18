@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 40;
     private static final int CONTACT_PICKER_REQUEST = 90;
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
+    public static boolean accessibilityServiceShouldRun = false;
     String edit;
 
     @Override

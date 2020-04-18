@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.util;
 import android.content.Context;
 import android.content.Intent;
 
+import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
 
 import androidx.lifecycle.Lifecycle;
@@ -23,6 +24,9 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     public void stopOverlay(){
         //stop the screen overlay
         context.stopService(new Intent(context, ChatHeadService.class));
+        //make the accessibility ussd detector stop since all actions dialed from
+        //quick codes are already saved
+        MainActivity.accessibilityServiceShouldRun = false;
 
 
     }
@@ -30,6 +34,8 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     public void startOverlay(){
         //start the screen overlay
         context.startService(new Intent(context, ChatHeadService.class));
+        MainActivity.accessibilityServiceShouldRun = true;
+
 
 
 

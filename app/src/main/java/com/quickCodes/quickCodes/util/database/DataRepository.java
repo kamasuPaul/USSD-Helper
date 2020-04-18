@@ -38,6 +38,7 @@ public class DataRepository {
     }
 
     public LiveData<List<UssdActionWithSteps>> getAllUssdActions(){return allUssdActions;}
+
     public void delete(UssdAction ussdAction){
         new deleteAsyncTask(ussdActionDao).execute(ussdAction);
     }
@@ -57,6 +58,18 @@ public class DataRepository {
         AsyncTask<String, Void, UssdActionWithSteps> execute = new getUssdActionAsyncTask(ussdActionDao).execute(id);
         try {
             UssdActionWithSteps ussdActionWithSteps = execute.get();
+            return ussdActionWithSteps;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public List<UssdActionWithSteps> getAllUssdActionsNoLiveData() {
+        try {
+            List<UssdActionWithSteps> ussdActionWithSteps =
+                new getAllUssdActionAsyncTask(ussdActionDao).execute().get();
             return ussdActionWithSteps;
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +112,6 @@ public class DataRepository {
             return null;
         }
     }
-
     private static class getUssdActionAsyncTask extends AsyncTask<String,Void,UssdActionWithSteps> {
         UssdActionDao d;
 
@@ -114,7 +126,6 @@ public class DataRepository {
             return ussdActionWithSteps;
         }
     }
-
     private static class insertAllAsyncTask extends AsyncTask<UssdActionWithSteps,Void,Void> {
         UssdActionDao dao;
         public insertAllAsyncTask(UssdActionDao ussdActionDao) {
@@ -127,4 +138,19 @@ public class DataRepository {
             return null;
         }
     }
+
+    private static class getAllUssdActionAsyncTask extends AsyncTask<Void, Void, List<UssdActionWithSteps>> {
+        UssdActionDao d;
+
+        public getAllUssdActionAsyncTask(UssdActionDao dao) {
+            d = dao;
+        }
+
+        @Override
+        protected List<UssdActionWithSteps> doInBackground(Void... voids) {
+            List<UssdActionWithSteps> ussdActionWithSteps = d.getActionsWithStepsNoLiveData();
+            return ussdActionWithSteps;
+        }
+    }
+
 }

@@ -69,5 +69,9 @@ public abstract class UssdActionDao {
     @Transaction
     @Query("DELETE FROM Step WHERE ussd_action_id = :actionId")
     abstract void deleteActionSteps(long actionId);
+
+    @Transaction
+    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC")
+    public abstract List<UssdActionWithSteps> getActionsWithStepsNoLiveData();
 }
 

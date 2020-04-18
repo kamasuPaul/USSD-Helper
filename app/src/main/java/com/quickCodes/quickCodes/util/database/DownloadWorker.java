@@ -52,7 +52,7 @@ public class DownloadWorker extends Worker {
                     //loop over json array with all the codes
                     for(int i=0;i<codes.length();i++){
                         JSONObject code = codes.getJSONObject(i);
-                        Log.d("CODES",code.toString());
+
                         int id = code.optInt("id");
                         String name = code.optString("name");
                         String airtelCode = code.optString("airtelCode");
@@ -61,6 +61,14 @@ public class DownloadWorker extends Worker {
                         int section = code.optInt("section");
                         UssdAction ussdAction = new UssdAction(id, name, airtelCode, mtnCode, africellCode, section);
 
+                        //get the local object and get its weight,and set this objects weight
+                        //to that of the local object so its not overriden
+                        UssdActionWithSteps localAction = dataRepository.getUssdAction(String.valueOf(id));
+                        if (localAction != null) {
+                            ussdAction.setWeight(localAction.action.getWeight());
+                        }
+
+                        //TODO check if, it was deleted by checking is it has a flag of deleted set to true
                         JSONArray steps = code.getJSONArray("steps");
                         List<Step>stepList = new ArrayList<>();
                         for(int j=0;j<steps.length();j++){

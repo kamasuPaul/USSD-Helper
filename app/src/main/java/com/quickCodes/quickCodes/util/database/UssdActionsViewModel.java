@@ -21,6 +21,10 @@ public class UssdActionsViewModel extends AndroidViewModel {
     }
     public LiveData<List<UssdActionWithSteps>> getAllCustomActions(){return ussdActions;}
 
+    public List<UssdActionWithSteps> getAllActionsWithStepsNoLiveData() {
+        return repository.getAllUssdActionsNoLiveData();
+    }
+
     public void insert(UssdAction action,List<Step>steps) {
         repository.insertAll(new UssdActionWithSteps(action,steps));
     }

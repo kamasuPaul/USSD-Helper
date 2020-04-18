@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
@@ -94,8 +95,10 @@ public class UssdDetector extends AccessibilityService {
     }
 
     public void showSummary(Context context) {
-        Intent intent = new Intent(context, PhoneCallsOverlayService.class);
-        context.startService(intent);
-
+        //only run this code if quick codes is in the background
+        if (MainActivity.accessibilityServiceShouldRun) {
+            Intent intent = new Intent(context, PhoneCallsOverlayService.class);
+            context.startService(intent);
+        }
     }
 }
