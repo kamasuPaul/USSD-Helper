@@ -184,6 +184,10 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
      adapted from mkyong.com
      */
     public static boolean containsIgnoreCase(String str, String subString) {
-        return str.toLowerCase().contains(subString.toLowerCase());
+        if (str != null && subString != null) {
+            return str.toLowerCase().contains(subString.toLowerCase());
+        } else {
+            return false;
+        }
     }
 }

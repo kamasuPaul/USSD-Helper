@@ -39,6 +39,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
     String TAG = "PHONE OVERLAY SERVICE";
     private WindowManager windowManager;
     String code;
+    String menuItem;
     DataRepository dataRepository;
     List<UssdActionWithSteps> allUssdActions;
 
@@ -67,8 +68,14 @@ public class PhoneCallsOverlayService extends LifecycleService {
             this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         code = preferences.getString("code", null);
         code = code.replace("#", "").replace(",", "*").concat("#");
+        menuItem = preferences.getString("menuItem", null);
+        menuItem = menuItem.replace(".", "").replace(" ", "");
+
         //make preference null suchthat the same code is not shown again
-        preferences.edit().putString("code", null).commit();
+        preferences.edit().putString("code", null).putString("menuItem", null).commit();
+        ;
+
+
 
         //inflate the chat head layout
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);
@@ -92,8 +99,12 @@ public class PhoneCallsOverlayService extends LifecycleService {
         //set the saved text
         TextView textViewCode = chatHead.findViewById(R.id.textView_code_summary);
         TextView textViewDesc = chatHead.findViewById(R.id.textView_description);
+        TextView textViewMenu = chatHead.findViewById(R.id.textView_desc_menu);
         if (code != null) {
             textViewCode.setText(code);
+        }
+        if (menuItem != null) {
+            textViewMenu.setText(menuItem);
         }
 
 
@@ -131,7 +142,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
             //save the code to the database
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
-            action = new UssdAction(codeId, code, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
+            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
             dataRepository.insertAll(new UssdActionWithSteps(action, null));
         }
 

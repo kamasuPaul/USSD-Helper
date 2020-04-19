@@ -12,10 +12,16 @@ import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class UssdDetector extends AccessibilityService {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
     private static final String TAG = "ACCESSIBILITY";
     private static boolean pinbox = false;
+    private static Map<Integer, String> kamasuMenu;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -50,6 +56,8 @@ public class UssdDetector extends AccessibilityService {
             } else {
                 pinbox = false;//continue the current dialog is not apin box;
             }
+            //build the menu
+            kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
         }
 //        if the current box is apin or password box dont record its tex
         if (pinbox == true) {
@@ -64,7 +72,7 @@ public class UssdDetector extends AccessibilityService {
             SharedPreferences preferences =
                 this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
             //append the value on if its not null an
-                preferences.edit().putString("middleValue", nodeValue).commit();
+            preferences.edit().putString("middleValue", nodeValue).commit();
 
         }
         if (event.getPackageName().equals("com.android.phone") && event.getClassName().equals("android.widget.Button")) {
@@ -74,7 +82,17 @@ public class UssdDetector extends AccessibilityService {
                     this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
                 String code = preferences.getString("code", null);
                 String middleValue = preferences.getString("middleValue", null);
-                preferences.edit().putString("code", code + "," + middleValue).commit();
+                String menuItem = kamasuMenu.get(Integer.valueOf(middleValue));//get selected menuitem
+                String previousMenuItem = preferences.getString("menuItem", "");
+
+                Log.d(TAG, "middle value:" + middleValue);
+                Log.d(TAG, "kamasu:" + menuItem);
+                Log.d(TAG, "previous menu:" + previousMenuItem);
+                Log.d(TAG, kamasuMenu.toString());
+
+
+                preferences.edit().putString("code", code + "," + middleValue).
+                    putString("menuItem", previousMenuItem + ">" + menuItem).commit();
 
             }
 
@@ -101,4 +119,62 @@ public class UssdDetector extends AccessibilityService {
             context.startService(intent);
         }
     }
+
+    private Map<Integer, String> kamasuUssdMenuRebuilder(String menucontent) {
+        Map<Integer, String> menuItems = new HashMap<>();
+        int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        List<Integer> possibleMenues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        if (menucontent != null) {
+//            menucontent.replaceAll(" ", ",");
+            Log.d(TAG, menucontent);
+
+            for (int i : possibleMenues) {
+
+                int pos1 = menucontent.indexOf(i + " ");
+                if (pos1 == -1) {
+                    pos1 = menucontent.indexOf(i + ".");
+                }
+                int pos2 = menucontent.indexOf((i + 1) + ".", pos1);
+                if (pos2 == -1) {
+                    //postion2 is either equal to -1 or the position of i+space
+                    pos2 = menucontent.indexOf((i + 1) + " ");
+                }
+
+                if (pos1 == -1) break;
+                if (pos2 == -1) {
+                    pos2 = menucontent.indexOf("* ", pos1);
+                    if (pos2 == -1) {
+                        pos2 = menucontent.indexOf("#", pos1);
+                        if (pos2 == -1) {
+                            pos2 = menucontent.indexOf("n ", pos1);
+                            if (pos2 == -1) {
+                                pos2 = menucontent.indexOf("0", pos1);
+                            }
+                        }
+                    }
+                }
+                Log.d(TAG, "position2:" + pos2);
+//                Log.d(TAG,"position value:"+menucontent.charAt(pos2));
+
+                if (pos2 == -1) {
+                    pos2 = menucontent.indexOf("Cancel", pos1);
+                    Log.d(TAG, "position2:" + pos2);
+                }
+
+                if (pos2 != -1) {
+                    String menuitem = menucontent.substring(pos1 + 1, pos2);
+                    menuItems.put(i, menuitem);
+
+
+                }
+
+            }
+//            Log.d(TAG, menuItems.toString());
+
+        } else {
+            Log.d(TAG, "null");
+        }
+        return menuItems;
+    }
+
 }

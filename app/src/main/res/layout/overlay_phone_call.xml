@@ -276,6 +276,16 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/textView_desc_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="MobileMoney>checkBalance"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_60"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/textView_code_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
