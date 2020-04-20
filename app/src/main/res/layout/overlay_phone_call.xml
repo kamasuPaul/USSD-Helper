@@ -10,18 +10,67 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="208dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/grey_400"
+        android:background="@color/grey_80"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView_code_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:text="*131*3*4*5*6#"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_detected_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView_code_summary">
+
+            <TextView
+                android:id="@+id/textView_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Quick codes has detected  this code"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/grey_40"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView_desc_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="MobileMoney>checkBalance"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/blue_grey_400"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout_Already_Exists"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -47,8 +96,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:tint="@color/light_green_500"
-                        app:srcCompat="@drawable/shape_circle" />
+                        android:src="@drawable/shape_circle"
+                        android:tint="@color/light_green_500" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -75,6 +124,10 @@
             android:id="@+id/linearLayout_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -99,8 +152,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:tint="@color/light_green_500"
-                        app:srcCompat="@drawable/shape_circle" />
+                        android:src="@drawable/shape_circle"
+                        android:tint="@color/light_green_500" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -117,7 +170,7 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:text="SAVE IT"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/grey_40" />
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
@@ -137,12 +190,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:tint="@color/yellow_600"
-                        app:srcCompat="@drawable/shape_circle" />
+                        android:src="@drawable/shape_circle"
+                        android:tint="@color/yellow_600" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:src="@drawable/ic_edit_black_24dp"
                         android:tint="@android:color/white" />
@@ -156,7 +209,7 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:text="EDIT"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/grey_40" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -175,8 +228,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:tint="@color/purple_400"
-                        app:srcCompat="@drawable/shape_circle" />
+                        android:src="@drawable/shape_circle"
+                        android:tint="@color/purple_400" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -193,7 +246,7 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:text="REDIAL IT"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/grey_40" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -212,8 +265,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:tint="@color/red_300"
-                        app:srcCompat="@drawable/shape_circle" />
+                        android:src="@drawable/shape_circle"
+                        android:tint="@color/red_300" />
 
                     <ImageView
                         android:layout_width="20dp"
@@ -231,7 +284,7 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:text="DELETE"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/grey_40" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
         </LinearLayout>
@@ -253,47 +306,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="ContentDescription" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout_detected_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.060000002">
-
-            <TextView
-                android:id="@+id/textView_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Quick codes has detected  this code"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_60"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView_desc_menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="MobileMoney>checkBalance"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_60"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView_code_summary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginVertical="8dp"
-                android:text="*131*3*4*5*6#"
-                android:textSize="24sp" />
-        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

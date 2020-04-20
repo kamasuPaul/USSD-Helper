@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.util;
 
 import android.Manifest;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -40,14 +38,25 @@ public class PermissionsActivity extends AppCompatActivity {
 
     public static boolean isAccessibilityServiceEnabled(Context context) {
         boolean accessibilityServiceEnabled = false;
-        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-        for (AccessibilityServiceInfo service : runningServices) {
-            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
-                accessibilityServiceEnabled = true;
-            }
+        try {
+            int enabled = Settings.Secure.getInt(
+                context.getApplicationContext().getContentResolver(),
+                Settings.Secure.ACCESSIBILITY_ENABLED);
+            if (enabled == 1) accessibilityServiceEnabled = true;
+//            return accessibilityServiceEnabled;
+        } catch (Settings.SettingNotFoundException e) {
+            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
-        return accessibilityServiceEnabled;
+
+//        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+//        for (AccessibilityServiceInfo service : runningServices) {
+//            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
+//                accessibilityServiceEnabled = true;
+//            }
+//        }
+        return true;
     }
 
 

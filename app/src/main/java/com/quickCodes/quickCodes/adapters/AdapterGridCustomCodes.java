@@ -47,31 +47,6 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
         ctx = context;
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView title;
-        public View lyt_parent;
-        public TextView optionsMenu;
-        public RelativeLayout relativeLayout;
-
-        public OriginalViewHolder(View v) {
-            super(v);
-            image = (ImageView) v.findViewById(R.id.image);
-            title = (TextView) v.findViewById(R.id.title);
-            relativeLayout = v.findViewById(R.id.RelativLyt_root);
-            lyt_parent = (View) relativeLayout.findViewById(R.id.lyt_parent);
-            optionsMenu = (TextView) v.findViewById(R.id.textView_optionsMenu);
-        }
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row_ussd_actions, parent, false);
-        vh = new OriginalViewHolder(v);
-        return vh;
-    }
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
@@ -82,6 +57,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
                 final UssdAction p = ussdActionWithStepsFiltered.get(position).action;
                 view.title.setText(p.getName());
+                view.code.setText(p.getAirtelCode());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
                 ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -132,6 +108,32 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row_ussd_actions, parent, false);
+        vh = new OriginalViewHolder(v);
+        return vh;
+    }
+
+    public class OriginalViewHolder extends RecyclerView.ViewHolder {
+        public ImageView image;
+        public TextView title, code;
+        public View lyt_parent;
+        public TextView optionsMenu;
+        public RelativeLayout relativeLayout;
+
+        public OriginalViewHolder(View v) {
+            super(v);
+            image = (ImageView) v.findViewById(R.id.image);
+            title = (TextView) v.findViewById(R.id.title);
+            code = (TextView) v.findViewById(R.id.action_code);
+            relativeLayout = v.findViewById(R.id.RelativLyt_root);
+            lyt_parent = (View) relativeLayout.findViewById(R.id.lyt_parent);
+            optionsMenu = (TextView) v.findViewById(R.id.textView_optionsMenu);
         }
     }
     public void setCustomActions(List<UssdActionWithSteps>actions){

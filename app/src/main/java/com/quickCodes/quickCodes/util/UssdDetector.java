@@ -4,11 +4,12 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
-import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
@@ -22,6 +23,32 @@ public class UssdDetector extends AccessibilityService {
     private static final String TAG = "ACCESSIBILITY";
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
+
+    public static void showSummary(Context context) {
+        //only run this code if quick codes is in the background
+        SharedPreferences preferences =
+            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+        String d = preferences.getString("code", null);
+        String d1 = preferences.getString("menuItem", null);
+        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
+
+//        if (MainActivity.accessibilityServiceShouldRun) {
+        Intent intent = new Intent(context, PhoneCallsOverlayService.class);
+        context.startService(intent);
+//        }
+    }
+
+    @Override
+    public void onInterrupt() {
+
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        Log.d(TAG, "ON service connected");
+        super.onServiceConnected();
+    }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -82,17 +109,36 @@ public class UssdDetector extends AccessibilityService {
                     this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
                 String code = preferences.getString("code", null);
                 String middleValue = preferences.getString("middleValue", null);
-                String menuItem = kamasuMenu.get(Integer.valueOf(middleValue));//get selected menuitem
                 String previousMenuItem = preferences.getString("menuItem", "");
+
+                String menuItem = null;
+                if (TextUtils.isDigitsOnly(middleValue)) {//mathes [0-9]
+                    menuItem = kamasuMenu.get(Integer.valueOf(middleValue));//get selected menuitem
+                }
+                if (middleValue.matches("[*0]")) {//mathces 0 and *
+                    String d = preferences.getString("code", null);
+
+                    Toast.makeText(this, "* detected code is" + d, Toast.LENGTH_SHORT).show();
+                    preferences.edit()
+                        .putString("code", code.substring(0, code.lastIndexOf(",")))
+                        .commit();
+                    String d1 = preferences.getString("code", null);
+
+                    Toast.makeText(this, "* detected code is" + d1, Toast.LENGTH_SHORT).show();
+
+                }
 
                 Log.d(TAG, "middle value:" + middleValue);
                 Log.d(TAG, "kamasu:" + menuItem);
                 Log.d(TAG, "previous menu:" + previousMenuItem);
-                Log.d(TAG, kamasuMenu.toString());
 
-
-                preferences.edit().putString("code", code + "," + middleValue).
-                    putString("menuItem", previousMenuItem + ">" + menuItem).commit();
+                if (menuItem != null) {
+                    preferences.edit().putString("code", code + "," + middleValue).commit();
+                    preferences.edit().
+                        putString("menuItem", previousMenuItem + ">" + menuItem).commit();
+                } else {
+                    Toast.makeText(this, "menuItem is null", Toast.LENGTH_SHORT).show();
+                }
 
             }
 
@@ -100,33 +146,12 @@ public class UssdDetector extends AccessibilityService {
 
     }
 
-    @Override
-    public void onInterrupt() {
-
-    }
-
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-        Log.d(TAG, "ON service connected");
-        super.onServiceConnected();
-    }
-
-    public void showSummary(Context context) {
-        //only run this code if quick codes is in the background
-        if (MainActivity.accessibilityServiceShouldRun) {
-            Intent intent = new Intent(context, PhoneCallsOverlayService.class);
-            context.startService(intent);
-        }
-    }
-
     private Map<Integer, String> kamasuUssdMenuRebuilder(String menucontent) {
         Map<Integer, String> menuItems = new HashMap<>();
-        int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        List<Integer> possibleMenues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        List<Integer> possibleMenues = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
         if (menucontent != null) {
 //            menucontent.replaceAll(" ", ",");
-            Log.d(TAG, menucontent);
+//            Log.d(TAG, menucontent);
 
             for (int i : possibleMenues) {
 

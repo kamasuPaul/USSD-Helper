@@ -20,14 +20,12 @@ import android.widget.Toast;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
-import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdDetector;
 import com.quickCodes.quickCodes.util.database.DataRepository;
 
 import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleService;
@@ -60,6 +58,14 @@ public class PhoneCallsOverlayService extends LifecycleService {
         return null;
     }
 
+    public static boolean myequalsIgnoreCase(String s, String substring) {
+        boolean b = false;
+        if (s != null) {
+            b = s.equalsIgnoreCase(substring);
+        }
+        return b;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate() {
@@ -67,13 +73,21 @@ public class PhoneCallsOverlayService extends LifecycleService {
         SharedPreferences preferences =
             this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         code = preferences.getString("code", null);
-        code = code.replace("#", "").replace(",", "*").concat("#");
+        code = "*185*10*29*3#";
         menuItem = preferences.getString("menuItem", null);
-        menuItem = menuItem.replace(".", "").replace(" ", "");
+        if (menuItem != null) {
+            menuItem = code.substring(0, code.indexOf(","))
+                + menuItem
+                .replaceAll("[.,*]", "")
+                .replaceAll("\\s", "")
+                .replace(" ", "");
+        }
+        code = code.replace("#", "").replace(",", "*").concat("#");
 
         //make preference null suchthat the same code is not shown again
-        preferences.edit().putString("code", null).putString("menuItem", null).commit();
-        ;
+        preferences.edit().putString("code", null)
+            .putString("menuItem", null).commit();
+
 
 
 
@@ -121,29 +135,46 @@ public class PhoneCallsOverlayService extends LifecycleService {
         linearLayoutShowMeThisCode.setOnClickListener(v -> showCode());
 
         //check if code already exists in the database
-        boolean exists = false;
+        boolean matches = false;
+        boolean is_contained = false;
+        String code_name = "";
+
 
         String mycode = code.replace("#", "");
         if (allUssdActions != null) {
             for (UssdActionWithSteps a : allUssdActions) {
-                if (containsIgnoreCase(a.action.getAirtelCode(), mycode)) exists = true;
-                if (containsIgnoreCase(a.action.getMtnCode(), mycode)) exists = true;
-                if (containsIgnoreCase(a.action.getAfricellCode(), mycode)) exists = true;
-
+                code_name = a.action.getName();//the name will not be used if its null;
+                if (myequalsIgnoreCase(a.action.getAirtelCode(), mycode)) matches = true;
+                if (myequalsIgnoreCase(a.action.getMtnCode(), mycode)) matches = true;
+                if (myequalsIgnoreCase(a.action.getAfricellCode(), mycode)) matches = true;
+                if (containsIgnoreCase(a.action.getAirtelCode(), (mycode))) is_contained = true;
+                if (containsIgnoreCase(a.action.getMtnCode(), mycode)) is_contained = true;
+                if (containsIgnoreCase(a.action.getAfricellCode(), mycode)) is_contained = true;
+                if (matches || is_contained) {
+                    break;
+                }
             }
         } else {
             Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
         }
-        if (exists) {
+        if (matches) {
             chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
             chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
-            textViewDesc.setText("This code already saved in quick codes");
+            textViewDesc.setText("This code already saved in quick codes with name: ");
+            textViewMenu.setText(code_name);
+
+        } else if (is_contained) {
+            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
+            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
+            textViewDesc.setText("This code might be already saved as : ");
+            textViewMenu.setText(code_name);
         } else {
-            //save the code to the database
-            Random r = new Random();
-            codeId = r.nextLong();//TODO change random number generator
-            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
-            dataRepository.insertAll(new UssdActionWithSteps(action, null));
+//            Toast.makeText(this, "saved code"+code, Toast.LENGTH_LONG).show();
+//            //save the code to the database
+//            Random r = new Random();
+//            codeId = r.nextLong();//TODO change random number generator
+//            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
+//            dataRepository.insertAll(new UssdActionWithSteps(action, null));
         }
 
 
@@ -156,13 +187,6 @@ public class PhoneCallsOverlayService extends LifecycleService {
                 stopSelf();
             }
         });
-    }
-
-    private void showCode() {
-        Intent intent = new Intent(PhoneCallsOverlayService.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("action_id", String.valueOf(codeId));
-        startActivity(intent);
     }
 
     private void editCode() {
@@ -194,6 +218,14 @@ public class PhoneCallsOverlayService extends LifecycleService {
         dataRepository.delete(action);
         stopSelf();
 
+    }
+
+    private void showCode() {
+        Intent intent = new Intent(PhoneCallsOverlayService.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("action_id", String.valueOf(codeId));
+        startActivity(intent);
+        stopSelf();
     }
 
     @Override
