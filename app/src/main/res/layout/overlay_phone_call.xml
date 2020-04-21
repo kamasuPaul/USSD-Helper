@@ -32,7 +32,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout_detected_code"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginStart="16dp"
@@ -53,15 +53,21 @@
                 android:textColor="@color/grey_40"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textView_desc_menu"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="MobileMoney>checkBalance"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/blue_grey_400"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView_desc_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/blue_grey_400"
+                    android:textStyle="bold"
+                    tools:text="MObileMoney>>Bundles>>" />
+
+            </HorizontalScrollView>
 
 
         </LinearLayout>

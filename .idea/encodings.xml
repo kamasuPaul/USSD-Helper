@@ -3,5 +3,7 @@
   <component name="Encoding">
     <file url="file://$USER_HOME$/AndroidStudioProjects/MyTestApp/gradle.properties" charset="UTF-8" />
     <file url="file://$USER_HOME$/AndroidStudioProjects/MyTestApp/local.properties" charset="UTF-8" />
+    <file url="file://$USER_HOME$/AndroidStudioProjects/PhoneNumberIdentifier/gradle.properties" charset="UTF-8" />
+    <file url="file://$USER_HOME$/AndroidStudioProjects/PhoneNumberIdentifier/local.properties" charset="UTF-8" />
   </component>
 </project>

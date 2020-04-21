@@ -49,7 +49,7 @@
                     android:gravity="center"
                     android:text="*131#"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/grey_80" />
+                    android:textColor="@color/blue_grey_400" />
 
             </LinearLayout>
             <TextView

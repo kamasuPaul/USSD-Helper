@@ -43,7 +43,7 @@ public class PermissionsActivity extends AppCompatActivity {
                 context.getApplicationContext().getContentResolver(),
                 Settings.Secure.ACCESSIBILITY_ENABLED);
             if (enabled == 1) accessibilityServiceEnabled = true;
-//            return accessibilityServiceEnabled;
+            return accessibilityServiceEnabled;
         } catch (Settings.SettingNotFoundException e) {
             Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class PermissionsActivity extends AppCompatActivity {
 //                accessibilityServiceEnabled = true;
 //            }
 //        }
-        return true;
+        return accessibilityServiceEnabled;
     }
 
 

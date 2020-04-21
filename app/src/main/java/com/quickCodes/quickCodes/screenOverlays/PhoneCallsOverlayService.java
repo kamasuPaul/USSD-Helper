@@ -20,12 +20,14 @@ import android.widget.Toast;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.UssdDetector;
 import com.quickCodes.quickCodes.util.database.DataRepository;
 
 import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleService;
@@ -73,7 +75,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
         SharedPreferences preferences =
             this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         code = preferences.getString("code", null);
-        code = "*185*10*29*3#";
+//        code = "*185*10*29*3#";
         menuItem = preferences.getString("menuItem", null);
         if (menuItem != null) {
             menuItem = code.substring(0, code.indexOf(","))
@@ -171,10 +173,10 @@ public class PhoneCallsOverlayService extends LifecycleService {
         } else {
 //            Toast.makeText(this, "saved code"+code, Toast.LENGTH_LONG).show();
 //            //save the code to the database
-//            Random r = new Random();
-//            codeId = r.nextLong();//TODO change random number generator
-//            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
-//            dataRepository.insertAll(new UssdActionWithSteps(action, null));
+            Random r = new Random();
+            codeId = r.nextLong();//TODO change random number generator
+            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
+            dataRepository.insertAll(new UssdActionWithSteps(action, null));
         }
 
 
