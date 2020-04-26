@@ -115,6 +115,7 @@ public class UssdDetector extends AccessibilityService {
                 if (TextUtils.isDigitsOnly(middleValue)) {//mathes [0-9]
                     menuItem = kamasuMenu.get(Integer.valueOf(middleValue));//get selected menuitem
                 }
+                //when the user chooses * or 0 which means back delete one item from menu and code
                 if (middleValue.matches("[*0]")) {//mathces 0 and *
                     String d = preferences.getString("code", null);
 
@@ -132,7 +133,7 @@ public class UssdDetector extends AccessibilityService {
 //                Log.d(TAG, "middle value:" + middleValue);
 //                Log.d(TAG, "kamasu:" + menuItem);
 //                Log.d(TAG, "previous menu:" + previousMenuItem);
-
+                //if they select something that is in the menu , add it to selected menu and the code
                 if (menuItem != null) {
                     preferences.edit().putString("code", code + "," + middleValue).commit();
                     preferences.edit().
