@@ -37,7 +37,7 @@
             android:id="@+id/selec_contact_ImageBtn"
             android:layout_width="50dp"
             android:layout_height="38dp"
-            android:tint="@color/blue_grey_300"
-            android:src="@drawable/ic_contacts" />
+            android:background="@color/transparent"
+            android:src="@drawable/ic_search" />
     </LinearLayout>
 </LinearLayout>
