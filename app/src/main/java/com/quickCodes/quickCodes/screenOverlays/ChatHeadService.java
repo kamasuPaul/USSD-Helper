@@ -78,8 +78,8 @@ public class ChatHeadService extends Service {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                            startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
 
             }
         });
@@ -128,9 +128,10 @@ public class ChatHeadService extends Service {
 //                            Toast.makeText(ChatHeadService.this, "dont touch down", Toast.LENGTH_SHORT).show();
 
                             //Open the chat conversation click.
-//                            Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
+                            Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
 
                             //close the service and remove the chat heads
 //                            stopSelf();
@@ -151,7 +152,7 @@ public class ChatHeadService extends Service {
                     default:
                         Log.d(TAG, String.valueOf(event.getAction()));
                 }
-                return false;
+                return true;
             }
         });
     }

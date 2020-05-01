@@ -43,6 +43,8 @@
 
     </string>
     <string name="accessibility_desc">
-        This service enables the app to save codes that you dial such that you can use them later in the appp. It is absolutely safe to use.
+        To allow quick codes to auto detect and save ussd codes that you normally use for quick access in the app,
+        enable this functionality by tapping the switch button in the upper right corner,
+        then press OK on the next screen.Press the back button twice to return to QuickCodes.
     </string>
 </resources>

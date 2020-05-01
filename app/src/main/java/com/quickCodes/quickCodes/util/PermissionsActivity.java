@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,21 +33,23 @@ public class PermissionsActivity extends AppCompatActivity {
 
     public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
     private static final int CODE_ACCESSIBILITY = 102;
+    private static final String TAG = "USSD DETECTOR";
     private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
     private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
     private boolean drawGranted;
+
 
     public static boolean isAccessibilityServiceEnabled(Context context) {
         boolean accessibilityServiceEnabled = false;
         try {
             int enabled = Settings.Secure.getInt(
                 context.getApplicationContext().getContentResolver(),
-                Settings.Secure.ACCESSIBILITY_ENABLED);
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
             if (enabled == 1) accessibilityServiceEnabled = true;
             return accessibilityServiceEnabled;
         } catch (Settings.SettingNotFoundException e) {
-            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
 
@@ -59,13 +63,13 @@ public class PermissionsActivity extends AppCompatActivity {
         return accessibilityServiceEnabled;
     }
 
-
     private boolean requestPermissions() {
         final boolean[] all_granted = new boolean[1];
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CALL_PHONE,
                 Manifest.permission.READ_CONTACTS,
-                Manifest.permission.READ_PHONE_STATE)
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_CALL_LOG)
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -194,14 +198,14 @@ public class PermissionsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
             //permission granted
-            if (resultCode == RESULT_OK) drawGranted = true;
+//            if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
             Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
         if (requestCode == CODE_ACCESSIBILITY) {
-            if (resultCode == RESULT_OK) drawGranted = true;
+//            if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
-            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "accessibility granted", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -227,7 +231,7 @@ public class PermissionsActivity extends AppCompatActivity {
             btn_drawOverApps.setVisibility(View.GONE);
         }
         //check for accesibility granted
-        accessibility = isAccessibilityServiceEnabled(PermissionsActivity.this);
+        accessibility = isAccessibilitySettingsOn(PermissionsActivity.this);
         if (accessibility) {
             imageView_accesibility.setVisibility(View.VISIBLE);
             btn_accesibility.setVisibility(View.GONE);
@@ -255,7 +259,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
             draw = true;
         }
-        if (isAccessibilityServiceEnabled(getApplicationContext())) {
+        if (isAccessibilitySettingsOn(getApplicationContext())) {
             accessibility = true;
         }
 
@@ -264,6 +268,44 @@ public class PermissionsActivity extends AppCompatActivity {
             startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
             finish();
         }
+    }
+
+    private boolean isAccessibilitySettingsOn(Context mContext) {
+        int accessibilityEnabled = 0;
+        final String service = getPackageName() + "/" + UssdDetector.class.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                mContext.getApplicationContext().getContentResolver(),
+                android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+                + e.getMessage());
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                mContext.getApplicationContext().getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+
+                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+                    if (accessibilityService.equalsIgnoreCase(service)) {
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
+        }
+
+        return false;
     }
 
     @Override

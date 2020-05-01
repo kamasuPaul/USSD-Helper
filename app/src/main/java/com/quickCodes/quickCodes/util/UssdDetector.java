@@ -23,20 +23,6 @@ public class UssdDetector extends AccessibilityService {
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
 
-    public static void showSummary(Context context) {
-        //only run this code if quick codes is in the background
-        SharedPreferences preferences =
-            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
-        String d = preferences.getString("code", null);
-        String d1 = preferences.getString("menuItem", null);
-        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
-
-        if (MainActivity.accessibilityServiceShouldRun) {
-        Intent intent = new Intent(context, PhoneCallsOverlayService.class);
-        context.startService(intent);
-        }
-    }
-
     @Override
     public void onInterrupt() {
 
@@ -47,6 +33,20 @@ public class UssdDetector extends AccessibilityService {
         super.onServiceConnected();
         Log.d(TAG, "ON service connected");
         super.onServiceConnected();
+    }
+
+    public static void showSummary(Context context) {
+        //only run this code if quick codes is not in the background
+        SharedPreferences preferences =
+            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+        String d = preferences.getString("code", null);
+        String d1 = preferences.getString("menuItem", null);
+        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
+
+        if (MainActivity.accessibilityServiceShouldRun) {
+            Intent intent = new Intent(context, PhoneCallsOverlayService.class);
+            context.startService(intent);
+        }
     }
 
     @Override
@@ -63,12 +63,10 @@ public class UssdDetector extends AccessibilityService {
 
             }
         }
-
-
         //ignore dialogs with the word pin to protect privacy of user
         if (event.getClassName().equals("android.app.AlertDialog")) {
             if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "pin")) {
-                // if it also contains the word enter ,implying a user is going to enter ping,
+                // if it also contains the word enter ,implying a user is going to enter pin,
                 //otherwise it might be just a menu option
                 if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "enter")) {
                     Log.d(TAG, "PIN STEP SKIPPED");
@@ -84,7 +82,6 @@ public class UssdDetector extends AccessibilityService {
             }
             //build the menu
             kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
-            Log.d(TAG, kamasuMenu.toString());
         }
 //        if the current box is apin or password box dont record its tex
         if (pinbox == true) {
@@ -145,6 +142,7 @@ public class UssdDetector extends AccessibilityService {
         }
 
     }
+
 
     private Map<Integer, String> kamasuUssdMenuRebuilder(String menucontent) {
         Map<Integer, String> menuItems = new HashMap<>();

@@ -81,4 +81,9 @@ dependencies {
     def work_version = "2.2.0"
     implementation "androidx.work:work-runtime:$work_version"
 
+    //senssy gesture detection library
+    def sensy_version = "1.8.0"
+    implementation "com.github.nisrulz:sensey:$sensy_version"
+
+
 }
