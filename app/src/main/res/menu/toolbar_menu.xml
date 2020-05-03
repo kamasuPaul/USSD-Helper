@@ -16,6 +16,9 @@
         android:title="Share" />
     <item android:id="@+id/help"
         android:title="Help" />
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
 
 
 </menu>

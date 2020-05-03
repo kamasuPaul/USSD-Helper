@@ -270,6 +270,13 @@ public class PermissionsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * copied from stackoverflow
+     * https://stackoverflow.com/questions/18094982/detect-if-my-accessibility-service-is-enabled/18095283
+     *
+     * @param mContext
+     * @return
+     */
     private boolean isAccessibilitySettingsOn(Context mContext) {
         int accessibilityEnabled = 0;
         final String service = getPackageName() + "/" + UssdDetector.class.getCanonicalName();

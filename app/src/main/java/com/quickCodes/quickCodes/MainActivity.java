@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.contacts:
                 Intent contactsIntent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
                 startActivity(contactsIntent);
+                break;
+            case R.id.settings:
+                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
         }
 
         return super.onOptionsItemSelected(item);

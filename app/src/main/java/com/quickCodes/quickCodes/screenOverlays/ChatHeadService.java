@@ -13,7 +13,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.github.nisrulz.sensey.Sensey;
+import com.github.nisrulz.sensey.TouchTypeDetector;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 
@@ -127,13 +130,11 @@ public class ChatHeadService extends Service {
 
 //                            Toast.makeText(ChatHeadService.this, "dont touch down", Toast.LENGTH_SHORT).show();
 
-                            //Open the chat conversation click.
                             Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
 
-                            //close the service and remove the chat heads
 //                            stopSelf();
                         }
                         lastAction = event.getAction();
@@ -152,7 +153,52 @@ public class ChatHeadService extends Service {
                     default:
                         Log.d(TAG, String.valueOf(event.getAction()));
                 }
+                Sensey.getInstance().setupDispatchTouchEvent(event);
                 return true;
+            }
+
+        });
+        //setup other touch detectors
+        Sensey.getInstance().init(getApplicationContext());
+        Sensey.getInstance().startTouchTypeDetection(getApplicationContext(), new TouchTypeDetector.TouchTypListener() {
+            @Override
+            public void onDoubleTap() {
+                Toast.makeText(ChatHeadService.this, "touch", Toast.LENGTH_SHORT).show();
+                stopSelf();
+            }
+
+            @Override
+            public void onLongPress() {
+
+            }
+
+            @Override
+            public void onScroll(int i) {
+
+            }
+
+            @Override
+            public void onSingleTap() {
+                Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                stopSelf();
+            }
+
+            @Override
+            public void onSwipe(int i) {
+
+            }
+
+            @Override
+            public void onThreeFingerSingleTap() {
+
+            }
+
+            @Override
+            public void onTwoFingerSingleTap() {
+
             }
         });
     }

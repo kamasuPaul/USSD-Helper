@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreferenceCompat
+        app:key="@string/quick_access_dots_pref"
+        app:summaryOff="@string/quick_access_widget_off"
+        app:summaryOn="@string/quick_access_widget_on"
+        app:title="@string/quick_access_widget" />
+
+</PreferenceScreen>
