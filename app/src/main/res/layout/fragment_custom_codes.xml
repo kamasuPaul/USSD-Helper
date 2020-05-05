@@ -62,6 +62,10 @@
                 android:scrollbars="vertical"
                 android:scrollingCache="true" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_xxxlarge" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

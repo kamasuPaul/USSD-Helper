@@ -47,9 +47,14 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         setupToolBar();
+        //setup floating action buttons
+        FloatingActionButton fab = findViewById(R.id.dialer);
+        FloatingActionButton fabAdd = findViewById(R.id.fab_add);
+        FloatingActionButton fabContacts = findViewById(R.id.fab_contacts);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, DialPadActivity.class)));
+        fabAdd.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class)));
+        fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
 
     }
@@ -109,13 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.help:
                 startActivity(new Intent(getApplicationContext(), HelpActivity.class));
-                break;
-            case R.id.add_action:
-                startActivity(new Intent(getApplicationContext(), AddYourOwnActionActivity.class));
-                break;
-            case R.id.contacts:
-                Intent contactsIntent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI);
-                startActivity(contactsIntent);
                 break;
             case R.id.settings:
                 Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);

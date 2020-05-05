@@ -116,11 +116,21 @@ public class PhoneCallsOverlayService extends LifecycleService {
         code = preferences.getString("code", null);
         menuItem = preferences.getString("menuItem", null);
         if (menuItem != null) {
-            menuItem = code.substring(0, code.indexOf(","))
-                + menuItem
-                .replaceAll("[.,*]", "")
-                .replaceAll("\\s", "")
-                .replace(" ", "");
+            int comaposition = code.indexOf(",");
+            if (comaposition == -1) {
+                menuItem = code
+                    + menuItem
+                    .replaceAll("[.,*]", "")
+                    .replaceAll("\\s", "")
+                    .replace(" ", "");
+            } else {
+                menuItem = code.substring(0, comaposition)
+                    + menuItem
+                    .replaceAll("[.,*]", "")
+                    .replaceAll("\\s", "")
+                    .replace(" ", "");
+            }
+
         }
         code = code.replace("#", "").replace(",", "*").concat("#");
 

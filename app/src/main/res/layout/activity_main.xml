@@ -9,7 +9,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,15 +23,15 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
             >
-<!--            <TextView-->
-<!--                android:id="@+id/title"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:minHeight="?actionBarSize"-->
-<!--                android:padding="@dimen/appbar_padding"-->
-<!--                android:text="@string/app_name"-->
-<!--                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/title"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:gravity="center"-->
+            <!--                android:minHeight="?actionBarSize"-->
+            <!--                android:padding="@dimen/appbar_padding"-->
+            <!--                android:text="@string/app_name"-->
+            <!--                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -50,93 +50,55 @@
             app:tabTextColor="@color/grey_20"
             />
     </com.google.android.material.appbar.AppBarLayout>
-
     <LinearLayout
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/fab_margin"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@drawable/bg_gradient_soft" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="@android:color/white"
+            app:borderWidth="0dp"
+            app:fabSize="mini"
+            app:tint="@color/colorPrimary"
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
+            />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_medium">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_contacts_people"
+            app:backgroundTint="@android:color/white"
+            app:borderWidth="0dp"
+            app:fabSize="mini"
+            app:tint="@color/colorPrimary"
 
-                <ImageButton
-                    android:id="@+id/map_button"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_search"
-                    android:tint="@color/colorPrimary" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Map"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+            />
 
-            </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/dialer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity=""
+            android:layout_marginRight="@dimen/fab_margin"
+            android:src="@drawable/ic_iconfinder_dial_pad_3671756"
+            app:backgroundTint="@color/colorPrimary"
+            app:borderWidth="0dp"
+            app:tint="@android:color/white" />
 
-            <View
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="0dp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/spacing_medium">
-
-                <ImageButton
-                    android:id="@+id/list_button"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_see_contacts"
-                    android:tint="@color/colorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="List"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:borderWidth="0dp"
-        app:backgroundTint="@color/colorPrimary"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
-        app:tint="@android:color/white"
-        android:src="@drawable/ic_iconfinder_dial_pad_3671756" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
