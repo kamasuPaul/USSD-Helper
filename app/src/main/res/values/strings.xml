@@ -61,8 +61,8 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="quick_access_widget">Disable quick access widget</string>
-    <string name="quick_access_widget_on">This widget allows you navigate to quick codes easily from any screen
+    <string name="quick_access_widget_on">This widget allows you to open quick codes easily from any screen
     </string>
-    <string name="quick_access_widget_off">This widget allows you navigate to quick codes easily from any screen</string>
+    <string name="quick_access_widget_off">This widget allows you to  open quick codes easily from any screen</string>
     <string name="quick_access_dots_pref">quick_access_dots</string>
 </resources>
