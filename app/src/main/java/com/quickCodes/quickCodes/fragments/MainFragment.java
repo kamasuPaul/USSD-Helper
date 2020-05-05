@@ -111,6 +111,8 @@ public class MainFragment extends Fragment {
             List<UssdActionWithSteps> dataCodes = new ArrayList<>();
             List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
+                //skip nulls
+                if (us == null || us.action == null) continue;
                 if (us.action.getName().length() < 15) {
                     int len = 15 - us.action.getName().length();
                     String d = "";

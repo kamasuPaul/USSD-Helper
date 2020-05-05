@@ -166,6 +166,9 @@ public class PhoneCallsOverlayService extends LifecycleService {
         }
         if (menuItem != null) {
             textViewMenu.setText(menuItem);
+        } else {
+            //make the menu item not null
+            menuItem = code.toString();
         }
 
 
