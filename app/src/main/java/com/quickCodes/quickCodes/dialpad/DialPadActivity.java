@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.dialpad;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -47,7 +49,6 @@ import java.util.concurrent.Executors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -80,7 +81,7 @@ public class DialPadActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterDialer mAdapter;
     private EditText phoneNumber;
-    private SearchView searchView;
+    private android.widget.SearchView searchView;
 
 
     @Override
@@ -152,33 +153,6 @@ public class DialPadActivity extends AppCompatActivity {
         edit_text = (TextView) findViewById(R.id.edit_text);
         edit_text.setOnClickListener(null);
 
-
-        //search view implementation
-        searchView = findViewById(R.id.SearchView_dialpad);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                matchContact(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                matchContact(newText);
-                return true;
-            }
-
-        });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                return false;
-            }
-        });
-
     }
 
     private void initalizeDialerButtons() {
@@ -199,7 +173,7 @@ public class DialPadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                edit_text.setText(edit_text.getText().toString()+"2");
+                edit_text.setText(edit_text.getText().toString() + "2");
                 matchContact(edit_text.getText().toString());
 
 
@@ -402,7 +376,7 @@ public class DialPadActivity extends AppCompatActivity {
                 UssdActionsViewModel viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
                 Random r = new Random();
                 Long codeId = r.nextLong();//TODO change random number generator
-                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23",""), null, null, Constants.SEC_USER_DIALED);
+                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
                 viewModel.insert(action, null);
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
@@ -458,7 +432,7 @@ public class DialPadActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             //add contatcts to list of searchable items
-                            mAdapter.setContactList(namelist,numberlist);
+                            mAdapter.setContactList(namelist, numberlist);
                         }
                     });
 
@@ -489,11 +463,11 @@ public class DialPadActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy>0){
+                if (dy > 0) {
                     //scrolling up
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                }else{
+                } else {
                     //scrolling down
                 }
             }
@@ -532,6 +506,7 @@ public class DialPadActivity extends AppCompatActivity {
         startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
 
     }
+
     public void createDialog(UssdActionWithSteps ussdActionWithSteps) {
 
         //use codes for the selected network mode
@@ -542,7 +517,7 @@ public class DialPadActivity extends AppCompatActivity {
         String uscode1 = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
 
         //check for phone number clicks
-        if(!uscode1.contains("*")){//if it doesnt contain a * its aphone number, exececute it immediately
+        if (!uscode1.contains("*")) {//if it doesnt contain a * its aphone number, exececute it immediately
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + uscode1)));
             return;
         }
@@ -564,8 +539,6 @@ public class DialPadActivity extends AppCompatActivity {
                 uscode1 = action.getAfricellCode();
             }
         }
-
-
 
 
 //        if (!action.getMtnCode().isEmpty()) {
@@ -691,7 +664,7 @@ public class DialPadActivity extends AppCompatActivity {
     }
 
     @SuppressLint("MissingPermission")
-    public  void executeUssd(String fullCode, UssdAction action) {
+    public void executeUssd(String fullCode, UssdAction action) {
         String hnc = action.getNetwork();
         String simcardSlot = simcardsSlots.get(hnc);
 
@@ -729,7 +702,7 @@ public class DialPadActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CONTACT_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Uri contactUri = data.getData();
@@ -777,12 +750,62 @@ public class DialPadActivity extends AppCompatActivity {
             Toast.makeText(this, "need Permission", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.dialpad_menu, menu);
+        //associate the searchable configuration with the search view
+        SearchManager searchM = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView = (android.widget.SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setSearchableInfo(searchM.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint("Search...");
+
+        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                matchContact(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                matchContact(newText);
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new android.widget.SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                return false;
+            }
+        });
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
+        }
+        if (item.getItemId() == R.id.app_bar_search) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        //close search view on back button pressed
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        } else {
+            finish();
+        }
+        super.onBackPressed();
+    }
 }
