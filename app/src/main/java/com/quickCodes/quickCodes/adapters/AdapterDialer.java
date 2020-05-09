@@ -38,12 +38,67 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnItemClickListener mOnItemClickListener;
     private List<UssdActionWithSteps> ussdActionWithStepsFiltered;
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, UssdActionWithSteps obj, int position);
+    // Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (ussdActionWithStepsFiltered != null) {
+            if (holder instanceof OriginalViewHolder) {
+                final OriginalViewHolder rootView = (OriginalViewHolder) holder;
 
-        void onItemDelete(View view, UssdActionWithSteps obj, int position);
 
-        void onItemEdit(View view, UssdActionWithSteps obj, int position);
+                final UssdAction ussdAction = ussdActionWithStepsFiltered.get(position).action;
+
+                //set title of action
+
+                rootView.title.setText(ussdAction.getName());
+                rootView.code.setText(ussdAction.getAirtelCode());
+                if (String.valueOf(ussdAction.getActionId()) != null) {
+                    rootView.section.setText(getSectionFromId(ussdAction.getSection()));
+                } else {
+                    rootView.section.setText("TELPHONE");
+                }
+//            view.image.setImageDrawable();
+                // generate color based on a key (same key returns the same color), useful for list/grid views
+
+                //set image icon of action
+                //change the image icon to a letter icon
+                TextDrawable drawable = TextDrawable.builder()
+                    .buildRound(String.valueOf((ussdAction.getName()).trim().charAt(0)).toUpperCase(), ctx.getResources().getColor(R.color.colorPrimary));
+                if (null != rootView.image) {
+                    if (drawable != null) {
+                        try {
+                            rootView.image.setImageDrawable(drawable);
+                        } catch (Exception e) {
+                            //Toast.makeText(get, "Some features may not work", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                //view.image.setImageDrawable(drawable);
+                //get the screen width
+                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+//                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
+
+
+                rootView.linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(view, ussdActionWithStepsFiltered.get(position), position);
+                        }
+                    }
+                });
+                rootView.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onLongClick(v, ussdActionWithStepsFiltered.get(position), position);
+                        }
+                        return true;
+                    }
+                });
+
+            }
+        }
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -78,66 +133,17 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (ussdActionWithStepsFiltered != null) {
-            if (holder instanceof OriginalViewHolder) {
-                final OriginalViewHolder view = (OriginalViewHolder) holder;
+    public interface OnItemClickListener {
+        void onItemClick(View view, UssdActionWithSteps obj, int position);
 
+        void onItemDelete(View view, UssdActionWithSteps obj, int position);
 
-                final UssdAction p = ussdActionWithStepsFiltered.get(position).action;
+        void onItemEdit(View view, UssdActionWithSteps obj, int position);
 
-                //set title of action
+        void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position);
 
-                view.title.setText(p.getName());
-                view.code.setText(p.getAirtelCode());
-                if (String.valueOf(p.getActionId()) != null) {
-                    view.section.setText(getSectionFromId(p.getSection()));
-                } else {
-                    view.section.setText("TELPHONE");
-                }
-//            view.image.setImageDrawable();
-                // generate color based on a key (same key returns the same color), useful for list/grid views
-
-                //set image icon of action
-                //change the image icon to a letter icon
-                TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(String.valueOf((p.getName()).trim().charAt(0)).toUpperCase(), ctx.getResources().getColor(R.color.colorPrimary));
-                if (null != view.image) {
-                    if (drawable != null) {
-                        try {
-                            view.image.setImageDrawable(drawable);
-                        } catch (Exception e) {
-                            //Toast.makeText(get, "Some features may not work", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                //view.image.setImageDrawable(drawable);
-                //get the screen width
-                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-//                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
-
-
-                view.linearLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onItemClick(view, ussdActionWithStepsFiltered.get(position), position);
-                        }
-                    }
-                });
-                view.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-//                        createOptionsMenu(v, view, p, position);
-                        return true;
-                    }
-                });
-
-            }
-        }
     }
+
 
     public void setUssdActions(List<UssdActionWithSteps> actions) {
         this.items = actions;

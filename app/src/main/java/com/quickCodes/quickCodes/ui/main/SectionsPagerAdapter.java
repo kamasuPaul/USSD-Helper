@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.ui.main;
 import android.content.Context;
 
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.fragments.AutoDetectedFragment;
 import com.quickCodes.quickCodes.fragments.MainFragment;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     List<Fragment> fragmentList = new ArrayList<>();
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -30,6 +31,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         mContext = context;
         fragmentList.add(new MainFragment());
         fragmentList.add(CustomCodesFragment.newInstance(1));
+        fragmentList.add(new AutoDetectedFragment());
+
     }
 
     @Override
@@ -47,7 +50,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
-        return 2;
+        // Show 3 total pages.
+        return 3;
     }
 }

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Quick Codes</string>
     <string name="tab_text_1">Home</string>
-    <string name="tab_text_2">Custom Codes</string>
+    <string name="tab_text_2">Saved</string>
+    <string name="tab_text_3">Auto saved</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

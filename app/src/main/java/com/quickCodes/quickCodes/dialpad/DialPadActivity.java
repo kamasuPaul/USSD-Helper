@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.modals.Constants;
@@ -43,8 +43,6 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,8 +70,8 @@ public class DialPadActivity extends AppCompatActivity {
     BottomSheetBehavior bottomSheetBehavior;
 
 
-    ArrayList<String> namelist = new ArrayList<>();
-    ArrayList<String> numberlist = new ArrayList<>();
+    ArrayList<String> namelist = MainActivity.namelist;
+    ArrayList<String> numberlist = MainActivity.namelist;
     ArrayList<String> codes = new ArrayList<>();
 
     UssdActionsViewModel ussdActionsViewModel;
@@ -87,6 +85,10 @@ public class DialPadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get intent to determine if intent is from click of search icon,serch that
+        //we hide the dialpad
+        Intent intent = getIntent();
+        String search = intent.getStringExtra("search");
         setContentView(R.layout.activity_dialpad);
 
 
@@ -134,7 +136,12 @@ public class DialPadActivity extends AppCompatActivity {
 
         // change the state of the bottom sheet
         bottomSheetBehavior.setPeekHeight(300);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        //if the intent is from search icon, hide the bottom sheet
+        if (search != null) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        } else {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
 
 
         // set callback for changes
@@ -387,63 +394,8 @@ public class DialPadActivity extends AppCompatActivity {
     }
 
     private void getContactList() {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ContentResolver cr = getContentResolver();
-                    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                        null, null, null, null);
-
-                    if ((cur != null ? cur.getCount() : 0) > 0) {
-                        while (cur != null && cur.moveToNext()) {
-                            String id = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts._ID));
-                            String name = cur.getString(cur.getColumnIndex(
-                                ContactsContract.Contacts.DISPLAY_NAME));
-
-
-                            if (cur.getInt(cur.getColumnIndex(
-                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                                Cursor pCur = cr.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                    new String[]{id}, null);
-                                while (pCur.moveToNext()) {
-                                    String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                        ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                                    namelist.add(name);
-                                    numberlist.add(phoneNo);
-
-                                    Log.i("TAG----", "Name: " + name);
-                                    Log.i("TAG----", "Phone Number: " + phoneNo);
-                                }
-                                pCur.close();
-                            }
-                        }
-                    }
-                    if (cur != null) {
-                        cur.close();
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //add contatcts to list of searchable items
-                            mAdapter.setContactList(namelist, numberlist);
-                        }
-                    });
-
-
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
+        //add contatcts to list of searchable items
+        mAdapter.setContactList(namelist, numberlist);
     }
 
     public void matchContact(String contact) {
@@ -491,6 +443,11 @@ public class DialPadActivity extends AppCompatActivity {
 
             @Override
             public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
+
+            }
+
+            @Override
+            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
 
             }
         });

@@ -41,6 +41,7 @@ public class EditActionActivity extends AppCompatActivity {
     UssdActionWithSteps lastAction;
 
     String action_id;
+    int section;
 
     UssdActionsViewModel ussdActionsViewModel;
 
@@ -56,6 +57,10 @@ public class EditActionActivity extends AppCompatActivity {
         ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
 
         action_id = getIntent().getStringExtra("action_id");
+        section = getIntent().getIntExtra("section", -1);
+        //if section is the section is not specified, use custom codes section
+        section = section == -1 ? (SEC_CUSTOM_CODES) : section;
+
         lastAction = ussdActionsViewModel.getussdActionWithSteps(action_id);
 
 
@@ -202,7 +207,7 @@ public class EditActionActivity extends AppCompatActivity {
         }
 
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        UssdAction ussdAction = new UssdAction(codeId, actionNameText,airtelCode,mtnCode,africellCode, SEC_CUSTOM_CODES,hnc);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, section, hnc);
         v.update(new UssdActionWithSteps(ussdAction,steps));
         //TODO go to custom codes fragment
         Toast.makeText(this, ussdAction.getName()+" Has been Edited", Toast.LENGTH_SHORT).show();

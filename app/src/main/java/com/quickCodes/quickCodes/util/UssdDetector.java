@@ -10,7 +10,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
@@ -28,13 +27,6 @@ public class UssdDetector extends AccessibilityService {
 
     }
 
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-        Log.d(TAG, "ON service connected");
-        super.onServiceConnected();
-    }
-
     public static void showSummary(Context context) {
         //only run this code if quick codes is not in the background
         SharedPreferences preferences =
@@ -43,10 +35,18 @@ public class UssdDetector extends AccessibilityService {
         String d1 = preferences.getString("menuItem", null);
         Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
 
-        if (MainActivity.accessibilityServiceShouldRun) {
+//        if (MainActivity.accessibilityServiceShouldRun) {
             Intent intent = new Intent(context, PhoneCallsOverlayService.class);
             context.startService(intent);
-        }
+//        }
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "ON service connected");
+        super.onServiceConnected();
     }
 
     @Override
