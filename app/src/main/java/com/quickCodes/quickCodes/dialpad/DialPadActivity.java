@@ -72,14 +72,12 @@ public class DialPadActivity extends AppCompatActivity {
 
     ArrayList<String> namelist = MainActivity.namelist;
     ArrayList<String> numberlist = MainActivity.namelist;
-    ArrayList<String> codes = new ArrayList<>();
-
     UssdActionsViewModel ussdActionsViewModel;
-    List<UssdActionWithSteps> airtimeCodes;
     private RecyclerView recyclerView;
     private AdapterDialer mAdapter;
     private EditText phoneNumber;
     private android.widget.SearchView searchView;
+    String search;
 
 
     @Override
@@ -88,7 +86,7 @@ public class DialPadActivity extends AppCompatActivity {
         //get intent to determine if intent is from click of search icon,serch that
         //we hide the dialpad
         Intent intent = getIntent();
-        String search = intent.getStringExtra("search");
+        search = intent.getStringExtra("search");
         setContentView(R.layout.activity_dialpad);
 
 
@@ -97,27 +95,14 @@ public class DialPadActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        airtimeCodes = new ArrayList<>();
         mAdapter = new AdapterDialer(this);
 
 
         ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         ussdActionsViewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+            List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
-                if (us.action.getName().length() < 15) {
-                    int len = 15 - us.action.getName().length();
-                    String d = "";
-                    for (int i = 0; i < len; i++) {
-                        d = d + " ";
-                    }
-                    us.action.setName(us.action.getName() + d);
-                }
-
-
-//                if (us.action.getSection() == SEC_AIRTIME) {
-                codes.add(us.action.getAirtelCode());
                 airtimeCodes.add(us);
-//                }
             }
             mAdapter.setUssdActions(airtimeCodes);
 
@@ -138,7 +123,8 @@ public class DialPadActivity extends AppCompatActivity {
         bottomSheetBehavior.setPeekHeight(300);
         //if the intent is from search icon, hide the bottom sheet
         if (search != null) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            bottomSheetBehavior.setPeekHeight(0);
+            bottomSheetBehavior.setHideable(true);
         } else {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
@@ -435,32 +421,12 @@ public class DialPadActivity extends AppCompatActivity {
                 String cd = initialCode + Uri.encode("#");
                 createDialog(obj);
             }
-
-            @Override
-            public void onItemDelete(View view, UssdActionWithSteps obj, int position) {
-                ussdActionsViewModel.delete(obj);
-            }
-
-            @Override
-            public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
-
-            }
-
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
 
             }
         });
 
-
-    }
-
-    public void clickAction(View view) {
-        String dial = "tel:" + tnumber.getText();
-
-        //save code
-        Log.d("CODE1", dial);
-        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
 
     }
 
@@ -496,18 +462,6 @@ public class DialPadActivity extends AppCompatActivity {
                 uscode1 = action.getAfricellCode();
             }
         }
-
-
-//        if (!action.getMtnCode().isEmpty()) {
-//            uscode1 = action.getMtnCode();
-//        }
-//        if (!action.getAirtelCode().isEmpty()) {
-//            uscode1 = action.getAirtelCode();
-//        }
-//        if (!action.getAfricellCode().isEmpty()) {
-//            uscode1 = action.getAfricellCode();
-//
-//        }
         final String uscode = uscode1;
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
@@ -717,6 +671,9 @@ public class DialPadActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchM.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Search...");
+        if (search != null) {
+            searchView.setIconified(false);
+        }
 
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override

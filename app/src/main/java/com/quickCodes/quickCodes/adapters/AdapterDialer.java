@@ -51,7 +51,18 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //set title of action
 
                 rootView.title.setText(ussdAction.getName());
-                rootView.code.setText(ussdAction.getAirtelCode());
+
+                String codeString = ussdAction.getAirtelCode();
+                if (ussdAction.getMtnCode() != null) {
+                    if (!ussdAction.getMtnCode().isEmpty())
+                        codeString += "\t\t|" + ussdAction.getMtnCode();
+
+                }
+                if (ussdAction.getAfricellCode() != null) {
+                    if (!ussdAction.getAfricellCode().isEmpty())
+                        codeString += "\t\t|" + ussdAction.getAfricellCode();
+                }
+                rootView.code.setText(codeString);
                 if (String.valueOf(ussdAction.getActionId()) != null) {
                     rootView.section.setText(getSectionFromId(ussdAction.getSection()));
                 } else {
@@ -135,11 +146,6 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface OnItemClickListener {
         void onItemClick(View view, UssdActionWithSteps obj, int position);
-
-        void onItemDelete(View view, UssdActionWithSteps obj, int position);
-
-        void onItemEdit(View view, UssdActionWithSteps obj, int position);
-
         void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position);
 
     }

@@ -116,16 +116,6 @@ public class AutoDetectedFragment extends Fragment {
             }
 
             @Override
-            public void onItemDelete(View view, UssdActionWithSteps obj, int position) {
-                ussdActionsViewModel.delete(obj);
-            }
-
-            @Override
-            public void onItemEdit(View view, UssdActionWithSteps obj, int position) {
-
-            }
-
-            @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
                 createOptionsMenu(v, ussdActionWithSteps, position);
             }

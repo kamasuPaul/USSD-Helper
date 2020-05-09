@@ -46,12 +46,11 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
                 android:textColor="@color/indigo_900" />
 
-
             <TextView
                 android:id="@+id/TextView_ActionCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10 jan 2018 11:20"
+                android:text="*131#"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/grey_40" />
 
