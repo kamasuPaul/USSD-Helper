@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
@@ -34,12 +36,15 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 import static com.quickCodes.quickCodes.fragments.MainFragment.simcardsSlots;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
@@ -329,6 +334,37 @@ public class AutoDetectedFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONTACT_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Uri contactUri = data.getData();
+                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                Cursor cursor = getActivity().getContentResolver().query(contactUri, projection, null, null, null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String number = cursor.getString(numberIdex);
+                    if (phoneNumber != null) {
+                        if (number.startsWith("+256")) {
+                            number = number.replace("+256", "0");
+                        }
+                        number = number.replace(" ", "");
+                        phoneNumber.setText(number);
+                    }
+
+
+                }
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getActivity(), "No contact selected", Toast.LENGTH_SHORT).show();
+                System.out.println("User closed the picker without selecting items.");
+            }
+        }
+    }
+
 
 }
 

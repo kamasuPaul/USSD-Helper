@@ -21,11 +21,12 @@ import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.modals.Constants;
+import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.util.UssdDetector;
 import com.quickCodes.quickCodes.util.database.DataRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +36,9 @@ import androidx.lifecycle.LifecycleService;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_PHONE;
 import static com.quickCodes.quickCodes.AddYourOwnActionActivity.containsIgnoreCase;
+import static com.quickCodes.quickCodes.util.UssdDetector.AUTO_SAVED_CODES;
+import static com.quickCodes.quickCodes.util.UssdDetector.STEP_TEL;
+import static com.quickCodes.quickCodes.util.UssdDetector.STEP_TEXT;
 
 public class PhoneCallsOverlayService extends LifecycleService {
     View chatHead;
@@ -112,7 +116,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
     public void onCreate() {
         super.onCreate();
         SharedPreferences preferences =
-            this.getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+            this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         code = preferences.getString("code", null);
         menuItem = preferences.getString("menuItem", null);
         if (menuItem != null) {
@@ -134,9 +138,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
         }
         code = code.replace("#", "").replace(",", "*").concat("#");
 
-        //make preference null suchthat the same code is not shown again
-        preferences.edit().putString("code", null)
-            .putString("menuItem", null).commit();
+
 
         //inflate the layout
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);
@@ -193,7 +195,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
             stopSelf();
         });
 
-        //check if code already exists in the database
+        //check if the ussdcode already exists in the database
         boolean matches = false;
         boolean is_contained = false;
         String code_name = "";
@@ -217,7 +219,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
             Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
         }
 
-        //if it matches some item in the database tell the use they could use this
+//        if it matches some item in the database tell the use they could use this
         if (matches) {
             chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
             chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
@@ -234,10 +236,32 @@ public class PhoneCallsOverlayService extends LifecycleService {
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
             action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
-            dataRepository.insertAll(new UssdActionWithSteps(action, null));
+            List<Step> steps = new ArrayList<>();
+            //get any steps if availabe ie telephone and amount
+            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+            for (int i = 0; i < preferences.getInt(STEP_TEL, 0); i++) {
+                steps.add(new Step(codeId, Constants.TELEPHONE, 0, "Telephone"));
+                Toast.makeText(this, "MOBILE NUMBER" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+
+            }
+            for (int i = 0; i < preferences.getInt(STEP_TEXT, 0); i++) {
+                steps.add(new Step(codeId, Constants.NUMBER, 0, "Amount"));
+                Toast.makeText(this, "MOBILE NU" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+
+            }
+            dataRepository.insertAll(new UssdActionWithSteps(action, steps));
+
+            //make preference null suchthat the same code is not shown again
+            preferences.edit().putString("code", null)
+                .putString("menuItem", null)
+                .putInt(STEP_TEL, 0)
+                .putInt(STEP_TEXT, 0)
+                .commit();
         }
 
     }
+
 
     @Override
     public void onDestroy() {

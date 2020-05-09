@@ -18,9 +18,12 @@ import java.util.Map;
 
 public class UssdDetector extends AccessibilityService {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
+    public static final String STEP_TEL = "step_tel";
     private static final String TAG = "ACCESSIBILITY";
+    public static final String STEP_TEXT = "step_text";
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
+
 
     @Override
     public void onInterrupt() {
@@ -51,11 +54,13 @@ public class UssdDetector extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        SharedPreferences preferences =
+            this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+
         if (event.getPackageName().equals("com.android.phone") && event.getClassName().equals("android.widget.Button")) {
             if (event.getText().toString().equalsIgnoreCase("[OK]")) {
                 //when they click okay, save the code in shared preferences
-                SharedPreferences preferences =
-                    this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+
                 String code = preferences.getString("code", null);
                 if (code != null) {
                     showSummary(UssdDetector.this);
@@ -87,14 +92,29 @@ public class UssdDetector extends AccessibilityService {
         if (pinbox == true) {
             return;
         }
+        //detect fields for entering amount and mobile number
+        //ignore dialogs with the word pin to protect privacy of user
+        if (event.getClassName().equals("android.app.AlertDialog")) {
+            if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Mobile Number")) {
+                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
+                preferences.edit().putInt(STEP_TEL, preferences.getInt(STEP_TEL, 0) + 1).commit();
+
+            } else if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Amount")) {
+                Toast.makeText(this, "amount", Toast.LENGTH_SHORT).show();
+                preferences.edit().putInt(STEP_TEXT, preferences.getInt(STEP_TEXT, 0) + 1).commit();
+
+            }
+            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+            //build the menu
+            kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
+        }
 
         if (event.getPackageName().equals("com.android.phone") && event.getClassName().equals("android.widget.EditText")) {
             AccessibilityNodeInfo source = event.getSource();
             AccessibilityNodeInfo inputNode = source.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
 
             String nodeValue = String.valueOf(inputNode.getText());
-            SharedPreferences preferences =
-                this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
             //append the value on if its not null an
             preferences.edit().putString("middleValue", nodeValue).commit();
 
@@ -102,8 +122,6 @@ public class UssdDetector extends AccessibilityService {
         if (event.getPackageName().equals("com.android.phone") && event.getClassName().equals("android.widget.Button")) {
             if (event.getText().toString().equalsIgnoreCase("[Send]")) {
                 //now add the middle value to code
-                SharedPreferences preferences =
-                    this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
                 String code = preferences.getString("code", null);
                 String middleValue = preferences.getString("middleValue", null);
                 String previousMenuItem = preferences.getString("menuItem", "");
