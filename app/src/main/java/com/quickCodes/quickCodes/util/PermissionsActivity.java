@@ -3,6 +3,7 @@ package com.quickCodes.quickCodes.util;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -25,19 +26,28 @@ import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 public class PermissionsActivity extends AppCompatActivity {
 
     public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
     private static final int CODE_ACCESSIBILITY = 102;
+    private static final String ASK_ACCESSIBILITY = "ask_accessibility";
     private static final String TAG = "USSD DETECTOR";
+    private static final String ASK_TIMES = "ask_times";
     private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
     private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
     private boolean drawGranted;
+    SharedPreferences sharedPreferences;
 
 
     public static boolean isAccessibilityServiceEnabled(Context context) {
@@ -140,7 +150,7 @@ public class PermissionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        sharedPreferences = getSharedPreferences(ASK_ACCESSIBILITY, MODE_PRIVATE);
         checkPermissions();
 
         setContentView(R.layout.activity_permissions);
@@ -189,8 +199,21 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     private void requestAccessibility(Context applicationContext) {
+        //ask for accessibility twice every week, this is for phones that are battery optimized
+        //or have limited resources,which leads to auto disabling accessibility
+        if (!sharedPreferences.contains(ASK_TIMES)) {
+            sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
+            PeriodicWorkRequest accessibilityWorker =
+                new PeriodicWorkRequest.Builder(AskAccessibility.class, 7 * 24, TimeUnit.HOURS)
+                    .build();
+            WorkManager.getInstance(this).enqueue(accessibilityWorker);
+        }
+        sharedPreferences.edit().putInt(ASK_TIMES, sharedPreferences.getInt(ASK_TIMES, 2) - 1).commit();
+
+
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, CODE_ACCESSIBILITY);
+
 
     }
 
@@ -279,9 +302,12 @@ public class PermissionsActivity extends AppCompatActivity {
      * @return
      */
     private boolean isAccessibilitySettingsOn(Context mContext) {
-        if (true) {
+        int askTimes = sharedPreferences.getInt(ASK_TIMES, 8);
+        if (askTimes <= 0) {
             return true;
         }
+
+
         int accessibilityEnabled = 0;
         final String service = getPackageName() + "/" + UssdDetector.class.getCanonicalName();
         try {
@@ -323,5 +349,23 @@ public class PermissionsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateUi();
+    }
+
+    class AskAccessibility extends Worker {
+        Context context;
+
+        public AskAccessibility(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
+            this.context = context;
+        }
+
+        @NonNull
+        @Override
+        public Result doWork() {
+            //reset number of times accessibility is asked
+            sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
+            Toast.makeText(context, "renewing times", Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 }
