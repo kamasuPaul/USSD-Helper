@@ -1,29 +1,17 @@
 package com.quickCodes.quickCodes.dialpad;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.telecom.PhoneAccountHandle;
-import android.telecom.TelecomManager;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,11 +21,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
-import com.quickCodes.quickCodes.modals.Constants;
-import com.quickCodes.quickCodes.modals.Step;
-import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
+import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
@@ -48,17 +34,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static com.quickCodes.quickCodes.fragments.MainFragment.simcardsSlots;
-import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
-import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
-import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 
 public class DialPadActivity extends AppCompatActivity {
@@ -347,7 +327,6 @@ public class DialPadActivity extends AppCompatActivity {
                 if (num.contains("#")) {
                     num = num.replace("#", "%23");
                 }
-
                 makePhoneCall();
             }
         });
@@ -364,13 +343,12 @@ public class DialPadActivity extends AppCompatActivity {
 
             } else {
                 String dial = "tel:" + num;
-                //save code
-                Log.d("CODE", dial);
                 UssdActionsViewModel viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
                 Random r = new Random();
                 Long codeId = r.nextLong();//TODO change random number generator
-                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
-                viewModel.insert(action, null);
+                //TODO set this to instead of saving a ussd action,its saves to sharedpreferences
+//                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
+//                viewModel.insert(action, null);
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
 
@@ -416,198 +394,23 @@ public class DialPadActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                //TODO first look into custom codes
-                String initialCode = obj.action.getAirtelCode();
-                String cd = initialCode + Uri.encode("#");
-                createDialog(obj);
+                executeUssdAction(obj);
             }
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
-
             }
         });
-
-
     }
 
-    public void createDialog(UssdActionWithSteps ussdActionWithSteps) {
-
-        //use codes for the selected network mode
-//        UssdAction ussdAction = null;
-//        String mode1 = "AIRTEL";//TODO get mode in a better way
-//        UssdAction ussdAction = ussdActionWithSteps.action;
-//        String code = "";
-        String uscode1 = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
-
+    public void executeUssdAction(UssdActionWithSteps ussdActionWithSteps) {
+        String code = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
         //check for phone number clicks
-        if (!uscode1.contains("*")) {//if it doesnt contain a * its aphone number, exececute it immediately
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + uscode1)));
+        if (!code.contains("*")) {//if it doesnt contain a * its aphone number, exececute it immediately
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
             return;
         }
-
-        UssdAction action = ussdActionWithSteps.action;
-
-        if (action.getAirtelCode() != null) {
-            if (!action.getAirtelCode().isEmpty()) {
-                uscode1 = action.getAirtelCode();
-            }
-        }
-        if (action.getMtnCode() != null) {
-            if (!action.getMtnCode().isEmpty()) {
-                uscode1 = action.getMtnCode();
-            }
-        }
-        if (action.getAfricellCode() != null) {
-            if (!action.getAfricellCode().isEmpty()) {
-                uscode1 = action.getAfricellCode();
-            }
-        }
-        final String uscode = uscode1;
-
-        if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
-            //execute the code immediately
-            //TODO execute code with selected simcard instead for prompting the user to select sim
-            String code = uscode1 + Uri.encode("#");
-            executeUssd(code, ussdActionWithSteps.action);
-
-
-        } else {
-
-            final Dialog customDialog;
-            //inflate the root dialog
-            LayoutInflater inflater = getLayoutInflater();
-            CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.dialog_root, null);
-            LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
-            //else check for steps and construct the layout
-            for (Step step : ussdActionWithSteps.steps) {
-                if (step.getType() == TEXT) {
-
-                    View rowText = inflater.inflate(R.layout.row_text, null);
-                    rowText.setId((int) step.getStepId());
-                    final EditText editText = rowText.findViewById(R.id.editText_text);
-                    editText.setHint(step.getDescription());
-                    root.addView(rowText);
-
-
-                }
-                if (step.getType() == TELEPHONE) {
-                    View rowTelephone = inflater.inflate(R.layout.row_telephone, null);
-
-                    ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
-                    final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
-                    imageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            phoneNumber = editText;
-                            Intent i = new Intent(Intent.ACTION_PICK);
-                            i.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                            startActivityForResult(i, CONTACT_PICKER_REQUEST);
-                        }
-                    });
-
-                    rowTelephone.setId((int) step.getStepId());
-                    root.addView(rowTelephone);
-
-
-                }
-                if (step.getType() == NUMBER) {
-                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
-                    rowAmount.setId((int) step.getStepId());
-                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
-                    editText.setHint(step.getDescription());
-                    root.addView(rowAmount);
-
-                }
-
-            }
-
-            //inflate each row that should be contained in the dialog box
-            View rowButtons = inflater.inflate(R.layout.row_buttons, null);
-            //add each row to the root
-            root.addView(rowButtons);
-            cardView.setPadding(5, 5, 5, 5);
-
-            customDialog = new Dialog(this);
-            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-            customDialog.setContentView(cardView);
-            customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            customDialog.setCancelable(true);
-
-
-            final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
-            ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    StringBuilder stringBuilder = new StringBuilder(uscode);
-                    //get all the user entered values
-                    for (Step step : finalUssdAction.steps) {
-                        //get the user entered value of each step using its id
-                        LinearLayout linearLayout = (LinearLayout) customDialog.findViewById((int) step.getStepId());
-
-                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
-                        if (value != null && !value.isEmpty()) {
-                            stringBuilder.append("*" + value);
-                        }
-
-                    }
-                    //generate the code with the values inserted
-                    //run the code
-                    String fullCode = stringBuilder.toString() + Uri.encode("#");
-                    customDialog.dismiss();
-                    //execute the ussd
-                    executeUssd(fullCode, ussdActionWithSteps.action);
-//                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-
-
-                }
-
-
-            });
-
-            ((Button) customDialog.findViewById(R.id.bt_cancel)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    customDialog.dismiss();
-                }
-            });
-            customDialog.show();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    public void executeUssd(String fullCode, UssdAction action) {
-        String hnc = action.getNetwork();
-        String simcardSlot = simcardsSlots.get(hnc);
-
-        TelecomManager telecomManager = null;
-        List<PhoneAccountHandle> phoneAccountHandleList = null;
-        // if the users phone is android is  Marshmallow or above
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            if (simcardsSlots.containsKey(hnc)) {//if the network choosen by user when saving code is still available in simcard
-                //TODO if api level is greater than 26 do background codes,do this later,not important right now
-                telecomManager = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
-                phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
-                for (int i = 0; i < phoneAccountHandleList.size(); i++) {
-                    PhoneAccountHandle phoneAccountHandle = phoneAccountHandleList.get(i);
-                    if (i == Integer.valueOf(simcardSlot)) {
-                        Uri uri = Uri.parse("tel:" + fullCode);
-                        Bundle extras = new Bundle();
-                        extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccountHandle);
-                        telecomManager.placeCall(uri, extras);
-                        break;//break out of the loop
-                    }
-                }
-            } else {
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-
-            }
-
-        } else {
-            //use normal way of dialing ussd code,because their is not an easy way of getting user selected simcard
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode)));
-
-        }
+        Tools.executeSuperAction(ussdActionWithSteps, DialPadActivity.this);
+        Tools.updateWeightOnClick(ussdActionWithSteps, ussdActionsViewModel);
 
     }
 
@@ -623,12 +426,12 @@ public class DialPadActivity extends AppCompatActivity {
                 if (cursor != null && cursor.moveToFirst()) {
                     int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberIdex);
-                    if (phoneNumber != null) {
+                    if (Tools.phoneNumber != null) {
                         if (number.startsWith("+256")) {
                             number = number.replace("+256", "0");
                         }
                         number = number.replace(" ", "");
-                        phoneNumber.setText(number);
+                        Tools.setTelephone(number);
                     }
 
 
@@ -638,14 +441,6 @@ public class DialPadActivity extends AppCompatActivity {
                 Toast.makeText(this, "No contact selected", Toast.LENGTH_SHORT).show();
                 System.out.println("User closed the picker without selecting items.");
             }
-        }
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            String[] sessionTextArr = data.getStringArrayExtra("ussd_messages");
-            String uuid = data.getStringExtra("uuid");
-            Toast.makeText(this, sessionTextArr.toString(), Toast.LENGTH_LONG).show();
-
-        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "Error: " + data.getStringExtra("error"), Toast.LENGTH_LONG).show();
         }
     }
 

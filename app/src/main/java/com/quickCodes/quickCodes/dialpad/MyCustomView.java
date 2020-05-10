@@ -9,10 +9,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.quickCodes.quickCodes.R;
-
-import java.util.Map;
-
-import static com.quickCodes.quickCodes.fragments.MainFragment.simcards;
+import com.quickCodes.quickCodes.modals.SimCard;
+import com.quickCodes.quickCodes.util.Tools;
 
 public class MyCustomView extends View {
     private String text = "";
@@ -42,9 +40,9 @@ public class MyCustomView extends View {
         tPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         tPaint.setStyle(Paint.Style.FILL);
 //        tPaint.setAntiAlias(true);
-        for (Map.Entry<String, String> entry : simcards.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
+        for (SimCard card : Tools.getAvailableSimCards(context)) {
+            String key = card.getHni();
+            String value = card.getNetworkName();
             circleText = key;
         }
 

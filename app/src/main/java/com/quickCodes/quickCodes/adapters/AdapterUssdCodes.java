@@ -27,10 +27,6 @@ public class AdapterUssdCodes extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public interface OnItemClickListener {
         void onItemClick(View view, UssdActionWithSteps obj, int position);
-
-        void onItemDelete(View view, UssdAction obj, int position);
-
-        void onItemEdit(View view, UssdAction obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {

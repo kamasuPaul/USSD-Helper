@@ -1,12 +1,11 @@
 package com.quickCodes.quickCodes;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -15,10 +14,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
+import com.quickCodes.quickCodes.util.Tools;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,11 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final int REQUEST_CONTACT = 20;
-    private static final int REQUEST_CODE = 40;
-    private static final int CONTACT_PICKER_REQUEST = 90;
-    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
+    private static final int CONTACT_PICKER_REQUEST = 29;
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
 
@@ -85,23 +79,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CONTACT && resultCode == Activity.RESULT_OK &&
-            data != null) {
+        if (requestCode == CONTACT_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Uri contactUri = data.getData();
+                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
 
-            // we got a result from the contact picker
-            Bundle extras = data.getExtras();
-            Set keys = extras.keySet();
-            Iterator iterator = keys.iterator();
-            while (iterator.hasNext()) {
-                Toast.makeText(this, iterator.next().toString(), Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == REQUEST_CODE && requestCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Set keys = extras.keySet();
-            Iterator iterator = keys.iterator();
-            while (iterator.hasNext()) {
-                Toast.makeText(this, iterator.next().toString(), Toast.LENGTH_SHORT).show();
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String number = cursor.getString(numberIdex);
+                    if (Tools.phoneNumber != null) {
+                        if (number.startsWith("+256")) {
+                            number = number.replace("+256", "0");
+                        }
+                        number = number.replace(" ", "");
+                        Tools.setTelephone(number);
+                    }
+
+
+                }
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "No contact selected", Toast.LENGTH_SHORT).show();
+                System.out.println("User closed the picker without selecting items.");
             }
         }
     }
@@ -172,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
                                     namelist.add(name);
                                     numberlist.add(phoneNo);
 
-                                    Log.i("TAG----", "Name: " + name);
-                                    Log.i("TAG----", "Phone Number: " + phoneNo);
+//                                    Log.i("TAG----", "Name: " + name);
+//                                    Log.i("TAG----", "Phone Number: " + phoneNo);
                                 }
                                 pCur.close();
                             }

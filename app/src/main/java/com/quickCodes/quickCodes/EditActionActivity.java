@@ -12,9 +12,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import static com.quickCodes.quickCodes.AddYourOwnActionActivity.containsIgnoreCase;
-import static com.quickCodes.quickCodes.fragments.MainFragment.simcards;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
@@ -84,27 +85,18 @@ public class EditActionActivity extends AppCompatActivity {
 
         actionName.setText(lastAction.action.getName());
         //retrieve the selected network if the simcard is still inside the phone orthiwe ignore it
-        if(simcards.containsValue(lastAction.action.getNetwork())){
-            String networkName = getKey(simcards, lastAction.action.getNetwork());
-            actionNetwork.setText(networkName.toUpperCase());
-        }else{
-            Toast.makeText(this, lastAction.action.getNetwork(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, simcards.toString(), Toast.LENGTH_SHORT).show();
+        List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
+        String[] networks = new String[availableSimCards.size()];
+        for (SimCard card : availableSimCards) {
+            if (String.valueOf(card.getHni()).equalsIgnoreCase(lastAction.action.getNetwork())) {
+                actionNetwork.setText(card.getNetworkName().toUpperCase());
+            }
+            //add all networks to the array
+            networks[card.getSlotIndex()] = card.getNetworkName();
         }
         actionCode.setText(lastAction.action.getAirtelCode());
 
-
-        //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
-        //get available networks from main activity
-        for (Map.Entry<String, String> entry : simcards.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-        }
-
-        //add all networks to the array
-        String[] networks = simcards.keySet().toArray(new String[simcards.keySet().size()]);
-
+        //**********************MATERIAL SPINNER OR DROP DOWNN ***********************************
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
                 this,
@@ -189,8 +181,14 @@ public class EditActionActivity extends AppCompatActivity {
         //get newtork
         //store the action code in the correct network
         //store the chosen network ie its MNC in on of the other networks
+        List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
         String networkName = actionNetwork.getText().toString();
-        String hnc = simcards.get(networkName);
+        String hni = Tools.getSelectedSimCard(this).getHni();
+        for (SimCard card : availableSimCards) {
+            if (String.valueOf(card.getNetworkName()).equalsIgnoreCase(networkName)) {
+                hni = card.getHni();
+            }
+        }
         String airtelCode = "", mtnCode = "", africellCode = "";
 
         if (containsIgnoreCase(networkName, "MTN")) {
@@ -207,7 +205,7 @@ public class EditActionActivity extends AppCompatActivity {
         }
 
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        UssdAction ussdAction = new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, section, hnc);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, section, hni);
         v.update(new UssdActionWithSteps(ussdAction,steps));
         //TODO go to custom codes fragment
         Toast.makeText(this, ussdAction.getName()+" Has been Edited", Toast.LENGTH_SHORT).show();

@@ -12,8 +12,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
-import static com.quickCodes.quickCodes.fragments.MainFragment.simcards;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
@@ -65,9 +66,13 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
 
         //**********************MATERIAL SPINNER OR DROP DOWNN ************************************
-        //get available networks from main activity
-        //add all networks to the array
-        String[] networks = simcards.keySet().toArray(new String[simcards.keySet().size()]);
+        //retrieve all available networks
+        List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
+        String[] networks = new String[availableSimCards.size()];
+        for (SimCard card : availableSimCards) {
+            //add all networks to the array
+            networks[card.getSlotIndex()] = card.getNetworkName();
+        }
 
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
@@ -146,8 +151,14 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         //get newtork
         //store the action code in the correct network
         //store the chosen network ie its MNC in on of the other networks
+        List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
         String networkName = actionNetwork.getText().toString();
-        String hnc = simcards.get(networkName);
+        String hni = Tools.getSelectedSimCard(this).getHni();
+        for (SimCard card : availableSimCards) {
+            if (String.valueOf(card.getNetworkName()).equalsIgnoreCase(networkName)) {
+                hni = card.getHni();
+            }
+        }
         String airtelCode = "", mtnCode = "", africellCode = "";
         if (containsIgnoreCase(networkName, "MTN")) {
             mtnCode = code;
@@ -159,7 +170,8 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             africellCode = code;
         }
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        UssdAction ussdAction = new UssdAction(codeId, actionNameText,airtelCode,mtnCode,africellCode, SEC_CUSTOM_CODES,hnc);
+        UssdAction ussdAction =
+            new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, SEC_CUSTOM_CODES, hni);
         v.insert(ussdAction,steps);
 
         //TODO go to custom codes fragment
