@@ -18,15 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
+import com.quickCodes.quickCodes.ui.main.PageViewModel;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,12 +48,7 @@ public class DialPadActivity extends AppCompatActivity {
     String num;
     TextView edit_text, tname, tnumber;
     ImageView one, two, three, four, five, six, seven, eight, nine, zero, star, hash, sim1, sim2, clear;
-
     BottomSheetBehavior bottomSheetBehavior;
-
-
-    ArrayList<String> namelist = MainActivity.namelist;
-    ArrayList<String> numberlist = MainActivity.namelist;
     UssdActionsViewModel ussdActionsViewModel;
     private RecyclerView recyclerView;
     private AdapterDialer mAdapter;
@@ -87,8 +84,17 @@ public class DialPadActivity extends AppCompatActivity {
             mAdapter.setUssdActions(airtimeCodes);
 
         });
+        //add contatcts to list of searchable items
+        ViewModelProviders.
+            of(this).get(PageViewModel.class)
+            .getNumberlist(this)
+            .observe(this, new Observer<HashMap<String, String>>() {
+                @Override
+                public void onChanged(HashMap<String, String> contacts) {
+                    mAdapter.setContactList(new ArrayList<>(contacts.values()), new ArrayList<>(contacts.keySet()));
+                }
+            });
 
-        getContactList();
         initComponent();
         initalizeDialerButtons();
 
@@ -358,8 +364,7 @@ public class DialPadActivity extends AppCompatActivity {
     }
 
     private void getContactList() {
-        //add contatcts to list of searchable items
-        mAdapter.setContactList(namelist, numberlist);
+
     }
 
     public void matchContact(String contact) {
@@ -400,6 +405,7 @@ public class DialPadActivity extends AppCompatActivity {
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
             }
         });
+
     }
 
     public void executeUssdAction(UssdActionWithSteps ussdActionWithSteps) {

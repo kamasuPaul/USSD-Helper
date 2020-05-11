@@ -1,6 +1,5 @@
 package com.quickCodes.quickCodes;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,10 +15,6 @@ import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.util.Tools;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -29,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
 
-    public static ArrayList<String> namelist = new ArrayList<>();
-    public static ArrayList<String> numberlist = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         fabAdd.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class)));
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
-        getContactList();
     }
 
 
@@ -95,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
                         number = number.replace(" ", "");
                         Tools.setTelephone(number);
                     }
-
-
                 }
 
             } else if (resultCode == RESULT_CANCELED) {
@@ -139,67 +129,4 @@ public class MainActivity extends AppCompatActivity {
         searchActivityItent.putExtra("search", "search");
         startActivity(searchActivityItent);
     }
-
-    private void getContactList() {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ContentResolver cr = getContentResolver();
-                    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                        null, null, null, null);
-
-                    if ((cur != null ? cur.getCount() : 0) > 0) {
-                        while (cur != null && cur.moveToNext()) {
-                            String id = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts._ID));
-                            String name = cur.getString(cur.getColumnIndex(
-                                ContactsContract.Contacts.DISPLAY_NAME));
-
-
-                            if (cur.getInt(cur.getColumnIndex(
-                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                                Cursor pCur = cr.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                    new String[]{id}, null);
-                                while (pCur.moveToNext()) {
-                                    String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                        ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                                    namelist.add(name);
-                                    numberlist.add(phoneNo);
-
-//                                    Log.i("TAG----", "Name: " + name);
-//                                    Log.i("TAG----", "Phone Number: " + phoneNo);
-                                }
-                                pCur.close();
-                            }
-                        }
-                    }
-                    if (cur != null) {
-                        cur.close();
-                    }
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //add contatcts to list of searchable items
-//                            mAdapter.setContactList(namelist, numberlist);
-//                        }
-//                    });
-
-
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-    }
-
-
-
 }

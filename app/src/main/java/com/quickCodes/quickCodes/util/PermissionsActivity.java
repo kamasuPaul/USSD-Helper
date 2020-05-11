@@ -208,8 +208,6 @@ public class PermissionsActivity extends AppCompatActivity {
                     .build();
             WorkManager.getInstance(this).enqueue(accessibilityWorker);
         }
-        sharedPreferences.edit().putInt(ASK_TIMES, sharedPreferences.getInt(ASK_TIMES, 2) - 1).commit();
-
 
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, CODE_ACCESSIBILITY);
@@ -227,9 +225,10 @@ public class PermissionsActivity extends AppCompatActivity {
             Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
         if (requestCode == CODE_ACCESSIBILITY) {
-//            if (resultCode == RESULT_OK) drawGranted = true;
+            if (isAccessibilitySettingsOn(getApplicationContext())) {
+                sharedPreferences.edit().putInt(ASK_TIMES, sharedPreferences.getInt(ASK_TIMES, 2) - 1).commit();
+            }
             updateUi();
-            Toast.makeText(this, "accessibility granted", Toast.LENGTH_SHORT).show();
         }
     }
 
