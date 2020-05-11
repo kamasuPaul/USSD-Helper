@@ -27,10 +27,8 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     //register lifecylce callbacks
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void stopOverlay(){
-//        if(sharedPreferences){
         //stop the screen overlay
         context.stopService(new Intent(context, ChatHeadService.class));
-//        }
 
         //make the accessibility ussd detector stop since all actions dialed from
         //quick codes are already saved
@@ -52,8 +50,9 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     }
 
     private boolean showMeOverlay(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), true);
+        boolean b = PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
+        return b;
     }
 
 }

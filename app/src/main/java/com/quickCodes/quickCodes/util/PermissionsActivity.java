@@ -204,7 +204,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (!sharedPreferences.contains(ASK_TIMES)) {
             sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
             PeriodicWorkRequest accessibilityWorker =
-                new PeriodicWorkRequest.Builder(AskAccessibility.class, 7 * 24, TimeUnit.HOURS)
+                new PeriodicWorkRequest.Builder(AskAccessibility.class, 15, TimeUnit.MINUTES)
                     .build();
             WorkManager.getInstance(this).enqueue(accessibilityWorker);
         }
