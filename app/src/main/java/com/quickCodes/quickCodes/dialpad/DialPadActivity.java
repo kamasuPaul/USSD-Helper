@@ -2,7 +2,9 @@ package com.quickCodes.quickCodes.dialpad;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,6 +26,7 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.ui.main.PageViewModel;
 import com.quickCodes.quickCodes.util.Tools;
+import com.quickCodes.quickCodes.util.UssdDetector;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
@@ -353,6 +356,9 @@ public class DialPadActivity extends AppCompatActivity {
                 Random r = new Random();
                 Long codeId = r.nextLong();//TODO change random number generator
                 //TODO set this to instead of saving a ussd action,its saves to sharedpreferences
+                SharedPreferences.Editor editor =
+                    getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
+                editor.putString("code", num);
 //                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
 //                viewModel.insert(action, null);
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));

@@ -188,7 +188,8 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
 
-                String words = constraint.toString();
+
+                String words = constraint.toString().replace("#", "");
                 if (words.isEmpty()) {
                     ussdActionWithStepsFiltered = items;
                 } else {
