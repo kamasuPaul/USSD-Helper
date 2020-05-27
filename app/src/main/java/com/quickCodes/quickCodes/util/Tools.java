@@ -32,6 +32,7 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.cardview.widget.CardView;
@@ -43,11 +44,13 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 public class Tools {
     private static final String TOOLS_PREF = "tools_pref";
     private static final String SELECTED_SIMCARD = "selected_simcard";
-    private static final int CONTACT_PICKER_REQUEST = 29;
+    public static final int CONTACT_PICKER_REQUEST = 29;
     public static EditText phoneNumber;
     private static String TAG = "TOOLS";
     private static SubscriptionManager subscriptionManager;
     private static List<SubscriptionInfo> subList;
+    public static HashMap<String, String> contacts;
+
 
     @SuppressLint("MissingPermission")
     public static List<SimCard> getAvailableSimCards(Context context) {
@@ -230,5 +233,13 @@ public class Tools {
     public static void updateWeightOnClick(UssdActionWithSteps obj, UssdActionsViewModel viewModel) {
         obj.action.setWeight(obj.action.getWeight() + 1);
         viewModel.update(obj);
+    }
+
+    public static HashMap<String, String> getContacts() {
+        return contacts;
+    }
+
+    public static void setContacts(HashMap<String, String> contacts1) {
+        contacts = contacts1;
     }
 }

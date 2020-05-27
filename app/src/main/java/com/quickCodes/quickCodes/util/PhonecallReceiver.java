@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 public class PhonecallReceiver extends BroadcastReceiver {
 
@@ -14,8 +13,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         savedContext = context;
             String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-        Toast.makeText(context, "number is" + number, Toast.LENGTH_SHORT).show();
-
         //if the number number contains a * at the begining and # at the end its a ussd code,
             //save it
         if (number == null) return;

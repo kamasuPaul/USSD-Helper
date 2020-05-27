@@ -40,9 +40,9 @@ public class PermissionsActivity extends AppCompatActivity {
 
     public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
     private static final int CODE_ACCESSIBILITY = 102;
-    private static final String ASK_ACCESSIBILITY = "ask_accessibility";
+    public static final String ASK_ACCESSIBILITY = "ask_accessibility";
     private static final String TAG = "USSD DETECTOR";
-    private static final String ASK_TIMES = "ask_times";
+    public static final String ASK_TIMES = "ask_times";
     private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
     private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
@@ -222,7 +222,7 @@ public class PermissionsActivity extends AppCompatActivity {
             //permission granted
 //            if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
-            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
         if (requestCode == CODE_ACCESSIBILITY) {
             if (isAccessibilitySettingsOn(getApplicationContext())) {
@@ -363,7 +363,7 @@ public class PermissionsActivity extends AppCompatActivity {
         public Result doWork() {
             //reset number of times accessibility is asked
             sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
-            Toast.makeText(context, "renewing times", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "renewing times", Toast.LENGTH_LONG).show();
             return null;
         }
     }

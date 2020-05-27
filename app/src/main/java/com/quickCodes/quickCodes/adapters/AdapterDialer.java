@@ -190,10 +190,12 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
                 String words = constraint.toString().replace("#", "");
+                List<UssdActionWithSteps> l = new ArrayList<>();
+
                 if (words.isEmpty()) {
-                    ussdActionWithStepsFiltered = items;
+                    l = items;
+
                 } else {
-                    List<UssdActionWithSteps> l = new ArrayList<>();
                     Log.d("QUERY", words);
                     //loop through ussd codes
                     for (UssdActionWithSteps action : items) {
@@ -234,10 +236,9 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //                        }
 //                    }
 
-                    ussdActionWithStepsFiltered = l;
                 }
                 FilterResults results = new FilterResults();
-                results.values = ussdActionWithStepsFiltered;
+                results.values = l;
                 return results;
             }
 

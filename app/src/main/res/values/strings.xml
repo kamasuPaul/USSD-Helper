@@ -19,10 +19,10 @@
 
     <string name="title_activity_help">HelpActivity</string>
     <string name="HIDE">HIDE</string>
-    <string name="use_of_plus_btn"> You can use it to save your own codes for later use \n
+    <string name="use_of_plus_btn"> Custom codes are saved automatically  whenever you dial any ussd codes but all you can manually  save your custom codes by tapping the button with "+" symbol \n
         \n\n
     Steps for saving codes\n
-        1.click + button at the top \n
+        1.click the button having "+" symbol \n
         2.enter the name, it can be any word \n
         3.then enter the network , it can be airtel, mtn or anyother network \n
         4.there after enter the code eg *131#,\n

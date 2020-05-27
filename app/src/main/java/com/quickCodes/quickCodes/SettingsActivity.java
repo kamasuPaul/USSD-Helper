@@ -90,7 +90,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void showPrivacyPolicy(View view) {
-        //TODO add privacy policy url
         String url = "https://quick-codes.flycricket.io/privacy.html";
         Intent t = new Intent(Intent.ACTION_VIEW);
         t.setData(Uri.parse(url));

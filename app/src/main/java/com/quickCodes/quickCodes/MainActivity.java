@@ -19,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
+
 public class MainActivity extends AppCompatActivity {
-    private static final int CONTACT_PICKER_REQUEST = 29;
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
 
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         fabAdd.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class)));
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
+
+        //initialize getting contacts
     }
 
 

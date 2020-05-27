@@ -45,9 +45,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
+
 
 public class DialPadActivity extends AppCompatActivity {
-    private static final int CONTACT_PICKER_REQUEST = 200;
+    private final String TAG = this.getClass().getName().toUpperCase();
     String num;
     TextView edit_text, tname, tnumber;
     ImageView one, two, three, four, five, six, seven, eight, nine, zero, star, hash, sim1, sim2, clear;
@@ -87,6 +89,10 @@ public class DialPadActivity extends AppCompatActivity {
             mAdapter.setUssdActions(airtimeCodes);
 
         });
+
+        initComponent();
+        initalizeDialerButtons();
+
         //add contatcts to list of searchable items
         ViewModelProviders.
             of(this).get(PageViewModel.class)
@@ -94,12 +100,11 @@ public class DialPadActivity extends AppCompatActivity {
             .observe(this, new Observer<HashMap<String, String>>() {
                 @Override
                 public void onChanged(HashMap<String, String> contacts) {
+                    Tools.setContacts(contacts);
                     mAdapter.setContactList(new ArrayList<>(contacts.values()), new ArrayList<>(contacts.keySet()));
                 }
             });
 
-        initComponent();
-        initalizeDialerButtons();
 
 
         // get the bottom sheet view

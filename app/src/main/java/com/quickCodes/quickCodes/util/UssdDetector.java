@@ -10,6 +10,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
+import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
@@ -36,18 +37,18 @@ public class UssdDetector extends AccessibilityService {
             context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         String d = preferences.getString("code", null);
         String d1 = preferences.getString("menuItem", null);
-        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
 
-//        if (MainActivity.accessibilityServiceShouldRun) {
+        if (MainActivity.accessibilityServiceShouldRun) {
             Intent intent = new Intent(context, PhoneCallsOverlayService.class);
             context.startService(intent);
-//        }
+        }
     }
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "ON service connected");
         super.onServiceConnected();
     }
@@ -104,8 +105,8 @@ public class UssdDetector extends AccessibilityService {
                 preferences.edit().putInt(STEP_TEXT, preferences.getInt(STEP_TEXT, 0) + 1).commit();
 
             }
-            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
             //build the menu
             kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
         }
@@ -134,14 +135,14 @@ public class UssdDetector extends AccessibilityService {
                 if (middleValue.matches("[*0]")) {//mathces 0 and *
                     String d = preferences.getString("code", null);
 
-                    Toast.makeText(this, "* detected code is" + d, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "* detected code is" + d, Toast.LENGTH_SHORT).show();
                     if (code.lastIndexOf(",") != -1) {
                         preferences.edit()
                             .putString("code", code.substring(0, code.lastIndexOf(",")))
                             .commit();
                         String d1 = preferences.getString("code", null);
 
-                        Toast.makeText(this, "* detected code is" + d1, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(this, "* detected code is" + d1, Toast.LENGTH_SHORT).show();
                     }
                 }
 //

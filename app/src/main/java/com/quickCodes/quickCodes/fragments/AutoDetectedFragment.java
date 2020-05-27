@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
@@ -26,6 +28,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
+import static com.quickCodes.quickCodes.util.PermissionsActivity.ASK_ACCESSIBILITY;
+import static com.quickCodes.quickCodes.util.PermissionsActivity.ASK_TIMES;
 
 public class AutoDetectedFragment extends Fragment {
     ArrayList<String> codes = new ArrayList<>();
@@ -84,6 +88,11 @@ public class AutoDetectedFragment extends Fragment {
                 createOptionsMenu(v, ussdActionWithSteps, position);
             }
         });
+        int asktimes = getActivity()
+            .getSharedPreferences(ASK_ACCESSIBILITY, Context.MODE_PRIVATE)
+            .getInt(ASK_TIMES, -20);
+        TextView v = root.findViewById(R.id.ask_times);
+        v.setText(String.valueOf(asktimes));
         return root;
     }
 

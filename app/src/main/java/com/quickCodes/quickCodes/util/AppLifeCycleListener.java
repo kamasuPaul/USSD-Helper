@@ -51,7 +51,7 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
 
     private boolean showMeOverlay(Context context) {
         boolean b = PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
+            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), true);
         return b;
     }
 

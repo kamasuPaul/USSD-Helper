@@ -31,36 +31,58 @@ public class PageViewModel extends ViewModel {
             @Override
             public void run() {
                 try {
+
+                    String[] projection = new String[]{
+//                        ContactsContract.Contacts._ID,
+//                        ContactsContract.Contacts.DISPLAY_NAME,
+//                        ContactsContract.Contacts.HAS_PHONE_NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                    };
                     ContentResolver cr = context.getContentResolver();
-                    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                        null, null, null, null);
+                    Cursor cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        projection, null, null,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
                     if ((cur != null ? cur.getCount() : 0) > 0) {
                         while (cur != null && cur.moveToNext()) {
                             String id = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts._ID));
+                                cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
                             String name = cur.getString(cur.getColumnIndex(
-                                ContactsContract.Contacts.DISPLAY_NAME));
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                            int hasPhone = cur.getInt(cur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
 
 
-                            if (cur.getInt(cur.getColumnIndex(
-                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                                Cursor pCur = cr.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                    new String[]{id}, null);
-                                while (pCur.moveToNext()) {
-                                    String phoneNo = pCur.getString(pCur.getColumnIndex(
+                            if (hasPhone > 0) {
+                                String phoneNo = cur.getString(cur.getColumnIndex(
                                         ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                contacts.put(phoneNo, name);
 
-                                    contacts.put(phoneNo, name);
 
-//                                    Log.i("TAG----", "Name: " + name);
-//                                    Log.i("TAG----", "Phone Number: " + phoneNo);
-                                }
-                                pCur.close();
+//                                String [] projection1 = new String[]{
+//                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+//                                    ContactsContract.Contacts.DISPLAY_NAME,
+//                                    ContactsContract.CommonDataKinds.Phone.NUMBER                                };
+//                                Cursor pCur = cr.query(
+//                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                                    projection1,
+//                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+//                                    new String[]{id}, null);
+//                                while (pCur.moveToNext()) {
+//                                    String phoneNo = pCur.getString(pCur.getColumnIndex(
+//                                        ContactsContract.CommonDataKinds.Phone.NUMBER));
+//
+//                                    contacts.put(phoneNo, name);
+//
+////                                    Log.i("TAG----", "Name: " + name);
+////                                    Log.i("TAG----", "Phone Number: " + phoneNo);
+//                                }
+//                                pCur.close();
                             }
+
                         }
                     }
                     if (cur != null) {
