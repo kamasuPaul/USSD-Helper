@@ -38,7 +38,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnItemClickListener mOnItemClickListener;
     private List<UssdActionWithSteps> ussdActionWithStepsFiltered;
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Replace the contents of a view (invoked by the layout_no_item manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (ussdActionWithStepsFiltered != null) {

@@ -8,9 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
 
-import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
@@ -39,10 +37,10 @@ public class UssdDetector extends AccessibilityService {
         String d1 = preferences.getString("menuItem", null);
 //        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
 
-        if (MainActivity.accessibilityServiceShouldRun) {
+//        if (MainActivity.accessibilityServiceShouldRun) {
             Intent intent = new Intent(context, PhoneCallsOverlayService.class);
             context.startService(intent);
-        }
+//        }
     }
 
     @Override
@@ -97,11 +95,11 @@ public class UssdDetector extends AccessibilityService {
         //ignore dialogs with the word pin to protect privacy of user
         if (event.getClassName().equals("android.app.AlertDialog")) {
             if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Mobile Number")) {
-                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
                 preferences.edit().putInt(STEP_TEL, preferences.getInt(STEP_TEL, 0) + 1).commit();
 
             } else if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Amount")) {
-                Toast.makeText(this, "amount", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "amount", Toast.LENGTH_SHORT).show();
                 preferences.edit().putInt(STEP_TEXT, preferences.getInt(STEP_TEXT, 0) + 1).commit();
 
             }

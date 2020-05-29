@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.quickCodes.quickCodes.EditActionActivity;
+import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
@@ -58,6 +60,7 @@ public class AutoDetectedFragment extends Fragment {
                 }
             }
             mAdapter.setUssdActions(airtimeCodes);
+
         });
     }
 
@@ -93,13 +96,20 @@ public class AutoDetectedFragment extends Fragment {
             .getInt(ASK_TIMES, -20);
         TextView v = root.findViewById(R.id.ask_times);
         v.setText(String.valueOf(asktimes));
+        if (codes.isEmpty()) {
+            View root_no_items = inflater.inflate(R.layout.layout_no_item, container, false);
+            ((ImageView) (root_no_items.findViewById(R.id.image_call))).setOnClickListener(view -> {
+                MainActivity.openDialer(getActivity());
+            });
+            return root_no_items;
+        }
         return root;
     }
 
     public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
         //inflate options menu
         PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-        //inflate the menu from layout resource file
+        //inflate the menu from layout_no_item resource file
         popupMenu.inflate(R.menu.action_card_menu);
         //handle menu item clicks
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

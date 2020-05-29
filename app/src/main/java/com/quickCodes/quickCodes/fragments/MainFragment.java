@@ -103,12 +103,105 @@ public class MainFragment extends Fragment {
         });
     }
 
+    /**
+     * method for setting the layout_no_item margin of a view.. adapted from kcoppock answer stackoverflow
+     *
+     * @param v the  view whose layout_no_item is to be set
+     * @param l left
+     * @param t top
+     * @param r right
+     * @param b bottom
+     */
+    public static void setMargins(View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(l, t, r, b);
+            v.requestLayout();
+        }
+    }
+
+    private void filterAndHideActions(String mode) {
+        if (mode != null) {
+
+            viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    if (mode.contains("MTN")) {
+                        if (us.action.getMtnCode() == null) {
+                            continue;
+                        }
+                    }
+                    if (mode.contains("AFRICELL")) {
+                        if ((us.action.getAfricellCode() == null)) {
+                            continue;
+                        }
+                        String code = us.action.getAfricellCode();
+                        if (code != null) {
+                            if (code.contains("not")) continue;
+                        }
+                    }
+                    if (us.action.getSection() == SEC_AIRTIME) {
+                        airtimeCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_DATA) {
+                        dataCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_MMONEY) {
+                        mmoneyCodes.add(us);
+                    }
+                }
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
+            });
+        }
+
+    }
+
+    //************************  UTILITYMETHODS *******************************************************************************
+
+
+    /**
+     * methods to remove cards with codes that are not supported on mtn
+     */
+    private void hideNonMtnAction() {
+        List<RecyclerView> recyclerViews = Arrays.asList(airtimeRecyclerView,
+            dataRecyclerView, mmRecyclerView);
+        for (RecyclerView l : recyclerViews) {
+            ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
+            for (View v : hiddenViews) v.setVisibility(View.GONE);
+
+        }
+    }
+
+    //adopted from stack overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
+    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup) child, tag));
+            }
+
+            final Object tagObj = child.getTag();
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+
+        }
+        return views;
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
+        // Inflate the layout_no_item for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
         //setup airtime
@@ -219,99 +312,6 @@ public class MainFragment extends Fragment {
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));
         return root;
-    }
-
-    private void filterAndHideActions(String mode) {
-        if (mode != null) {
-
-            viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
-                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
-                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
-                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
-                for (UssdActionWithSteps us : ussdActionWithSteps) {
-                    if (mode.contains("MTN")) {
-                        if (us.action.getMtnCode() == null) {
-                            continue;
-                        }
-                    }
-                    if (mode.contains("AFRICELL")) {
-                        if ((us.action.getAfricellCode() == null)) {
-                            continue;
-                        }
-                        String code = us.action.getAfricellCode();
-                        if (code != null) {
-                            if (code.contains("not")) continue;
-                        }
-                    }
-                    if (us.action.getSection() == SEC_AIRTIME) {
-                        airtimeCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_DATA) {
-                        dataCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_MMONEY) {
-                        mmoneyCodes.add(us);
-                    }
-                }
-                adapterUssdCodes.setUssdActions(airtimeCodes);
-                adapterUssdCodes1.setUssdActions(dataCodes);
-                adapterUssdCodes2.setUssdActions(mmoneyCodes);
-
-            });
-        }
-
-    }
-
-    //************************  UTILITYMETHODS *******************************************************************************
-
-
-    /**
-     * methods to remove cards with codes that are not supported on mtn
-     */
-    private void hideNonMtnAction() {
-        List<RecyclerView> recyclerViews = Arrays.asList(airtimeRecyclerView,
-            dataRecyclerView, mmRecyclerView);
-        for (RecyclerView l : recyclerViews) {
-            ArrayList<View> hiddenViews = getViewsByTag(l, "hide");
-            for (View v : hiddenViews) v.setVisibility(View.GONE);
-
-        }
-    }
-
-    //adopted from stack overflow https://stackoverflow.com/questions/8817377/android-how-to-find-multiple-views-with-common-attribute
-    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
-        ArrayList<View> views = new ArrayList<View>();
-        final int childCount = root.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = root.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                views.addAll(getViewsByTag((ViewGroup) child, tag));
-            }
-
-            final Object tagObj = child.getTag();
-            if (tagObj != null && tagObj.equals(tag)) {
-                views.add(child);
-            }
-
-        }
-        return views;
-    }
-
-    /**
-     * method for setting the layout margin of a view.. adapted from kcoppock answer stackoverflow
-     *
-     * @param v the  view whose layout is to be set
-     * @param l left
-     * @param t top
-     * @param r right
-     * @param b bottom
-     */
-    public static void setMargins(View v, int l, int t, int r, int b) {
-        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            p.setMargins(l, t, r, b);
-            v.requestLayout();
-        }
     }
 
     /**

@@ -145,7 +145,7 @@ public class Tools {
             LayoutInflater inflater = context.getLayoutInflater();
             CardView cardView = (CardView) context.getLayoutInflater().inflate(R.layout.dialog_root, null);
             LinearLayout root = (LinearLayout) cardView.findViewById(R.id.linearLayout_root);
-            //else check for steps and construct the layout
+            //else check for steps and construct the layout_no_item
             List<Step> steps = ussdActionWithSteps.steps;
             //sort the steps
             Collections.sort(steps, (step1, step2) -> ((Integer) step1.getWeight()).compareTo(step2.getWeight()));

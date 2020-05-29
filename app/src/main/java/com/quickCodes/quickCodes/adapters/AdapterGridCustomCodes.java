@@ -47,7 +47,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
         ctx = context;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Replace the contents of a view (invoked by the layout_no_item manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(ussdActionWithStepsFiltered!=null) {
@@ -145,7 +145,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
     public void createOptionsMenu(final View v, OriginalViewHolder view, final UssdAction p, final int position) {
         //inflate options menu
         PopupMenu popupMenu = new PopupMenu(ctx, view.optionsMenu);
-        //inflate the menu from layout resource file
+        //inflate the menu from layout_no_item resource file
         popupMenu.inflate(R.menu.action_card_menu);
         //handle menu item clicks
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

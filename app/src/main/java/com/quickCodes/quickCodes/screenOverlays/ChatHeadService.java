@@ -45,7 +45,7 @@ public class ChatHeadService extends Service {
         sharedPreferences = getSharedPreferences(CHATHEAD_PREFS, MODE_PRIVATE);
 
 
-        //inflate the chat head layout
+        //inflate the chat head layout_no_item
         chatHead = LayoutInflater.from(this).inflate(R.layout.chat_head, null);
         //add the view to the window
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -109,7 +109,7 @@ public class ChatHeadService extends Service {
                         sharedPreferences.edit().putInt("x", params.x)
                             .putInt("y", params.y).commit();
 
-                        //Update the layout with new X & Y coordinate
+                        //Update the layout_no_item with new X & Y coordinate
                         windowManager.updateViewLayout(chatHead, params);
                         return true;
                 }

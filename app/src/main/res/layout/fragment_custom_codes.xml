@@ -41,10 +41,11 @@
                     android:layout_height="180dp"/>
 
                 <TextView
+                    android:id="@+id/info_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="You will find all your custom codes\n here"
+                    android:text="You will find all your saved \n custom codes here"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/white"

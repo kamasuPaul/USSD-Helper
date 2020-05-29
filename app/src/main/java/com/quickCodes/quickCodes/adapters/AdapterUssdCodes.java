@@ -58,7 +58,7 @@ public class AdapterUssdCodes extends RecyclerView.Adapter<RecyclerView.ViewHold
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Replace the contents of a view (invoked by the layout_no_item manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(items!=null) {

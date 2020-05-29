@@ -34,6 +34,7 @@ public class CustomCodesFragment extends Fragment {
     UssdActionsViewModel ussdActionsViewModel;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String sharedPrefString = "first";
+//    String info_text ="You will find all your custom codes \n here";
 
     public static AdapterGridCustomCodes mAdapter;
     private RecyclerView recyclerView;
@@ -59,6 +60,9 @@ public class CustomCodesFragment extends Fragment {
                 }
             }
             mAdapter.setCustomActions(customCodes);
+//            if(customCodes.isEmpty()){
+//                info_text = "You have not saved any codes yet,all your custom codes will appear \n here. To add any code tap the + button";
+//            }
         });
     }
 
@@ -101,6 +105,8 @@ public class CustomCodesFragment extends Fragment {
                 startActivity(i);
             }
         });
+//        TextView info = root.findViewById(R.id.info_textView);
+//        info.setText(info_text);
 
     }
 

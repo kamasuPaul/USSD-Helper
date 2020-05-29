@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //    public void showDialogAbout(View view) {
-//        View aboutView = getLayoutInflater().inflate(R.layout.dialog_about, null);
+//        View aboutView = getLayoutInflater().inflate(R.layout_no_item.dialog_about, null);
 //        Dialog d = new Dialog(getApplicationContext());
 //        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        d.setContentView(aboutView);

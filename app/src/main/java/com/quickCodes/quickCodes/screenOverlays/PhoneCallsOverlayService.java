@@ -139,8 +139,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
         code = code.replace("#", "").replace(",", "*").concat("#");
 
 
-
-        //inflate the layout
+        //inflate the layout_no_item
         chatHead = LayoutInflater.from(this).inflate(R.layout.overlay_phone_call, null);
 
         //specify the window stuff
@@ -180,7 +179,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
         LinearLayout linearLayoutDeleteCode = chatHead.findViewById(R.id.linearLayout_delete_code);
         LinearLayout linearLayoutShowMeThisCode = chatHead.findViewById(R.id.linearLayout_show_me_this_code);
 
-        //add listener to  views on the layout
+        //add listener to  views on the layout_no_item
         linearLayoutSaveCode.setOnClickListener(v -> saveCode());
         linearLayoutEditCode.setOnClickListener(v -> editCode());
         linearLayoutRedialCode.setOnClickListener(v -> redialCode());
@@ -216,17 +215,32 @@ public class PhoneCallsOverlayService extends LifecycleService {
                 }
             }
         } else {
-            Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
         }
+
+        /**
+         * if inside the app, only show unsaved codes
+         * if outside the app,show both unsaved and saved codes
+         */
 
 //        if it matches some item in the database tell the use they could use this
         if (matches) {
+            if (!MainActivity.accessibilityServiceShouldRun) {
+                //if inside the app and it matches
+                //dont show this overlay
+                stopSelf();
+            }
             chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
             chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
             textViewDesc.setText("This code already saved in quick codes with name: ");
             textViewMenu.setText(code_name);
 
         } else if (is_contained) {//incase it is just contained in something
+            if (!MainActivity.accessibilityServiceShouldRun) {
+                //if inside the app and the code is contained also
+                //dont show this overlay
+                stopSelf();
+            }
             chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
             chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
             textViewDesc.setText("This code might be already saved as : ");
@@ -238,16 +252,16 @@ public class PhoneCallsOverlayService extends LifecycleService {
             action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
             List<Step> steps = new ArrayList<>();
             //get any steps if availabe ie telephone and amount
-            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
             for (int i = 0; i < preferences.getInt(STEP_TEL, 0); i++) {
                 steps.add(new Step(codeId, Constants.TELEPHONE, 0, "Telephone"));
-                Toast.makeText(this, "MOBILE NUMBER" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "MOBILE NUMBER" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
 
             }
             for (int i = 0; i < preferences.getInt(STEP_TEXT, 0); i++) {
                 steps.add(new Step(codeId, Constants.NUMBER, 0, "Amount"));
-                Toast.makeText(this, "MOBILE NU" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "MOBILE NU" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
 
             }
             dataRepository.insertAll(new UssdActionWithSteps(action, steps));

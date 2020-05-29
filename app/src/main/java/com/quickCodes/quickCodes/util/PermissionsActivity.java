@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,13 +27,10 @@ import com.quickCodes.quickCodes.R;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 public class PermissionsActivity extends AppCompatActivity {
 
@@ -199,6 +195,7 @@ public class PermissionsActivity extends AppCompatActivity {
     }
 
     private void requestAccessibility(Context applicationContext) {
+
         //ask for accessibility twice every week, this is for phones that are battery optimized
         //or have limited resources,which leads to auto disabling accessibility
         if (!sharedPreferences.contains(ASK_TIMES)) {
@@ -206,12 +203,11 @@ public class PermissionsActivity extends AppCompatActivity {
             PeriodicWorkRequest accessibilityWorker =
                 new PeriodicWorkRequest.Builder(AskAccessibility.class, 15, TimeUnit.MINUTES)
                     .build();
-            WorkManager.getInstance(this).enqueue(accessibilityWorker);
+            WorkManager.getInstance(PermissionsActivity.this).enqueue(accessibilityWorker);
         }
 
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, CODE_ACCESSIBILITY);
-
 
     }
 
@@ -313,15 +309,15 @@ public class PermissionsActivity extends AppCompatActivity {
             accessibilityEnabled = Settings.Secure.getInt(
                 mContext.getApplicationContext().getContentResolver(),
                 android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+//            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
         } catch (Settings.SettingNotFoundException e) {
-            Log.e(TAG, "Error finding setting, default accessibility to not found: "
-                + e.getMessage());
+//            Log.e(TAG, "Error finding setting, default accessibility to not found: "
+//                + e.getMessage());
         }
         TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
 
         if (accessibilityEnabled == 1) {
-            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+//            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
             String settingValue = Settings.Secure.getString(
                 mContext.getApplicationContext().getContentResolver(),
                 Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -330,15 +326,15 @@ public class PermissionsActivity extends AppCompatActivity {
                 while (mStringColonSplitter.hasNext()) {
                     String accessibilityService = mStringColonSplitter.next();
 
-                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+//                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
                     if (accessibilityService.equalsIgnoreCase(service)) {
-                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+//                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
                         return true;
                     }
                 }
             }
         } else {
-            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
+//            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
         }
 
         return false;
@@ -350,21 +346,4 @@ public class PermissionsActivity extends AppCompatActivity {
         updateUi();
     }
 
-    class AskAccessibility extends Worker {
-        Context context;
-
-        public AskAccessibility(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-            this.context = context;
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            //reset number of times accessibility is asked
-            sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
-//            Toast.makeText(context, "renewing times", Toast.LENGTH_LONG).show();
-            return null;
-        }
-    }
 }

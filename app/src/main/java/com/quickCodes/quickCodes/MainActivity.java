@@ -1,5 +1,6 @@
 package com.quickCodes.quickCodes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
 
+    public static void openDialer(Context context) {
+//        new Intent(MainActivity.this, DialPadActivity.class)
+        context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "")));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fabAdd = findViewById(R.id.fab_add);
         FloatingActionButton fabContacts = findViewById(R.id.fab_contacts);
 
-        fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, DialPadActivity.class)));
+        fab.setOnClickListener(view -> openDialer(MainActivity.this));
         fabAdd.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class)));
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
