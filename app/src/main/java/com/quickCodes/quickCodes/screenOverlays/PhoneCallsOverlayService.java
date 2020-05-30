@@ -38,7 +38,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_PHONE;
 import static com.quickCodes.quickCodes.AddYourOwnActionActivity.containsIgnoreCase;
 import static com.quickCodes.quickCodes.util.UssdDetector.AUTO_SAVED_CODES;
 import static com.quickCodes.quickCodes.util.UssdDetector.STEP_TEL;
-import static com.quickCodes.quickCodes.util.UssdDetector.STEP_TEXT;
 
 public class PhoneCallsOverlayService extends LifecycleService {
     View chatHead;
@@ -83,11 +82,12 @@ public class PhoneCallsOverlayService extends LifecycleService {
 
     private void saveCode() {
         Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+        stopSelf();
 
     }
 
     private void redialCode() {
-        Toast.makeText(this, "redial", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "redial", Toast.LENGTH_SHORT).show();
         String fullCode = code.replace("#", "") + Uri.encode("#");
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fullCode));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -224,28 +224,28 @@ public class PhoneCallsOverlayService extends LifecycleService {
          */
 
 //        if it matches some item in the database tell the use they could use this
-        if (matches) {
-            if (!MainActivity.accessibilityServiceShouldRun) {
-                //if inside the app and it matches
-                //dont show this overlay
-                stopSelf();
-            }
-            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
-            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
-            textViewDesc.setText("This code already saved in quick codes with name: ");
-            textViewMenu.setText(code_name);
-
-        } else if (is_contained) {//incase it is just contained in something
-            if (!MainActivity.accessibilityServiceShouldRun) {
-                //if inside the app and the code is contained also
-                //dont show this overlay
-                stopSelf();
-            }
-            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
-            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
-            textViewDesc.setText("This code might be already saved as : ");
-            textViewMenu.setText(code_name);
-        } else {//if it is not saved save it,
+//        if (matches) {
+//            if (!MainActivity.accessibilityServiceShouldRun) {
+//                //if inside the app and it matches
+//                //dont show this overlay
+//                stopSelf();
+//            }
+//            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
+//            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
+//            textViewDesc.setText("This code already saved in quick codes with name: ");
+//            textViewMenu.setText(code_name);
+//
+//        } else if (is_contained) {//incase it is just contained in something
+//            if (!MainActivity.accessibilityServiceShouldRun) {
+//                //if inside the app and the code is contained also
+//                //dont show this overlay
+//                stopSelf();
+//            }
+//            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
+//            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
+//            textViewDesc.setText("This code might be already saved as : ");
+//            textViewMenu.setText(code_name);
+//        } else {//if it is not saved save it,
             //save the code to the database
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
@@ -254,14 +254,18 @@ public class PhoneCallsOverlayService extends LifecycleService {
             //get any steps if availabe ie telephone and amount
 //            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
 //            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
-            for (int i = 0; i < preferences.getInt(STEP_TEL, 0); i++) {
-                steps.add(new Step(codeId, Constants.TELEPHONE, 0, "Telephone"));
-//                Toast.makeText(this, "MOBILE NUMBER" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+        String[] stringSteps = preferences.getString(STEP_TEL, "").split(",");
 
+
+        for (int i = 0; i < stringSteps.length; i++) {
+            if (stringSteps[i].equalsIgnoreCase("T")) {
+                steps.add(new Step(codeId, Constants.TELEPHONE, 0, "Telephone"));
+                Toast.makeText(this, "MOBILE NUMBER", Toast.LENGTH_SHORT).show();
             }
-            for (int i = 0; i < preferences.getInt(STEP_TEXT, 0); i++) {
+            if (stringSteps[i].equalsIgnoreCase("A")) {
                 steps.add(new Step(codeId, Constants.NUMBER, 0, "Amount"));
-//                Toast.makeText(this, "MOBILE NU" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "AMOUT", Toast.LENGTH_SHORT).show();
+            }
 
             }
             dataRepository.insertAll(new UssdActionWithSteps(action, steps));
@@ -269,10 +273,9 @@ public class PhoneCallsOverlayService extends LifecycleService {
             //make preference null suchthat the same code is not shown again
             preferences.edit().putString("code", null)
                 .putString("menuItem", null)
-                .putInt(STEP_TEL, 0)
-                .putInt(STEP_TEXT, 0)
+                .putString(STEP_TEL, null)
                 .commit();
-        }
+//        }
 
     }
 

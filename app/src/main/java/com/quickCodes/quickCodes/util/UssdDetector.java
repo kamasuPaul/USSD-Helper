@@ -19,7 +19,6 @@ public class UssdDetector extends AccessibilityService {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
     public static final String STEP_TEL = "step_tel";
     private static final String TAG = "ACCESSIBILITY";
-    public static final String STEP_TEXT = "step_text";
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
 
@@ -96,11 +95,13 @@ public class UssdDetector extends AccessibilityService {
         if (event.getClassName().equals("android.app.AlertDialog")) {
             if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Mobile Number")) {
 //                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
-                preferences.edit().putInt(STEP_TEL, preferences.getInt(STEP_TEL, 0) + 1).commit();
+                preferences.edit().putString(STEP_TEL, preferences.getString(STEP_TEL, "") + ",T").commit();
 
             } else if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Amount")) {
 //                Toast.makeText(this, "amount", Toast.LENGTH_SHORT).show();
-                preferences.edit().putInt(STEP_TEXT, preferences.getInt(STEP_TEXT, 0) + 1).commit();
+//                preferences.edit().putInt(STEP_TEXT, preferences.getInt(STEP_TEXT, 0) + 1).commit();
+                preferences.edit().putString(STEP_TEL, preferences.getString(STEP_TEL, "") + ",A").commit();
+
 
             }
 //            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();

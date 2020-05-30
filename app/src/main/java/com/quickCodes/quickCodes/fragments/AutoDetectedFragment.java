@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.MainActivity;
@@ -30,14 +28,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
-import static com.quickCodes.quickCodes.util.PermissionsActivity.ASK_ACCESSIBILITY;
-import static com.quickCodes.quickCodes.util.PermissionsActivity.ASK_TIMES;
 
 public class AutoDetectedFragment extends Fragment {
     ArrayList<String> codes = new ArrayList<>();
     UssdActionsViewModel ussdActionsViewModel;
     private RecyclerView recyclerView;
     private AdapterDialer mAdapter;
+    View root;
 
     public AutoDetectedFragment() {
         // Required empty public constructor
@@ -60,6 +57,15 @@ public class AutoDetectedFragment extends Fragment {
                 }
             }
             mAdapter.setUssdActions(airtimeCodes);
+            if (airtimeCodes.isEmpty()) {
+                if (root != null) {
+                    root.findViewById(R.id.Relative_no_item).setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (root != null) {
+                    root.findViewById(R.id.Relative_no_item).setVisibility(View.GONE);
+                }
+            }
 
         });
     }
@@ -69,7 +75,7 @@ public class AutoDetectedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_auto_saved_codes, container, false);
+        root = inflater.inflate(R.layout.fragment_auto_saved_codes, container, false);
 
         recyclerView = root.findViewById(R.id.matched_items_recylerview);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -91,18 +97,11 @@ public class AutoDetectedFragment extends Fragment {
                 createOptionsMenu(v, ussdActionWithSteps, position);
             }
         });
-        int asktimes = getActivity()
-            .getSharedPreferences(ASK_ACCESSIBILITY, Context.MODE_PRIVATE)
-            .getInt(ASK_TIMES, -20);
-        TextView v = root.findViewById(R.id.ask_times);
-        v.setText(String.valueOf(asktimes));
-        if (codes.isEmpty()) {
-            View root_no_items = inflater.inflate(R.layout.layout_no_item, container, false);
-            ((ImageView) (root_no_items.findViewById(R.id.image_call))).setOnClickListener(view -> {
-                MainActivity.openDialer(getActivity());
-            });
-            return root_no_items;
-        }
+        //big call image button
+        ((ImageView) (root.findViewById(R.id.image_call))).setOnClickListener(view -> {
+            MainActivity.openDialer(getActivity());
+        });
+
         return root;
     }
 

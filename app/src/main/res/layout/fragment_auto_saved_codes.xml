@@ -5,16 +5,53 @@
     android:orientation="vertical"
     android:background="@color/grey_5">
 
-    <TextView
-        android:id="@+id/ask_times"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="aks time"
-        android:textSize="20sp" />
+    <RelativeLayout
+        android:id="@+id/Relative_no_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="80dp">
+
+            <ImageView
+                android:id="@+id/image_call"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:src="@drawable/call" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="No codes,yet"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                android:textColor="@color/grey_60" />
+
+            <TextView
+                android:id="@+id/brief"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:text="Whenever you dial any ussd code,it will automatically appear here,try dialing any code.Just tap the dialer"
+                android:textAlignment="center"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/grey_40" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matched_items_recylerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>
