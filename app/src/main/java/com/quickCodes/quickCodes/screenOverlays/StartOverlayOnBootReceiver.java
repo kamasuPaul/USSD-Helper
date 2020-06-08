@@ -12,7 +12,6 @@ public class StartOverlayOnBootReceiver extends BroadcastReceiver {
 
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
             //show overlay
-            Toast.makeText(context, "service started", Toast.LENGTH_SHORT).show();
             context.startService(new Intent(context, ChatHeadService.class));
         }
     }

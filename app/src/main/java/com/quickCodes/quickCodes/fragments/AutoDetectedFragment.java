@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
 
 public class AutoDetectedFragment extends Fragment {
@@ -119,7 +120,7 @@ public class AutoDetectedFragment extends Fragment {
                         //edit clicked
                         Intent i = new Intent(getActivity(), EditActionActivity.class);
                         i.putExtra("action_id", String.valueOf(p.action.getActionId()));
-                        i.putExtra("section", p.action.getSection());
+                        i.putExtra("section", SEC_CUSTOM_CODES);
                         startActivity(i);
                         break;
                     case R.id.delete_menu:

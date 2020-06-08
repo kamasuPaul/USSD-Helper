@@ -30,10 +30,10 @@ public class UssdDetector extends AccessibilityService {
 
     public static void showSummary(Context context) {
         //only run this code if quick codes is not in the background
-        SharedPreferences preferences =
-            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
-        String d = preferences.getString("code", null);
-        String d1 = preferences.getString("menuItem", null);
+//        SharedPreferences preferences =
+//            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
+//        String d = preferences.getString("code", null);
+//        String d1 = preferences.getString("menuItem", null);
 //        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
 
 //        if (MainActivity.accessibilityServiceShouldRun) {
@@ -60,7 +60,7 @@ public class UssdDetector extends AccessibilityService {
                 //when they click okay, save the code in shared preferences
 
                 String code = preferences.getString("code", null);
-                if (code != null) {
+                if (code != null && !code.equals("")) {
                     showSummary(UssdDetector.this);
                 }
 
@@ -86,7 +86,7 @@ public class UssdDetector extends AccessibilityService {
             //build the menu
             kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
         }
-//        if the current box is apin or password box dont record its tex
+//        if the current box is apin or password box dont record its text
         if (pinbox == true) {
             return;
         }

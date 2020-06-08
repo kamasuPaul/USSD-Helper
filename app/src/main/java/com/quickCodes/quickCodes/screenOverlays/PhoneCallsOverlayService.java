@@ -211,6 +211,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
                 if (containsIgnoreCase(a.action.getMtnCode(), mycode)) is_contained = true;
                 if (containsIgnoreCase(a.action.getAfricellCode(), mycode)) is_contained = true;
                 if (matches || is_contained) {
+                    codeId = a.action.getActionId();
                     break;
                 }
             }
@@ -224,28 +225,28 @@ public class PhoneCallsOverlayService extends LifecycleService {
          */
 
 //        if it matches some item in the database tell the use they could use this
-//        if (matches) {
-//            if (!MainActivity.accessibilityServiceShouldRun) {
-//                //if inside the app and it matches
-//                //dont show this overlay
-//                stopSelf();
-//            }
-//            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
-//            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
-//            textViewDesc.setText("This code already saved in quick codes with name: ");
-//            textViewMenu.setText(code_name);
-//
-//        } else if (is_contained) {//incase it is just contained in something
-//            if (!MainActivity.accessibilityServiceShouldRun) {
-//                //if inside the app and the code is contained also
-//                //dont show this overlay
-//                stopSelf();
-//            }
-//            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
-//            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
-//            textViewDesc.setText("This code might be already saved as : ");
-//            textViewMenu.setText(code_name);
-//        } else {//if it is not saved save it,
+        if (matches) {
+            if (MainActivity.accessibilityServiceShouldRun == false) {
+                //if inside the app and it matches
+                //dont show this overlay
+                stopSelf();
+            }
+            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
+            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
+            textViewDesc.setText("This code already saved in quick codes with name: ");
+            textViewMenu.setText(code_name);
+
+        } else if (is_contained) {//incase it is just contained in something
+            if (MainActivity.accessibilityServiceShouldRun == false) {
+                //if inside the app and the code is contained also
+                //dont show this overlay
+                stopSelf();
+            }
+            chatHead.findViewById(R.id.linearLayout_buttons).setVisibility(View.GONE);
+            chatHead.findViewById(R.id.linearLayout_Already_Exists).setVisibility(View.VISIBLE);
+            textViewDesc.setText("This code might be already saved as : ");
+            textViewMenu.setText(code_name);
+        } else {//if it is not saved save it,
             //save the code to the database
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
@@ -260,22 +261,29 @@ public class PhoneCallsOverlayService extends LifecycleService {
         for (int i = 0; i < stringSteps.length; i++) {
             if (stringSteps[i].equalsIgnoreCase("T")) {
                 steps.add(new Step(codeId, Constants.TELEPHONE, 0, "Telephone"));
-                Toast.makeText(this, "MOBILE NUMBER", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "MOBILE NUMBER", Toast.LENGTH_SHORT).show();
             }
             if (stringSteps[i].equalsIgnoreCase("A")) {
                 steps.add(new Step(codeId, Constants.NUMBER, 0, "Amount"));
-                Toast.makeText(this, "AMOUT", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "AMOUT", Toast.LENGTH_SHORT).show();
             }
 
             }
             dataRepository.insertAll(new UssdActionWithSteps(action, steps));
 
             //make preference null suchthat the same code is not shown again
-            preferences.edit().putString("code", null)
-                .putString("menuItem", null)
-                .putString(STEP_TEL, null)
-                .commit();
-//        }
+            preferences.edit()
+                .putString("code", "")
+                .putString("menuItem", "")
+                .putString(STEP_TEL, "")
+                .apply();
+//            Toast.makeText(this, "values removed"+preferences.getString("code","node"), Toast.LENGTH_SHORT).show();
+
+//            preferences.edit().clear();
+//            Toast.makeText(this, "value s removed1"+preferences.getString("code","node"), Toast.LENGTH_SHORT).show();
+
+
+        }
 
     }
 

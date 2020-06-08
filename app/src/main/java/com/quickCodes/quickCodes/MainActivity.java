@@ -25,6 +25,7 @@ import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
 public class MainActivity extends AppCompatActivity {
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
+    public static String action_id = null;
 
     public static void openDialer(Context context) {
 //        new Intent(MainActivity.this, DialPadActivity.class)
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         edit = intent.getStringExtra("edit");
+        action_id = intent.getStringExtra("action_id");
 
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
@@ -59,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
 
-        //initialize getting contacts
+        //move the fragment
+//        if(action_id!=null){
+//            viewPager.se
+//        }
     }
 
 
