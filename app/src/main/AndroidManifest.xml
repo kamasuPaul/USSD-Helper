@@ -34,9 +34,9 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/config_service" />
+        <!--        <meta-data-->
+        <!--            android:name="com.google.android.actions"-->
+        <!--            android:resource="@xml/config_service" />-->
 
         <activity android:name=".EditActionActivity" />
         <activity
@@ -63,9 +63,6 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <meta-data
-            android:name="com.hover.ApiKey"
-            android:value="aca07e1dc0808de01140f7f02e81d964" />
 
         <service
             android:name=".screenOverlays.ChatHeadService"
