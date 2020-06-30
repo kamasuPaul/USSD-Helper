@@ -93,7 +93,7 @@ public class Tools {
     }
 
     @SuppressLint("MissingPermission")
-    private static void executeUssd(String fullCode, Context context, int slot) {
+    public static void executeUssd(String fullCode, Context context, int slot) {
         List<PhoneAccountHandle> phoneAccountHandleList;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
@@ -115,11 +115,6 @@ public class Tools {
         }
     }
 
-    /**
-     * this mthd checks a super action  for the network and  ussdAction and executes it
-     *
-     * @param ussdActionWithSteps
-     */
     public static void executeSuperAction(UssdActionWithSteps ussdActionWithSteps, Activity context) {
         //use codes for the currently selected simcard
         SimCard selectedSimCard = getSelectedSimCard((context));

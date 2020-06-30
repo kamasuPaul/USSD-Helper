@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     public static String action_id = null;
 
     public static void openDialer(Context context) {
-//        new Intent(MainActivity.this, DialPadActivity.class)
-        context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "")));
+        context.startActivity(new Intent(context, DialPadActivity.class));
+//        context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "")));
     }
 
     @Override

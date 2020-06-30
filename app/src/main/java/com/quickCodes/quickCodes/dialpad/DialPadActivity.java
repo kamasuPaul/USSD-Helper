@@ -15,13 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.ui.main.PageViewModel;
@@ -38,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
@@ -52,7 +53,8 @@ public class DialPadActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName().toUpperCase();
     String num;
     TextView edit_text, tname, tnumber;
-    ImageView one, two, three, four, five, six, seven, eight, nine, zero, star, hash, sim1, sim2, clear;
+    ImageView one, two, three, four, five, six, seven, eight, nine, zero, sim1, sim2, clear;
+    TextView star, hash;
     BottomSheetBehavior bottomSheetBehavior;
     UssdActionsViewModel ussdActionsViewModel;
     private RecyclerView recyclerView;
@@ -60,6 +62,7 @@ public class DialPadActivity extends AppCompatActivity {
     private EditText phoneNumber;
     private android.widget.SearchView searchView;
     String search;
+    private ImageView createNewContact;
 
 
     @Override
@@ -108,7 +111,7 @@ public class DialPadActivity extends AppCompatActivity {
 
 
         // get the bottom sheet view
-        LinearLayout BottomSheet = findViewById(R.id.bottom_sheet);
+        ConstraintLayout BottomSheet = findViewById(R.id.bottom_sheet);
 
         // init the bottom sheet behavior
         bottomSheetBehavior = BottomSheetBehavior.from(BottomSheet);
@@ -140,10 +143,36 @@ public class DialPadActivity extends AppCompatActivity {
         edit_text = (TextView) findViewById(R.id.edit_text);
         edit_text.setOnClickListener(null);
 
+        createNewContact = findViewById(R.id.imageView_createNewContact);
+
+
+        //add simcard names to the call button
+        List<SimCard> cardList = Tools.getAvailableSimCards(this);
+        for (SimCard simCard : cardList) {
+            if (simCard.getSlotIndex() == 0) {
+                TextView sim1 = findViewById(R.id.sim_name);
+                sim1.setText(simCard.getNetworkName().toLowerCase().substring(0, 6));
+            }
+            if (simCard.getSlotIndex() == 1) {
+                TextView sim2 = findViewById(R.id.sim2_name);
+                sim2.setText(simCard.getNetworkName().toLowerCase().substring(0, 6));
+            }
+
+        }
+        //check if their is only one simcard and hide the sim 2 button
+        if (cardList.size() == 1) {
+            //hide the add contacts buttons
+            createNewContact.setVisibility(View.GONE);
+            findViewById(R.id.box_sim2).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.box_add_contact).setVisibility(View.GONE);
+
+        }
+
     }
 
     private void initalizeDialerButtons() {
-        one = (ImageView) findViewById(R.id.one);
+        one = (ImageView) findViewById(R.id.imageView1);
         one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,7 +184,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        two = (ImageView) findViewById(R.id.two);
+        two = (ImageView) findViewById(R.id.imageView2);
         two.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,7 +196,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        three = (ImageView) findViewById(R.id.three);
+        three = (ImageView) findViewById(R.id.imageView3);
         three.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +206,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        four = (ImageView) findViewById(R.id.four);
+        four = (ImageView) findViewById(R.id.imageView4);
         four.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,7 +216,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        five = (ImageView) findViewById(R.id.five);
+        five = (ImageView) findViewById(R.id.imageView5);
         five.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +226,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        six = (ImageView) findViewById(R.id.six);
+        six = (ImageView) findViewById(R.id.imageView6);
         six.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,7 +236,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        seven = (ImageView) findViewById(R.id.seven);
+        seven = (ImageView) findViewById(R.id.imageView7);
         seven.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,7 +246,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        eight = (ImageView) findViewById(R.id.eight);
+        eight = (ImageView) findViewById(R.id.imageView8);
         eight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,7 +256,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        nine = (ImageView) findViewById(R.id.nine);
+        nine = (ImageView) findViewById(R.id.imageView9);
         nine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,7 +266,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        zero = (ImageView) findViewById(R.id.zero);
+        zero = (ImageView) findViewById(R.id.imageView0);
         zero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,7 +285,7 @@ public class DialPadActivity extends AppCompatActivity {
             }
         });
 
-        star = (ImageView) findViewById(R.id.star);
+        star = findViewById(R.id.star);
         star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,7 +303,7 @@ public class DialPadActivity extends AppCompatActivity {
         });
 
 
-        hash = (ImageView) findViewById(R.id.hash);
+        hash = findViewById(R.id.hash);
         hash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,12 +370,27 @@ public class DialPadActivity extends AppCompatActivity {
                 if (num.contains("#")) {
                     num = num.replace("#", "%23");
                 }
-                makePhoneCall();
+                makePhoneCall(0);
+            }
+        });
+        sim2 = (ImageView) findViewById(R.id.sim2);
+        sim2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                num = edit_text.getText().toString();
+                if (num.contains("#")) {
+                    num = num.replace("#", "%23");
+                }
+                if (Tools.getAvailableSimCards(DialPadActivity.this).size() > 1) {
+                    makePhoneCall(1);
+                } else {
+                    makePhoneCall(0);
+                }
             }
         });
     }
 
-    public void makePhoneCall() {
+    public void makePhoneCall(int slot) {
 
         //if there is already number we have to call and if the is no number we have to ask permmision
         if (num.trim().length() > 0) {
@@ -356,7 +400,7 @@ public class DialPadActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(DialPadActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
 
             } else {
-                String dial = "tel:" + num;
+                String dial = num;
                 UssdActionsViewModel viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
                 Random r = new Random();
                 Long codeId = r.nextLong();//TODO change random number generator
@@ -366,7 +410,8 @@ public class DialPadActivity extends AppCompatActivity {
                 editor.putString("code", num);
 //                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
 //                viewModel.insert(action, null);
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+                Tools.executeUssd(dial, DialPadActivity.this, slot);
+//                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
 
         } else {
@@ -465,7 +510,7 @@ public class DialPadActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (ActivityCompat.checkSelfPermission(DialPadActivity.this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == 1) {
-                makePhoneCall();
+                makePhoneCall(0);
             }
 
 
@@ -533,5 +578,20 @@ public class DialPadActivity extends AppCompatActivity {
             finish();
         }
         super.onBackPressed();
+    }
+
+    public void preventClick(View view) {
+    }
+
+    public void createContact(View view) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, edit_text.getText().toString().trim());
+        startActivity(intent);
+    }
+
+    public void closeButtomSheet(View view) {
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 }

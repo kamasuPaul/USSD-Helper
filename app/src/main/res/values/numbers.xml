@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="marginbottom">13dp</dimen>
+    <dimen name="numbertextsize">25sp</dimen>
+    <dimen name="subtextsize">12sp</dimen>
+</resources>
