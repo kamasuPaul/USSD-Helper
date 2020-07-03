@@ -42,108 +42,9 @@ public class PermissionsActivity extends AppCompatActivity {
     private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
     private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
-    private boolean drawGranted;
     SharedPreferences sharedPreferences;
 
 
-    public static boolean isAccessibilityServiceEnabled(Context context) {
-        boolean accessibilityServiceEnabled = false;
-        try {
-            int enabled = Settings.Secure.getInt(
-                context.getApplicationContext().getContentResolver(),
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (enabled == 1) accessibilityServiceEnabled = true;
-            return accessibilityServiceEnabled;
-        } catch (Settings.SettingNotFoundException e) {
-            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-
-//        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-//        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-//        for (AccessibilityServiceInfo service : runningServices) {
-//            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
-//                accessibilityServiceEnabled = true;
-//            }
-//        }
-        return accessibilityServiceEnabled;
-    }
-
-    private boolean requestPermissions() {
-        final boolean[] all_granted = new boolean[1];
-        Dexter.withActivity(this)
-            .withPermissions(Manifest.permission.CALL_PHONE,
-                Manifest.permission.READ_CONTACTS,
-                Manifest.permission.READ_PHONE_STATE
-//                Manifest.permission.READ_CALL_LOG,
-//                Manifest.permission.PROCESS_OUTGOING_CALLS
-
-            )
-            .withListener(new MultiplePermissionsListener() {
-                @Override
-                public void onPermissionsChecked(MultiplePermissionsReport report) {
-                    //if permission granted
-                    if (report.areAllPermissionsGranted()) {
-                        updateUi();
-                        all_granted[0] = true;
-                    } else if (report.isAnyPermissionPermanentlyDenied()) {
-                        //TODO open setting activity , where permissions can be set
-                    } else {
-                        DialogOnAnyDeniedMultiplePermissionsListener dialog = DialogOnAnyDeniedMultiplePermissionsListener.Builder
-                            .withContext(PermissionsActivity.this)
-                            .withTitle("Contacts and Phone State")
-                            .withMessage("These permissions are needed to detect your sim cards for easy use")
-                            .withButtonText("Continue")
-                            .withIcon(R.mipmap.ic_launcher)
-                            .build();
-                        dialog.onPermissionsChecked(report);
-//                        requestPermissions();//aske permission again after showing dialog
-
-//                        for (PermissionDeniedResponse deniedResponse:report.getDeniedPermissionResponses()
-//                             ) {
-//                            deniedResponse.getRequestedPermission();
-//                            DexterActivity
-//
-//                        }
-
-                        Toast.makeText(PermissionsActivity.this, "This app requires the  requested permissions to work", Toast.LENGTH_LONG).show();
-//                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
-                        all_granted[0] = false;
-
-                    }
-                }
-
-                @Override
-                public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                    Toast.makeText(PermissionsActivity.this, "This app requires the  requested permissions to work,go to setting to set them", Toast.LENGTH_LONG).show();
-                    token.continuePermissionRequest();
-
-                }
-            })
-            .onSameThread()
-            .check();
-        return all_granted[0];
-    }
-
-    /**
-     * Check if the application has draw over other apps permission or not?,
-     * This permission is by default available for API<23. But for API > 23,
-     * If the draw over permission is not available open the settings screen to grant the permission.
-     *
-     * @return
-     */
-    private void requestToDrawOverApps(Context context) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
-
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-        } else {
-            //permission already granted
-            drawGranted = true;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,6 +131,29 @@ public class PermissionsActivity extends AppCompatActivity {
         }
     }
 
+    public static boolean isAccessibilityServiceEnabled(Context context) {
+        boolean accessibilityServiceEnabled = false;
+        try {
+            int enabled = Settings.Secure.getInt(
+                context.getApplicationContext().getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (enabled == 1) accessibilityServiceEnabled = true;
+            return accessibilityServiceEnabled;
+        } catch (Settings.SettingNotFoundException e) {
+            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+
+//        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+//        for (AccessibilityServiceInfo service : runningServices) {
+//            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
+//                accessibilityServiceEnabled = true;
+//            }
+//        }
+        return accessibilityServiceEnabled;
+    }
+
     private void updateUi() {
         boolean permission = false;
         boolean draw = false;
@@ -251,6 +175,11 @@ public class PermissionsActivity extends AppCompatActivity {
             imageView_draw.setVisibility(View.VISIBLE);
             btn_drawOverApps.setVisibility(View.GONE);
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            draw = true;
+            imageView_draw.setVisibility(View.VISIBLE);
+            btn_drawOverApps.setVisibility(View.GONE);
+        }
         //check for accesibility granted
         accessibility = isAccessibilitySettingsOn(PermissionsActivity.this);
         if (accessibility) {
@@ -261,33 +190,6 @@ public class PermissionsActivity extends AppCompatActivity {
         //update ui if both them are true
         if (permission && draw && accessibility) {
             btn_continue.setEnabled(true);
-        }
-    }
-
-    private void checkPermissions() {
-        boolean permission = false;
-        boolean draw = false;
-        boolean accessibility = false;
-        //check if permissions have been granted
-        if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                if (checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                    permission = true;//all permissions have been granted;
-                }
-            }
-        }
-        //check if draw over other apps has been granted
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
-            draw = true;
-        }
-        if (isAccessibilitySettingsOn(getApplicationContext())) {
-            accessibility = true;
-        }
-
-        //update ui if both them are true
-        if (permission && draw && accessibility) {
-            startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
-            finish();
         }
     }
 
@@ -340,6 +242,111 @@ public class PermissionsActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void checkPermissions() {
+        boolean permission = false;
+        boolean draw = false;
+        boolean accessibility = false;
+        //check if permissions have been granted
+        if (checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            if (checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                if (checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    permission = true;//all permissions have been granted;
+                }
+            }
+        }
+        //check if draw over other apps has been granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
+            draw = true;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            draw = true;
+        }
+        //check accessibility
+        if (isAccessibilitySettingsOn(getApplicationContext())) {
+            accessibility = true;
+        }
+
+        //update ui if both them are true
+        if (permission && draw && accessibility) {
+            startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
+            finish();
+        }
+    }
+
+    private boolean requestPermissions() {
+        final boolean[] all_granted = new boolean[1];
+        Dexter.withActivity(this)
+            .withPermissions(Manifest.permission.CALL_PHONE,
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE
+//                Manifest.permission.READ_CALL_LOG,
+//                Manifest.permission.PROCESS_OUTGOING_CALLS
+
+            )
+            .withListener(new MultiplePermissionsListener() {
+                @Override
+                public void onPermissionsChecked(MultiplePermissionsReport report) {
+                    //if permission granted
+                    if (report.areAllPermissionsGranted()) {
+                        updateUi();
+                        all_granted[0] = true;
+                    } else if (report.isAnyPermissionPermanentlyDenied()) {
+                        //TODO open setting activity , where permissions can be set
+                    } else {
+                        DialogOnAnyDeniedMultiplePermissionsListener dialog = DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                            .withContext(PermissionsActivity.this)
+                            .withTitle("Contacts and Phone State")
+                            .withMessage("These permissions are needed to detect your sim cards for easy use")
+                            .withButtonText("Continue")
+                            .withIcon(R.mipmap.ic_launcher)
+                            .build();
+                        dialog.onPermissionsChecked(report);
+//                        requestPermissions();//aske permission again after showing dialog
+
+//                        for (PermissionDeniedResponse deniedResponse:report.getDeniedPermissionResponses()
+//                             ) {
+//                            deniedResponse.getRequestedPermission();
+//                            DexterActivity
+//
+//                        }
+
+                        Toast.makeText(PermissionsActivity.this, "This app requires the  requested permissions to work", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(MainActivity.this, "The app might not work, Please go to setting and grant permissions", Toast.LENGTH_LONG).show();
+                        all_granted[0] = false;
+
+                    }
+                }
+
+                @Override
+                public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                    Toast.makeText(PermissionsActivity.this, "This app requires the  requested permissions to work,go to setting to set them", Toast.LENGTH_LONG).show();
+                    token.continuePermissionRequest();
+
+                }
+            })
+            .onSameThread()
+            .check();
+        return all_granted[0];
+    }
+
+    /**
+     * Check if the application has draw over other apps permission or not?,
+     * This permission is by default available for API<23. But for API > 23,
+     * If the draw over permission is not available open the settings screen to grant the permission.
+     *
+     * @return
+     */
+    private void requestToDrawOverApps(Context context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        }
+        //permission already granted on android versions less than Marshmallow
     }
 
     @Override

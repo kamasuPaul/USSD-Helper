@@ -7,27 +7,37 @@
     android:background="#1212D6"
     android:onClick="preventClick">
 
-    <TextView
-        android:id="@+id/edit_text"
+    <HorizontalScrollView
         android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:inputType="none"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="30dp"
-        android:textStyle="bold"
+        android:scrollbars="none"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/tableLayout2"
         app:layout_constraintRight_toRightOf="@id/tableLayout2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/edit_text"
+            android:scrollHorizontally="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:inputType="none"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+    </HorizontalScrollView>
+
 
     <ImageView
         android:id="@+id/clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:padding="5dp"
         android:src="@drawable/ic_delete_227590"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tableLayout2"
@@ -37,6 +47,8 @@
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
+
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -50,6 +62,7 @@
         android:id="@+id/imageView_createNewContact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:layout_marginTop="70dp"
         android:onClick="createContact"
         android:src="@drawable/person_add"
@@ -63,6 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="*"
+        android:padding="5dp"
+
         android:textColor="#00FFFF"
         android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -655,6 +670,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="#"
+        android:padding="5dp"
         android:textColor="#00FFFF"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

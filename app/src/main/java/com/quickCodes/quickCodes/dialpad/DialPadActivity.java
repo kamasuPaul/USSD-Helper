@@ -407,7 +407,7 @@ public class DialPadActivity extends AppCompatActivity {
                 //TODO set this to instead of saving a ussd action,its saves to sharedpreferences
                 SharedPreferences.Editor editor =
                     getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
-                editor.putString("code", num);
+                editor.putString("code", num.replace("%23", "")).commit();
 //                UssdAction action = new UssdAction(codeId, "Recent", num.replace("%23", ""), null, null, Constants.SEC_USER_DIALED);
 //                viewModel.insert(action, null);
                 Tools.executeUssd(dial, DialPadActivity.this, slot);
