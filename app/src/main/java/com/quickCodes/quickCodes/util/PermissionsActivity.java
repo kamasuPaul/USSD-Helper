@@ -39,10 +39,12 @@ public class PermissionsActivity extends AppCompatActivity {
     public static final String ASK_ACCESSIBILITY = "ask_accessibility";
     private static final String TAG = "USSD DETECTOR";
     public static final String ASK_TIMES = "ask_times";
+    public static final String ASK_TIMES_DRAW = "ask_times_draw";
     private Button btn_permissions, btn_drawOverApps, btn_accesibility;
     private Button btn_continue;
     private ImageView imgView_permissions, imageView_draw, imageView_accesibility;
     SharedPreferences sharedPreferences;
+//    TextView askTimes;
 
 
 
@@ -56,6 +58,9 @@ public class PermissionsActivity extends AppCompatActivity {
 
 
         //initalize buttons and image views
+//        askTimes = findViewById(R.id.ask_times);
+//        askTimes.setText(String.valueOf(sharedPreferences.getInt(ASK_TIMES_DRAW,-1)));
+
         btn_permissions = findViewById(R.id.button_set_permissions);
         btn_drawOverApps = findViewById(R.id.button_draw_overApps);
         btn_continue = findViewById(R.id.button_continue);
@@ -104,7 +109,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (!sharedPreferences.contains(ASK_TIMES)) {
             sharedPreferences.edit().putInt(ASK_TIMES, 2).commit();
             PeriodicWorkRequest accessibilityWorker =
-                new PeriodicWorkRequest.Builder(AskAccessibility.class, 15, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(AskAccessibilityWorker.class, 7, TimeUnit.DAYS)
                     .build();
             WorkManager.getInstance(PermissionsActivity.this).enqueue(accessibilityWorker);
         }
@@ -121,7 +126,10 @@ public class PermissionsActivity extends AppCompatActivity {
             //permission granted
 //            if (resultCode == RESULT_OK) drawGranted = true;
             updateUi();
-//            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
+            if (isDrawOverOtherAppsGranted(getApplicationContext())) {
+                sharedPreferences.edit().putInt(ASK_TIMES_DRAW, sharedPreferences.getInt(ASK_TIMES_DRAW, 2) - 1).commit();
+            }
+            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
         if (requestCode == CODE_ACCESSIBILITY) {
             if (isAccessibilitySettingsOn(getApplicationContext())) {
@@ -170,12 +178,7 @@ public class PermissionsActivity extends AppCompatActivity {
             }
         }
         //check if draw over other apps has been granted
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
-            draw = true;
-            imageView_draw.setVisibility(View.VISIBLE);
-            btn_drawOverApps.setVisibility(View.GONE);
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (isDrawOverOtherAppsGranted(this)) {
             draw = true;
             imageView_draw.setVisibility(View.VISIBLE);
             btn_drawOverApps.setVisibility(View.GONE);
@@ -191,6 +194,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (permission && draw && accessibility) {
             btn_continue.setEnabled(true);
         }
+//        askTimes.setText(String.valueOf(sharedPreferences.getInt(ASK_TIMES_DRAW,-1)));
     }
 
     /**
@@ -257,18 +261,16 @@ public class PermissionsActivity extends AppCompatActivity {
             }
         }
         //check if draw over other apps has been granted
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
+        if (isDrawOverOtherAppsGranted(this)) {
             draw = true;
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            draw = true;
-        }
+
         //check accessibility
         if (isAccessibilitySettingsOn(getApplicationContext())) {
             accessibility = true;
         }
 
-        //update ui if both them are true
+        //update ui if all them are true
         if (permission && draw && accessibility) {
             startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
             finish();
@@ -340,6 +342,16 @@ public class PermissionsActivity extends AppCompatActivity {
      */
     private void requestToDrawOverApps(Context context) {
 
+        //ask to draw over apps once every week if the dr, this is for phones that are battery optimized
+        //or have limited resources,which leads to auto disabling accessibility
+        if (!sharedPreferences.contains(ASK_TIMES_DRAW)) {
+            sharedPreferences.edit().putInt(ASK_TIMES_DRAW, 2).commit();
+            PeriodicWorkRequest drawWorker =
+                new PeriodicWorkRequest.Builder(AskDrawOverAppsWorker.class, 7, TimeUnit.DAYS)
+                    .build();
+            WorkManager.getInstance(PermissionsActivity.this).enqueue(drawWorker);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
 
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -347,6 +359,25 @@ public class PermissionsActivity extends AppCompatActivity {
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
         }
         //permission already granted on android versions less than Marshmallow
+    }
+
+    /**
+     * check if  the app is allowed to draw over other apps
+     */
+    public boolean isDrawOverOtherAppsGranted(Context context) {
+        boolean draw = false;
+        int askTimes = sharedPreferences.getInt(ASK_TIMES_DRAW, 8);
+        if (askTimes <= 0) {
+            return true;
+        }
+        //This permission is by default available for API<23. But not available for API > 23,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
+            draw = true;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            draw = true;
+        }
+        return draw;
     }
 
     @Override

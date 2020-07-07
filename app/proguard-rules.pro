@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# This option forces Proguard to use different obfuscated names
+# for different members. It avoids the 'or' stack traces.
+-useuniqueclassmembernames
+
+# These options produce useful stacktraces preserving line numbers
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
