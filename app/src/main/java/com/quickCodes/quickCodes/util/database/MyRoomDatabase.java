@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes.util.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
@@ -29,30 +30,24 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 
 
-@Database(entities = {UssdAction.class, Step.class},version = 1)
+@Database(entities = {UssdAction.class, Step.class}, version = 2)
 public abstract class MyRoomDatabase extends RoomDatabase {
+    private static final String TAG = "MyRoomDatabase";
     private UssdActionsViewModel viewModel;
+
 
     private static MyRoomDatabase INSTANCE;
    public static synchronized MyRoomDatabase getDatabase(Context context){
        if(INSTANCE==null){
           INSTANCE = Room.databaseBuilder(context,MyRoomDatabase.class,"custom_actions_db")
-               .addMigrations(Migration_1_2)
+//               .addMigrations(Migration_1_2)
+              .fallbackToDestructiveMigration()
                 .addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        Log.d(TAG, "After creating database");
 //                        super.onCreate(db);
-                        //TODO add initialization codes from here
-                        ExecutorService executors = Executors.newSingleThreadExecutor();
-                        executors.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                addAirtimeCode(context);
-                                addDataCode(context);
-                                addMobileMoneyCodes(context);
-
-                            }
-                        });
+                        addUssdCodes(context);
                         //schedule a job schedular to request for codes from the database every 24 hours
                         //constraints
                         Constraints constraints = new Constraints.Builder()
@@ -67,11 +62,32 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                         WorkManager.getInstance(context).enqueue(workRequest);
                     }
                 })
+              .addCallback(new Callback() {
+                  @Override
+                  public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
+                      Log.d(TAG, "After destructive migration");
+                      addUssdCodes(context);
+                  }
+              })
                .build();
        }
        return INSTANCE;
    }
-   public abstract UssdActionDao ussdActionDao();
+
+    private static void addUssdCodes(Context context) {
+        ExecutorService executors = Executors.newSingleThreadExecutor();
+        executors.execute(new Runnable() {
+            @Override
+            public void run() {
+                addAirtimeCode(context);
+                addDataCode(context);
+                addMobileMoneyCodes(context);
+
+            }
+        });
+    }
+
+    public abstract UssdActionDao ussdActionDao();
 
    public  static void addAirtimeCode(Context context){
        UssdActionDao dao = getDatabase(context).ussdActionDao();

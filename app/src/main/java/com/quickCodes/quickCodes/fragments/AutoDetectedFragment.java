@@ -103,6 +103,17 @@ public class AutoDetectedFragment extends Fragment {
             MainActivity.openDialer(getActivity());
         });
 
+        //if theire are no autosaved ussd codes show the the no item view
+        if (codes.isEmpty()) {
+            if (root != null) {
+                root.findViewById(R.id.Relative_no_item).setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (root != null) {
+                root.findViewById(R.id.Relative_no_item).setVisibility(View.GONE);
+            }
+        }
+
         return root;
     }
 

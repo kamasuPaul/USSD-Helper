@@ -9,7 +9,7 @@
         android:id="@+id/Relative_no_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="300dp"
@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_large"
-                android:text="No codes,yet"
+                android:text="No auto saved codes,yet"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                 android:textColor="@color/grey_60" />
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium"
-                android:text="Whenever you dial any ussd code,it will automatically appear here,try dialing any code.Just tap the dialer"
+                android:text="Whenever you dial any ussd code using quick codes dialer,it will automatically appear here,try dialing any code.Just tap the dialer"
                 android:textAlignment="center"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/grey_40" />
