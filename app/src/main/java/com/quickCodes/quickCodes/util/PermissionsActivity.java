@@ -129,7 +129,7 @@ public class PermissionsActivity extends AppCompatActivity {
             if (isDrawOverOtherAppsGranted(getApplicationContext())) {
                 sharedPreferences.edit().putInt(ASK_TIMES_DRAW, sharedPreferences.getInt(ASK_TIMES_DRAW, 2) - 1).commit();
             }
-            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "draw granted", Toast.LENGTH_SHORT).show();
         }
         if (requestCode == CODE_ACCESSIBILITY) {
             if (isAccessibilitySettingsOn(getApplicationContext())) {

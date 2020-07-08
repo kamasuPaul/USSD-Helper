@@ -7,13 +7,8 @@ import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.lifecycle.LiveData;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class DataRepository {
     UssdActionDao ussdActionDao;
@@ -24,17 +19,6 @@ public class DataRepository {
         allUssdActions = ussdActionDao.getActionsWithSteps();
 
 
-        //constraints
-        Constraints constraints = new Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build();
-
-        //Worker
-        PeriodicWorkRequest workRequest =
-            new PeriodicWorkRequest.Builder(DownloadWorker.class,24,TimeUnit.HOURS)
-                .setConstraints(constraints)
-                .build();
-        WorkManager.getInstance(application).enqueue(workRequest);
     }
 
     public LiveData<List<UssdActionWithSteps>> getAllUssdActions(){return allUssdActions;}

@@ -9,6 +9,7 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -16,6 +17,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
@@ -48,7 +53,18 @@ public abstract class MyRoomDatabase extends RoomDatabase {
 
                             }
                         });
+                        //schedule a job schedular to request for codes from the database every 24 hours
+                        //constraints
+                        Constraints constraints = new Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build();
 
+                        //Worker
+                        PeriodicWorkRequest workRequest =
+                            new PeriodicWorkRequest.Builder(DownloadWorker.class, 24, TimeUnit.HOURS)
+                                .setConstraints(constraints)
+                                .build();
+                        WorkManager.getInstance(context).enqueue(workRequest);
                     }
                 })
                .build();

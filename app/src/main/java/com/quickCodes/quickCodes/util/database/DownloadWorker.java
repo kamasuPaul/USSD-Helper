@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.quickCodes.quickCodes.modals.Step;
@@ -24,6 +25,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 public class DownloadWorker extends Worker {
+    String TAG = "DownloadWorker";
     Context context;
     public DownloadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -92,8 +94,8 @@ public class DownloadWorker extends Worker {
                 }
 
             },
-            volleyError -> {
-                Log.d("API","error");
+            (VolleyError volleyError) -> {
+                Log.d(TAG, volleyError.getMessage());
             });
 
         // Add the request to the RequestQueue.

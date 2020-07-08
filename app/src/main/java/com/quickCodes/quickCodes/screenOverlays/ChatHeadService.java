@@ -5,8 +5,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,7 +26,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_PHONE;
 
 public class ChatHeadService extends Service {
     private static final String CHATHEAD_PREFS = "chat_head_prefs";
-    public static String TAG = "TOUCH";
+    public static String TAG = "ChatHeadService";
     View chatHead;
     SharedPreferences sharedPreferences;
     private WindowManager windowManager;
@@ -42,99 +44,132 @@ public class ChatHeadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        sharedPreferences = getSharedPreferences(CHATHEAD_PREFS, MODE_PRIVATE);
+
+        //catch all expections like windowmanager.BadToken exception to prevent app from crashing
+        try {
+            sharedPreferences = getSharedPreferences(CHATHEAD_PREFS, MODE_PRIVATE);
 
 
-        //inflate the chat head layout_no_item
-        chatHead = LayoutInflater.from(this).inflate(R.layout.chat_head, null);
-        //add the view to the window
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            Build.VERSION.SDK_INT>=Build.VERSION_CODES.O
-                ?TYPE_APPLICATION_OVERLAY:TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        );
-        //Specify the chat head position
-        //Initially view will be added to top-left corner, if they are not saved positions yet in shared prefs
-        //but will use the position where the user last moved it to.
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.x = sharedPreferences.getInt("x", 0);
-        params.y = sharedPreferences.getInt("y", 300);
-
-        //add view to the window
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        windowManager.addView(chatHead, params);
-
-        final ImageView chatHeadImage = chatHead.findViewById(R.id.chat_head_profile_iv);
-        chatHeadImage.setOnTouchListener(new View.OnTouchListener() {
-            private int initialX;
-            private int initialY;
-            private float initialTouchX;
-            private float initialTouchY;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                chatHeadImage.setBackgroundColor(getResources().getColor(R.color.grey_100));
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        //remember the initial position.
-                        initialX = params.x;
-                        initialY = params.y;
-
-                        //get the touch location
-                        initialTouchX = event.getRawX();
-                        initialTouchY = event.getRawY();
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        int diff_x = (int) (event.getRawX() - initialTouchX);
-                        int diff_y = (int) (event.getRawY() - initialTouchY);
-                        chatHeadImage.setBackgroundColor(getResources().getColor(R.color.transparent));
+            //inflate the chat head layout_no_item
+            chatHead = LayoutInflater.from(this).inflate(R.layout.chat_head, null);
+            //add the view to the window
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    ? TYPE_APPLICATION_OVERLAY : TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+            );
+            //Specify the chat head position
+            //Initially view will be added to top-left corner, if they are not saved positions yet in shared prefs
+            //but will use the position where the user last moved it to.
+            params.gravity = Gravity.TOP | Gravity.LEFT;
+            params.x = sharedPreferences.getInt("x", 0);
+            params.y = sharedPreferences.getInt("y", 300);
 
 
-                        //check if the diff is less that 10 ,implying a click not scroll
-                        if (diff_x < 10 && diff_y < 10) {
-                            Intent intent = new Intent(ChatHeadService.this, PermissionsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        //Calculate the X and Y coordinates of the view.
-                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
-                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
+            //add view to the window
+            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-                        //save this position in sharedprefs
-                        sharedPreferences.edit().putInt("x", params.x)
-                            .putInt("y", params.y).commit();
-
-                        //Update the layout_no_item with new X & Y coordinate
-                        windowManager.updateViewLayout(chatHead, params);
-                        return true;
-                }
-                return true;
-            }
-
-        });
-        chatHead.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                // Note that system bars will only be "visible" if none of the
-                // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                    // TODO: The system bars are visible. Make any desired
-                    // adjustments to your UI, such as showing the action bar or
-                    // other navigational controls.
-                    chatHead.setVisibility(View.VISIBLE);
+            //make the dots go to the end of the screen
+            Point windowSize = new Point();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                windowManager.getDefaultDisplay().getRealSize(windowSize);
+                if (params.x < windowSize.x / 2) {
+                    params.x = 0;
                 } else {
-                    chatHead.setVisibility(View.GONE);
-                    // TODO: The system bars are NOT visible. Make any desired
-                    // adjustments to your UI, such as hiding the action bar or
-                    // other navigational controls.
+                    params.x = windowSize.x;
                 }
             }
-        });
+
+            windowManager.addView(chatHead, params);
+
+            final ImageView chatHeadImage = chatHead.findViewById(R.id.chat_head_profile_iv);
+            chatHeadImage.setOnTouchListener(new View.OnTouchListener() {
+                private int initialX;
+                private int initialY;
+                private float initialTouchX;
+                private float initialTouchY;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    chatHeadImage.setBackgroundColor(getResources().getColor(R.color.grey_100));
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            //remember the initial position.
+                            initialX = params.x;
+                            initialY = params.y;
+
+                            //get the touch location
+                            initialTouchX = event.getRawX();
+                            initialTouchY = event.getRawY();
+                            return true;
+                        case MotionEvent.ACTION_UP:
+                            int diff_x = (int) (event.getRawX() - initialTouchX);
+                            int diff_y = (int) (event.getRawY() - initialTouchY);
+                            chatHeadImage.setBackgroundColor(getResources().getColor(R.color.transparent));
+
+
+                            //check if the diff is less that 10 ,implying a click not scroll
+                            if (diff_x < 10 && diff_y < 10) {
+                                Intent intent = new Intent(ChatHeadService.this, PermissionsActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                            return true;
+                        case MotionEvent.ACTION_MOVE:
+                            //Calculate the X and Y coordinates of the view.
+                            params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                            params.y = initialY + (int) (event.getRawY() - initialTouchY);
+
+                            //save this position in sharedprefs
+                            sharedPreferences.edit().putInt("x", params.x)
+                                .putInt("y", params.y).commit();
+
+                            //Update the layout_no_item with new X & Y coordinate
+                            windowManager.updateViewLayout(chatHead, params);
+
+                            //make the dots go to the end of the screen
+                            Point windowSize = new Point();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                windowManager.getDefaultDisplay().getRealSize(windowSize);
+                                if (params.x < windowSize.x / 2) {
+                                    params.x = 0;
+                                } else {
+                                    params.x = windowSize.x;
+                                }
+                            }
+                            windowManager.updateViewLayout(chatHead, params);
+
+
+                            return true;
+                    }
+                    return true;
+                }
+
+            });
+            chatHead.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    // Note that system bars will only be "visible" if none of the
+                    // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                    if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                        // TODO: The system bars are visible. Make any desired
+                        // adjustments to your UI, such as showing the action bar or
+                        // other navigational controls.
+                        chatHead.setVisibility(View.VISIBLE);
+                    } else {
+                        chatHead.setVisibility(View.GONE);
+                        // TODO: The system bars are NOT visible. Make any desired
+                        // adjustments to your UI, such as hiding the action bar or
+                        // other navigational controls.
+                    }
+                }
+            });
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getLocalizedMessage());
+        }
     }
 
     @Override

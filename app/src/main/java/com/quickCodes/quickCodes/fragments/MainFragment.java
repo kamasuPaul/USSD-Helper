@@ -42,6 +42,8 @@ public class MainFragment extends Fragment {
     private UssdActionsViewModel viewModel;
     private AdapterUssdCodes adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
 
+    private final static String TAG = "MainFragment";
+
     public MainFragment() {
         // Required empty public constructor
     }

@@ -2,10 +2,8 @@ package com.quickCodes.quickCodes.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 
 import com.quickCodes.quickCodes.MainActivity;
-import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
 
 import androidx.lifecycle.Lifecycle;
@@ -16,7 +14,6 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
 
 
     private Context context;
-    private boolean sharedPreferences;
 
 
     public AppLifeCycleListener(Context cxt) {
@@ -38,7 +35,7 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void startOverlay(){
-        if (showMeOverlay(context)) {
+        if (Tools.showMeOverlay(context)) {
             //start the screen overlay
             context.startService(new Intent(context, ChatHeadService.class));
         } else {
@@ -47,12 +44,6 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
 
         MainActivity.accessibilityServiceShouldRun = true;
 
-    }
-
-    private boolean showMeOverlay(Context context) {
-        boolean b = PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), true);
-        return b;
     }
 
 }

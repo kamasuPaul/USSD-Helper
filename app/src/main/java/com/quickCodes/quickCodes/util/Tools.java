@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
@@ -236,5 +237,11 @@ public class Tools {
 
     public static void setContacts(HashMap<String, String> contacts1) {
         contacts = contacts1;
+    }
+
+    public static boolean showMeOverlay(Context context) {
+        boolean b = PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), true);
+        return b;
     }
 }
