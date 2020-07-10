@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fabContacts = findViewById(R.id.fab_contacts);
 
         fab.setOnClickListener(view -> openDialer(MainActivity.this));
-        fabAdd.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class)));
+        fabAdd.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, AddYourOwnActionActivity.class));
+        });
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
 

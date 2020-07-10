@@ -1,0 +1,40 @@
+{
+    "project_info": {
+        "project_number": "1055284285345",
+        "firebase_url": "https://quick-codes.firebaseio.com",
+        "project_id": "quick-codes",
+        "storage_bucket": "quick-codes.appspot.com"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:1055284285345:android:9a5c98c36890f47cc1c5e0",
+                "android_client_info": {
+                    "package_name": "com.quickCodes.quickCodes"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "1055284285345-sgvmjm602juovgda9lbtamf8peqgnbps.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyC6rmM70cmcxC52YpuE7Rbq-Ioe8b2MKtQ"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": [
+                        {
+                            "client_id": "1055284285345-sgvmjm602juovgda9lbtamf8peqgnbps.apps.googleusercontent.com",
+                            "client_type": 3
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

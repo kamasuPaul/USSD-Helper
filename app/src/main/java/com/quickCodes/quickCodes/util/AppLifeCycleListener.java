@@ -24,7 +24,7 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     //register lifecylce callbacks
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void stopOverlay(){
-        //stop the screen overlay
+        //stop the screen overlay ,the 3 dots
         context.stopService(new Intent(context, ChatHeadService.class));
 
         //make the accessibility ussd detector stop since all actions dialed from
@@ -36,7 +36,7 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void startOverlay(){
         if (Tools.showMeOverlay(context)) {
-            //start the screen overlay
+            //start the screen overlay, the 3 dots
             context.startService(new Intent(context, ChatHeadService.class));
         } else {
             context.stopService(new Intent(context, ChatHeadService.class));

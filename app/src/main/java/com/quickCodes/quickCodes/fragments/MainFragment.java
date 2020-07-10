@@ -42,6 +42,7 @@ public class MainFragment extends Fragment {
     private UssdActionsViewModel viewModel;
     private AdapterUssdCodes adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
 
+
     private final static String TAG = "MainFragment";
 
     public MainFragment() {
@@ -52,9 +53,6 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        UssdDetector.showSummary(getActivity());
-
         adapterUssdCodes = new AdapterUssdCodes(getActivity());
         adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
         adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
@@ -75,7 +73,10 @@ public class MainFragment extends Fragment {
                     }
                     us.action.setName(us.action.getName() + d);
                 }
-
+                //skip loan codes
+                if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+                    continue;
+                }
                 if (us.action.getSection() == SEC_AIRTIME) {
                     airtimeCodes.add(us);
                 }
@@ -130,6 +131,10 @@ public class MainFragment extends Fragment {
                 List<UssdActionWithSteps> dataCodes = new ArrayList<>();
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    //skip loan codes
+                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+                        continue;
+                    }
                     if (mode.contains("MTN")) {
                         if (us.action.getMtnCode() == null) {
                             continue;

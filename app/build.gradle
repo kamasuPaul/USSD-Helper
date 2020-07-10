@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
 
 android {
     compileSdkVersion 28
@@ -7,8 +10,8 @@ android {
         applicationId "com.quickCodes.quickCodes"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.4.1"
+        versionCode 8
+        versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 //        vectorDrawables {
 //            useSupportLibrary true
@@ -85,6 +88,10 @@ dependencies {
     //senssy gesture detection library
     def sensy_version = "1.8.0"
     implementation "com.github.nisrulz:sensey:$sensy_version"
+
+    implementation 'com.google.firebase:firebase-analytics:17.2.2' //google analytics
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.0' //Firebase Crashlytics SDK.
+
 
 
 }

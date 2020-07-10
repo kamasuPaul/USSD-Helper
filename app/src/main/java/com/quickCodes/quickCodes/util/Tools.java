@@ -241,7 +241,7 @@ public class Tools {
 
     public static boolean showMeOverlay(Context context) {
         boolean b = PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), true);
+            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
         return b;
     }
 }
