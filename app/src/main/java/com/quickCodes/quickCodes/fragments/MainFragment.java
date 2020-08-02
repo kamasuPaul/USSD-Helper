@@ -26,6 +26,7 @@ import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,40 +58,43 @@ public class MainFragment extends Fragment {
         adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
         adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
         viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+        viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
+            @Override
+            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
 
-            List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
-            List<UssdActionWithSteps> dataCodes = new ArrayList<>();
-            List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
-            for (UssdActionWithSteps us : ussdActionWithSteps) {
-                //skip nulls
-                if (us == null || us.action == null) continue;
-                if (us.action.getName().length() < 15) {
-                    int len = 15 - us.action.getName().length();
-                    String d = "";
-                    for (int i = 0; i < len; i++) {
-                        d = d + " ";
+                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    //skip nulls
+                    if (us == null || us.action == null) continue;
+                    if (us.action.getName().length() < 15) {
+                        int len = 15 - us.action.getName().length();
+                        String d = "";
+                        for (int i = 0; i < len; i++) {
+                            d = d + " ";
+                        }
+                        us.action.setName(us.action.getName() + d);
                     }
-                    us.action.setName(us.action.getName() + d);
+                    //skip loan codes
+                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+                        continue;
+                    }
+                    if (us.action.getSection() == SEC_AIRTIME) {
+                        airtimeCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_DATA) {
+                        dataCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_MMONEY) {
+                        mmoneyCodes.add(us);
+                    }
                 }
-                //skip loan codes
-                if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-                    continue;
-                }
-                if (us.action.getSection() == SEC_AIRTIME) {
-                    airtimeCodes.add(us);
-                }
-                if (us.action.getSection() == SEC_DATA) {
-                    dataCodes.add(us);
-                }
-                if (us.action.getSection() == SEC_MMONEY) {
-                    mmoneyCodes.add(us);
-                }
-            }
-            adapterUssdCodes.setUssdActions(airtimeCodes);
-            adapterUssdCodes1.setUssdActions(dataCodes);
-            adapterUssdCodes2.setUssdActions(mmoneyCodes);
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
 
+            }
         });
         adapterUssdCodes.setOnItemClickListener((view, obj, position) -> {
             Tools.executeSuperAction(obj, getActivity());

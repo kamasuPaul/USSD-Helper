@@ -16,13 +16,17 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -146,6 +150,7 @@ public class Tools {
             //sort the steps
             Collections.sort(steps, (step1, step2) -> ((Integer) step1.getWeight()).compareTo(step2.getWeight()));
             for (Step step : steps) {
+                Toast.makeText(context, "Step" + step.getType() + "::" + step.getStepsAfter(), Toast.LENGTH_SHORT).show();
                 if (step.getType() == TEXT) {
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId((int) step.getStepId());
@@ -171,11 +176,27 @@ public class Tools {
                     root.addView(rowTelephone);
                 }
                 if (step.getType() == NUMBER) {
-                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+//                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+//                    rowAmount.setId((int) step.getStepId());
+//                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+//                    editText.setHint(step.getDescription());
+//                    root.addView(rowAmount);
+                    View rowAmount = inflater.inflate(R.layout.row_dropdown, null);
                     rowAmount.setId((int) step.getStepId());
-                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
-                    editText.setHint(step.getDescription());
+                    String[] data = {"kamasu", "paul"};
+                    ArrayAdapter<String> adapter =
+                        new ArrayAdapter<>(
+                            context,
+                            R.layout.dropdown_menu_popup_item,
+                            data);
+
+                    AutoCompleteTextView editTextFilledExposedDropdown =
+                        rowAmount.findViewById(R.id.action_network);
+                    editTextFilledExposedDropdown.setKeyListener(null);
+                    editTextFilledExposedDropdown.setAdapter(adapter);
                     root.addView(rowAmount);
+
+
                 }
             }
 
@@ -193,6 +214,7 @@ public class Tools {
 
             final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
             String finalCode = code;
+            Log.d(TAG, finalCode);
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -204,15 +226,27 @@ public class Tools {
                         String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
                         if (value != null && !value.isEmpty()) {
                             stringBuilder.append("*" + value);
+                            //add additional steps that must immediately follow this step
+                            // ,before other independent steps are appended to the final code
+
+                            String stepsAfter = step.getStepsAfter();
+                            String[] split = stepsAfter.split(",");
+                            for (String s : split
+                            ) {
+                                stringBuilder.append("*" + s);
+                                Log.d(TAG, s);
+                            }
                         }
                     }
                     //generate the code with the values inserted
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
+                    Log.d(TAG, fullCode);
 
                     customDialog.dismiss();
                     //execute the ussd code
                     executeUssd(fullCode, context, selectedSimCard.getSlotIndex());
+                    Toast.makeText(context, "code: " + fullCode, Toast.LENGTH_SHORT).show();
 
                 }
             });

@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
     parentColumns = "actionId",
     childColumns ="ussd_action_id",
     onDelete = ForeignKey.CASCADE),
-    indices = {@Index("ussd_action_id")}
+    indices = {@Index("ussd_action_id"),}
 )
 public class Step{
 
@@ -20,6 +20,7 @@ public class Step{
     private String description =null;
     private String defaultValue = null;
     private int weight;
+    private String stepsAfter = "";
     @Ignore
     public Step(long ussd_action_id, int type, int weight,String description) {
         this.ussd_action_id = ussd_action_id;
@@ -27,12 +28,23 @@ public class Step{
         this.weight = weight;
         this.description = description;
     }
-    public Step(long ussd_action_id, int type, int weight,String description,String defaultValue) {
+
+    @Ignore
+    public Step(long ussd_action_id, int type, int weight, String description, String defaultValue) {
         this.ussd_action_id = ussd_action_id;
         this.type = type;
         this.weight = weight;
         this.description = description;
         this.defaultValue = defaultValue;
+    }
+
+    public Step(long ussd_action_id, int type, int weight, String description, String defaultValue, String stepsAfter) {
+        this.ussd_action_id = ussd_action_id;
+        this.type = type;
+        this.weight = weight;
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.stepsAfter = stepsAfter;
     }
 
 
@@ -82,6 +94,14 @@ public class Step{
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public String getStepsAfter() {
+        return stepsAfter;
+    }
+
+    public void setStepsAfter(String stepsAfter) {
+        this.stepsAfter = stepsAfter;
     }
 
     @Override

@@ -30,49 +30,23 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 
 
-@Database(entities = {UssdAction.class, Step.class}, version = 2)
+@Database(entities = {UssdAction.class, Step.class}, version = 3)
 public abstract class MyRoomDatabase extends RoomDatabase {
     private static final String TAG = "MyRoomDatabase";
     private UssdActionsViewModel viewModel;
 
 
     private static MyRoomDatabase INSTANCE;
-   public static synchronized MyRoomDatabase getDatabase(Context context){
-       if(INSTANCE==null){
-          INSTANCE = Room.databaseBuilder(context,MyRoomDatabase.class,"custom_actions_db")
-//               .addMigrations(Migration_1_2)
-              .fallbackToDestructiveMigration()
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        Log.d(TAG, "After creating database");
-//                        super.onCreate(db);
-                        addUssdCodes(context);
-                        //schedule a job schedular to request for codes from the database every 24 hours
-                        //constraints
-                        Constraints constraints = new Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build();
+    static final Migration Migration_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //add stepsAfter column
+            database.execSQL("ALTER TABLE Step "
+                + "ADD COLUMN stepsAfter TEXT"
 
-                        //Worker
-                        PeriodicWorkRequest workRequest =
-                            new PeriodicWorkRequest.Builder(DownloadWorker.class, 24, TimeUnit.HOURS)
-                                .setConstraints(constraints)
-                                .build();
-                        WorkManager.getInstance(context).enqueue(workRequest);
-                    }
-                })
-              .addCallback(new Callback() {
-                  @Override
-                  public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
-                      Log.d(TAG, "After destructive migration");
-                      addUssdCodes(context);
-                  }
-              })
-               .build();
-       }
-       return INSTANCE;
-   }
+            );
+        }
+    };
 
     private static void addUssdCodes(Context context) {
         ExecutorService executors = Executors.newSingleThreadExecutor();
@@ -158,4 +132,41 @@ public abstract class MyRoomDatabase extends RoomDatabase {
             //table not altered nothing to do,its just not to delete tables on update
         }
     };
+
+    public static synchronized MyRoomDatabase getDatabase(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context, MyRoomDatabase.class, "custom_actions_db")
+                .addMigrations(Migration_1_2)
+                .addMigrations(Migration_2_3)
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        Log.d(TAG, "After creating database");
+//                        super.onCreate(db);
+                        addUssdCodes(context);
+                        //schedule a job schedular to request for codes from the database every 24 hours
+                        //constraints
+                        Constraints constraints = new Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build();
+
+                        //Worker
+                        PeriodicWorkRequest workRequest =
+                            new PeriodicWorkRequest.Builder(DownloadWorker.class, 24, TimeUnit.HOURS)
+                                .setConstraints(constraints)
+                                .build();
+                        WorkManager.getInstance(context).enqueue(workRequest);
+                    }
+                })
+                .addCallback(new Callback() {
+                    @Override
+                    public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
+                        Log.d(TAG, "After destructive migration");
+                        addUssdCodes(context);
+                    }
+                })
+                .build();
+        }
+        return INSTANCE;
+    }
 }

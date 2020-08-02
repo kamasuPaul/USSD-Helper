@@ -127,7 +127,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
             String des = editText.getText().toString();
             String defaultValue = "";
-            Step step = new Step(codeId, type, weight, des, defaultValue);
+            Step step = new Step(codeId, type, weight, des, defaultValue, "1,2");
 
             steps.add(step);
         }
