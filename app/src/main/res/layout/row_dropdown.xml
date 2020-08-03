@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_large"
-        android:hint=" e.g Airtel">
+        android:hint="choose">
 
         <AutoCompleteTextView
             android:id="@+id/action_network"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:tag="editText" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

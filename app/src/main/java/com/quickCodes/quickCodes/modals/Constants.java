@@ -4,6 +4,8 @@ public class Constants {
     public static int TEXT =0;
     public static int TELEPHONE =1;
     public static int NUMBER =2;
+    public static int CHOICE = 3;
+
 
 
     public static int AIRTEL = 0;

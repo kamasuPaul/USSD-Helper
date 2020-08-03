@@ -20,7 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
+import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import androidx.cardview.widget.CardView;
 
+import static com.quickCodes.quickCodes.modals.Constants.CHOICE;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
@@ -149,8 +151,8 @@ public class Tools {
             List<Step> steps = ussdActionWithSteps.steps;
             //sort the steps
             Collections.sort(steps, (step1, step2) -> ((Integer) step1.getWeight()).compareTo(step2.getWeight()));
+            //display the steps
             for (Step step : steps) {
-                Toast.makeText(context, "Step" + step.getType() + "::" + step.getStepsAfter(), Toast.LENGTH_SHORT).show();
                 if (step.getType() == TEXT) {
                     View rowText = inflater.inflate(R.layout.row_text, null);
                     rowText.setId((int) step.getStepId());
@@ -176,16 +178,27 @@ public class Tools {
                     root.addView(rowTelephone);
                 }
                 if (step.getType() == NUMBER) {
-//                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
-//                    rowAmount.setId((int) step.getStepId());
-//                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
-//                    editText.setHint(step.getDescription());
-//                    root.addView(rowAmount);
+                    View rowAmount = inflater.inflate(R.layout.row_amount, null);
+                    rowAmount.setId((int) step.getStepId());
+                    final EditText editText = rowAmount.findViewById(R.id.edit_text_amount);
+                    editText.setHint(step.getDescription());
+                    root.addView(rowAmount);
+                }
+                if (step.getType() == CHOICE) {
+                    String defaultValue = step.getDefaultValue();
+//                    String test = "1:For myself<>2:For Others";
+//                    String test1 = "1:For myself<>2:For Others";
+
                     View rowAmount = inflater.inflate(R.layout.row_dropdown, null);
                     rowAmount.setId((int) step.getStepId());
-                    String[] data = {"kamasu", "paul"};
-                    ArrayAdapter<String> adapter =
-                        new ArrayAdapter<>(
+                    String[] data = defaultValue.split("<>");
+                    String[] data1 = new String[data.length];
+                    for (int i = 0; i < data.length; i++) {
+                        data1[i] = String.valueOf(data[i].trim().charAt(0));
+                        data[i] = data[i].substring(data[i].indexOf(":") + 1);
+                    }
+                    StepArrayAdapter adapter =
+                        new StepArrayAdapter(
                             context,
                             R.layout.dropdown_menu_popup_item,
                             data);
@@ -194,6 +207,13 @@ public class Tools {
                         rowAmount.findViewById(R.id.action_network);
                     editTextFilledExposedDropdown.setKeyListener(null);
                     editTextFilledExposedDropdown.setAdapter(adapter);
+                    editTextFilledExposedDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            adapter.setSelected(data1[position]);
+                            adapter.setSelected_pos(position);
+                        }
+                    });
                     root.addView(rowAmount);
 
 
@@ -223,7 +243,16 @@ public class Tools {
                     for (Step step : finalUssdAction.steps) {
                         //get the user entered value of each step using its id
                         LinearLayout linearLayout = (LinearLayout) customDialog.findViewById((int) step.getStepId());
-                        String value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
+                        String value;
+
+                        if (step.getType() == CHOICE) {
+                            AutoCompleteTextView spiner = ((AutoCompleteTextView) linearLayout.findViewWithTag("editText"));
+                            StepArrayAdapter adapter = (StepArrayAdapter) spiner.getAdapter();
+                            value = adapter.getSelected();
+
+                        } else {
+                            value = ((EditText) linearLayout.findViewWithTag("editText")).getText().toString();
+                        }
                         if (value != null && !value.isEmpty()) {
                             stringBuilder.append("*" + value);
                             //add additional steps that must immediately follow this step
@@ -234,13 +263,14 @@ public class Tools {
                             for (String s : split
                             ) {
                                 stringBuilder.append("*" + s);
-                                Log.d(TAG, s);
                             }
                         }
+
                     }
                     //generate the code with the values inserted
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
+                    Log.d(TAG, finalCode);
                     Log.d(TAG, fullCode);
 
                     customDialog.dismiss();

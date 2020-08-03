@@ -1,6 +1,7 @@
 package com.quickCodes.quickCodes;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class AddYourOwnActionActivity extends AppCompatActivity {
 
+    private static final String TAG = "AddYourOwnActionActvity";
     MaterialButton button;
     EditText actionName, actionCode;
     AutoCompleteTextView actionNetwork;
@@ -118,6 +120,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
             Spinner stepTypeSpinner = row.findViewById(R.id.type_spinner);
 
             String t = stepTypeSpinner.getSelectedItem().toString();
+            Log.d(TAG, String.valueOf(stepTypeSpinner.getSelectedItemId()));
 
             int type = TEXT;
             if (t.equalsIgnoreCase(getString(R.string.text))) type = TEXT;
@@ -127,7 +130,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
             String des = editText.getText().toString();
             String defaultValue = "";
-            Step step = new Step(codeId, type, weight, des, defaultValue, "1,2");
+            Step step = new Step(codeId, type, weight, des, defaultValue);
 
             steps.add(step);
         }
