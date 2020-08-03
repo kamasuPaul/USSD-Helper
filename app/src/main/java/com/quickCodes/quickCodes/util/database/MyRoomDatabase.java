@@ -23,6 +23,7 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import static com.quickCodes.quickCodes.modals.Constants.CHOICE;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
@@ -90,7 +91,8 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         UssdAction action2 = new UssdAction(102, "Data OTT", "*185*2*5*1", "*165*2*6*1","*133*8",SEC_DATA);
         UssdAction action3 = new UssdAction(103, "Data PakaLast", "*175*3", "*160*1","not",SEC_DATA);
         UssdAction action4 = new UssdAction(104, "Free Monthly", "*175*9*2", null,"not",SEC_DATA);
-        UssdAction action5 = new UssdAction(105, "Send Data", "*175*5*2",null,"not",SEC_DATA);
+       UssdAction action5 = new UssdAction(105, "Send Data", "*175*5*2", null, "not", SEC_DATA);
+       UssdAction action6 = new UssdAction(106, "Lyca Mobile Data", "*252*6*2*3", "*252*6*2*3", "*252*6*2*3", SEC_DATA);
 
        dao.insertUssdActionWithSteps(new UssdActionWithSteps(action, null));
        dao.insertUssdActionWithSteps(new UssdActionWithSteps(action1, null));
@@ -98,7 +100,9 @@ public abstract class MyRoomDatabase extends RoomDatabase {
        dao.insertUssdActionWithSteps(new UssdActionWithSteps(action3, null));
        dao.insertUssdActionWithSteps(new UssdActionWithSteps(action4, null));
        dao.insertUssdActionWithSteps(new UssdActionWithSteps(action5, Arrays.asList(new Step(105, TELEPHONE, 0, "Telephone"),
-            new Step(105,NUMBER,1,"Mbs(50 to 2000)") )));
+           new Step(105, NUMBER, 1, "Mbs(50 to 2000)"))));
+       dao.insertUssdActionWithSteps(new UssdActionWithSteps(action6, Arrays.asList(new Step(106, TELEPHONE, 0, "lyca mobile number"),
+           new Step(106, CHOICE, 1, "Choose package", "1:20GB@10K<>2:50GB@25k<>100GB@45K", "1"))));
 
     }
 

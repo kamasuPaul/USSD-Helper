@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
@@ -165,6 +164,7 @@ public class Tools {
 
                     ImageButton imageButton = rowTelephone.findViewById(R.id.selec_contact_ImageBtn);
                     final EditText editText = rowTelephone.findViewById(R.id.edit_text_mobileNumber);
+                    editText.setHint(step.getDescription());
                     imageButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -262,21 +262,25 @@ public class Tools {
                             String[] split = stepsAfter.split(",");
                             for (String s : split
                             ) {
-                                stringBuilder.append("*" + s);
+                                if (!s.isEmpty()) {
+                                    stringBuilder.append("*" + s);
+                                }
+
                             }
                         }
+                        Log.d(TAG, "step:" + stringBuilder.toString());
+
 
                     }
                     //generate the code with the values inserted
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
-                    Log.d(TAG, finalCode);
+//                    Log.d(TAG, finalCode);
                     Log.d(TAG, fullCode);
 
                     customDialog.dismiss();
                     //execute the ussd code
                     executeUssd(fullCode, context, selectedSimCard.getSlotIndex());
-                    Toast.makeText(context, "code: " + fullCode, Toast.LENGTH_SHORT).show();
 
                 }
             });
