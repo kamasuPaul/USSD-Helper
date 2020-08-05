@@ -162,19 +162,19 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
                 hni = card.getHni();
             }
         }
-        String airtelCode = "", mtnCode = "", africellCode = "";
-        if (containsIgnoreCase(networkName, "MTN")) {
-            mtnCode = code;
-        }
-        if (containsIgnoreCase(networkName, "AIRTEL")) {
-            airtelCode = code;
-        }
-        if (containsIgnoreCase(networkName, "AFRICELL")) {
-            africellCode = code;
-        }
+//        String airtelCode = "", mtnCode = "", africellCode = "";
+//        if (containsIgnoreCase(networkName, "MTN")) {
+//            mtnCode = code;
+//        }
+//        if (containsIgnoreCase(networkName, "AIRTEL")) {
+//            airtelCode = code;
+//        }
+//        if (containsIgnoreCase(networkName, "AFRICELL")) {
+//            africellCode = code;
+//        }
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         UssdAction ussdAction =
-            new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, SEC_CUSTOM_CODES, hni);
+            new UssdAction(codeId, actionNameText, code, hni, SEC_CUSTOM_CODES, 0);
         v.insert(ussdAction,steps);
 
         //TODO go to custom codes fragment

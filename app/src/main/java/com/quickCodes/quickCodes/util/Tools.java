@@ -49,6 +49,7 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class Tools {
     private static final String TOOLS_PREF = "tools_pref";
+    private static final String MCC_PREF = "mcc_pref";
     private static final String SELECTED_SIMCARD = "selected_simcard";
     public static final int CONTACT_PICKER_REQUEST = 29;
     public static EditText phoneNumber;
@@ -61,6 +62,7 @@ public class Tools {
     @SuppressLint("MissingPermission")
     public static List<SimCard> getAvailableSimCards(Context context) {
         List<SimCard> simCards = new ArrayList<>();
+        SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
 
         //TODO,seperate slom with same mnc with slot number
 
@@ -70,14 +72,26 @@ public class Tools {
 
             for (final SubscriptionInfo subscriptionInfo : subList) {
                 final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
-                String hnc = String.valueOf(subscriptionInfo.getMcc()) + subscriptionInfo.getMnc();
+                String mcc = String.valueOf(subscriptionInfo.getMcc());
+                String mnc = String.valueOf(subscriptionInfo.getMnc());
+                if (mnc.length() == 1) {
+                    mnc = "0" + mnc;
+                }
+                String hnc = mcc + mnc;
                 int slotIndex = subscriptionInfo.getSimSlotIndex();
                 int subscriptionId = subscriptionInfo.getSubscriptionId();
                 SimCard simCard = new SimCard(networkName, hnc, slotIndex, subscriptionId);
                 simCards.add(simCard);
+                preferences.edit().putString(MCC_PREF, String.valueOf(mcc)).commit();
+
             }
         }
         return simCards;
+    }
+
+    public static String getMcc(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
+        return preferences.getString(MCC_PREF, "");
     }
 
     public static SimCard getSelectedSimCard(Context context) {
@@ -126,15 +140,15 @@ public class Tools {
         SimCard selectedSimCard = getSelectedSimCard((context));
         String mode1 = selectedSimCard.getNetworkName();
         UssdAction ussdAction = ussdActionWithSteps.action;
-        String code = "";
-        if (mode1.contains("MTN")) code = ussdAction.getMtnCode();
-        if (mode1.contains("AIRTEL")) code = ussdAction.getAirtelCode();
-        if (mode1.contains("AFRICELL")) code = ussdAction.getAfricellCode();
+        String code = ussdAction.getCode();
+//        if (mode1.contains("MTN")) code = ussdAction.getMtnCode();
+//        if (mode1.contains("AIRTEL")) code = ussdAction.getAirtelCode();
+//        if (mode1.contains("AFRICELL")) code = ussdAction.getAfricellCode();
 
         //if code is still empty ,this is a custom code ,get its code
-        if (code.isEmpty() || code == null) {
-            code = ussdAction.getAirtelCode();
-        }
+//        if (code.isEmpty() || code == null) {
+//            code = ussdAction.getAirtelCode();
+//        }
 
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
@@ -310,6 +324,13 @@ public class Tools {
     public static boolean showMeOverlay(Context context) {
         boolean b = PreferenceManager.getDefaultSharedPreferences(context)
             .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
+        return b;
+    }
+
+    public static boolean dataWasAdded(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean b = pref.getBoolean("datawasAdded", false);//get false at first
+        pref.edit().putBoolean("datawasAdded", true).commit();//value of true will be returned the second and onwards
         return b;
     }
 }

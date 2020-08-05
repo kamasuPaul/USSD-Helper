@@ -204,12 +204,12 @@ public class PhoneCallsOverlayService extends LifecycleService {
         if (allUssdActions != null) {
             for (UssdActionWithSteps a : allUssdActions) {
                 code_name = a.action.getName();//the name will not be used if its null;
-                if (myequalsIgnoreCase(a.action.getAirtelCode(), mycode)) matches = true;
-                if (myequalsIgnoreCase(a.action.getMtnCode(), mycode)) matches = true;
-                if (myequalsIgnoreCase(a.action.getAfricellCode(), mycode)) matches = true;
-                if (containsIgnoreCase(a.action.getAirtelCode(), (mycode))) is_contained = true;
-                if (containsIgnoreCase(a.action.getMtnCode(), mycode)) is_contained = true;
-                if (containsIgnoreCase(a.action.getAfricellCode(), mycode)) is_contained = true;
+                if (myequalsIgnoreCase(a.action.getCode(), mycode)) matches = true;
+//                if (myequalsIgnoreCase(a.action.getMtnCode(), mycode)) matches = true;
+//                if (myequalsIgnoreCase(a.action.getAfricellCode(), mycode)) matches = true;
+                if (containsIgnoreCase(a.action.getCode(), (mycode))) is_contained = true;
+//                if (containsIgnoreCase(a.action.getMtnCode(), mycode)) is_contained = true;
+//                if (containsIgnoreCase(a.action.getAfricellCode(), mycode)) is_contained = true;
                 if (matches || is_contained) {
                     codeId = a.action.getActionId();
                     break;
@@ -250,7 +250,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
             //save the code to the database
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
-            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, null, Constants.SEC_USER_DIALED);
+            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, Constants.SEC_USER_DIALED, 0);
             List<Step> steps = new ArrayList<>();
             //get any steps if availabe ie telephone and amount
 //            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();

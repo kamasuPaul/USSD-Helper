@@ -465,7 +465,7 @@ public class DialPadActivity extends AppCompatActivity {
     }
 
     public void executeUssdAction(UssdActionWithSteps ussdActionWithSteps) {
-        String code = ussdActionWithSteps.action.getAirtelCode();//airtel code is default code
+        String code = ussdActionWithSteps.action.getCode();//airtel code is default code
         //check for phone number clicks
         if (!code.contains("*")) {//if it doesnt contain a * its aphone number, exececute it immediately
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));

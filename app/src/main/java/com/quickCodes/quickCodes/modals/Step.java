@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
     parentColumns = "actionId",
     childColumns ="ussd_action_id",
     onDelete = ForeignKey.CASCADE),
-    indices = {@Index("ussd_action_id"),}
+    indices = {@Index("ussd_action_id")}
 )
 public class Step{
 
@@ -116,3 +116,4 @@ public class Step{
             '}';
     }
 }
+

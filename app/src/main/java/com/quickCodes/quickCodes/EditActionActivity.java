@@ -28,7 +28,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
-import static com.quickCodes.quickCodes.AddYourOwnActionActivity.containsIgnoreCase;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
@@ -88,13 +87,13 @@ public class EditActionActivity extends AppCompatActivity {
         List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
         String[] networks = new String[availableSimCards.size()];
         for (SimCard card : availableSimCards) {
-            if (String.valueOf(card.getHni()).equalsIgnoreCase(lastAction.action.getNetwork())) {
+            if (String.valueOf(card.getHni()).equalsIgnoreCase(lastAction.action.getHni())) {
                 actionNetwork.setText(card.getNetworkName().toUpperCase());
             }
             //add all networks to the array
             networks[card.getSlotIndex()] = card.getNetworkName();
         }
-        actionCode.setText(lastAction.action.getAirtelCode());
+        actionCode.setText(lastAction.action.getCode());
 
         //**********************MATERIAL SPINNER OR DROP DOWNN ***********************************
         ArrayAdapter<String> adapter =
@@ -189,23 +188,23 @@ public class EditActionActivity extends AppCompatActivity {
                 hni = card.getHni();
             }
         }
-        String airtelCode = "", mtnCode = "", africellCode = "";
-
-        if (containsIgnoreCase(networkName, "MTN")) {
-            mtnCode = code;
-        }
-        if (containsIgnoreCase(networkName, "AIRTEL")) {
-            airtelCode = code;
-        }
-        if (containsIgnoreCase(networkName, "AFRICELL")) {
-            africellCode = code;
-        }
-        if(airtelCode==""&&mtnCode==""&&africellCode==""){
-            airtelCode = code;
-        }
+//        String airtelCode = "", mtnCode = "", africellCode = "";
+//
+//        if (containsIgnoreCase(networkName, "MTN")) {
+//            mtnCode = code;
+//        }
+//        if (containsIgnoreCase(networkName, "AIRTEL")) {
+//            airtelCode = code;
+//        }
+//        if (containsIgnoreCase(networkName, "AFRICELL")) {
+//            africellCode = code;
+//        }
+//        if(airtelCode==""&&mtnCode==""&&africellCode==""){
+//            airtelCode = code;
+//        }
 
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        UssdAction ussdAction = new UssdAction(codeId, actionNameText, airtelCode, mtnCode, africellCode, section, hni);
+        UssdAction ussdAction = new UssdAction(codeId, actionNameText, code, hni, SEC_CUSTOM_CODES, 0);
         v.update(new UssdActionWithSteps(ussdAction,steps));
         //TODO go to custom codes fragment
         Toast.makeText(this, ussdAction.getName()+" Has been Edited", Toast.LENGTH_SHORT).show();

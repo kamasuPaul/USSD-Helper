@@ -52,16 +52,16 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 rootView.title.setText(ussdAction.getName());
 
-                String codeString = ussdAction.getAirtelCode();
-                if (ussdAction.getMtnCode() != null) {
-                    if (!ussdAction.getMtnCode().isEmpty())
-                        codeString += "\t\t|" + ussdAction.getMtnCode();
-
-                }
-                if (ussdAction.getAfricellCode() != null) {
-                    if (!ussdAction.getAfricellCode().isEmpty())
-                        codeString += "\t\t|" + ussdAction.getAfricellCode();
-                }
+                String codeString = ussdAction.getCode();
+//                if (ussdAction.getMtnCode() != null) {
+//                    if (!ussdAction.getMtnCode().isEmpty())
+//                        codeString += "\t\t|" + ussdAction.getMtnCode();
+//
+//                }
+//                if (ussdAction.getAfricellCode() != null) {
+//                    if (!ussdAction.getAfricellCode().isEmpty())
+//                        codeString += "\t\t|" + ussdAction.getAfricellCode();
+//                }
                 rootView.code.setText(codeString);
                 if (String.valueOf(ussdAction.getActionId()) != null) {
                     rootView.section.setText(getSectionFromId(ussdAction.getSection()));
@@ -165,7 +165,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         for (int i = 0; i < numberlist.size(); i++) {
             Long codeId = r.nextLong();
             UssdAction ussdAction = new UssdAction(codeId, namelist.get(i),
-                numberlist.get(i), null, null, SEC_CUSTOM_CODES);
+                numberlist.get(i), null, SEC_CUSTOM_CODES, 0);
             items.add(new UssdActionWithSteps(ussdAction, null));
         }
 
@@ -205,25 +205,25 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             continue;
                         }
 
-                        if (action.action.getAirtelCode() != null) {
-                            if (action.action.getAirtelCode().contains(words)) {
+                        if (action.action.getCode() != null) {
+                            if (action.action.getCode().contains(words)) {
                                 l.add(action);
                                 continue;
                             }
                         }
 
-                        if (action.action.getMtnCode() != null) {
-                            if (action.action.getMtnCode().contains(words)) {
-                                l.add(action);
-                                continue;
-                            }
-                        }
-                        if (action.action.getAfricellCode() != null) {
-                            if (action.action.getAfricellCode().contains(words)) {
-                                l.add(action);
-                                continue;
-                            }
-                        }
+//                        if (action.action.getMtnCode() != null) {
+//                            if (action.action.getMtnCode().contains(words)) {
+//                                l.add(action);
+//                                continue;
+//                            }
+//                        }
+//                        if (action.action.getAfricellCode() != null) {
+//                            if (action.action.getAfricellCode().contains(words)) {
+//                                l.add(action);
+//                                continue;
+//                            }
+//                        }
 
                     }
 //                    //loop through contacts

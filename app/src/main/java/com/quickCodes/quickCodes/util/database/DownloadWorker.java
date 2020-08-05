@@ -57,11 +57,10 @@ public class DownloadWorker extends Worker {
 
                         int id = code.optInt("id");
                         String name = code.optString("name");
-                        String airtelCode = code.optString("airtelCode");
-                        String mtnCode = code.optString("mtnCode");
-                        String africellCode = code.optString("africellCode");
+                        String airtelCode = code.optString("code");
+                        String hni = code.optString("hni");
                         int section = code.optInt("section");
-                        UssdAction ussdAction = new UssdAction(id, name, airtelCode, mtnCode, africellCode, section);
+                        UssdAction ussdAction = new UssdAction(id, name, airtelCode, hni, section, 0);
 
                         //get the local object and get its weight,and set this objects weight
                         //to that of the local object so its not overriden
@@ -99,7 +98,7 @@ public class DownloadWorker extends Worker {
             });
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+//        queue.add(stringRequest);
 
     }
 }
