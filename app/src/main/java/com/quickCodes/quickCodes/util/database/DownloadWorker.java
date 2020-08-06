@@ -2,7 +2,6 @@ package com.quickCodes.quickCodes.util.database;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -95,7 +94,8 @@ public class DownloadWorker extends Worker {
 
             },
             (VolleyError volleyError) -> {
-                Log.d(TAG, volleyError.getMessage());
+                //this line was causing a crash
+//                Log.d(TAG, volleyError.getMessage());
             });
 
         // Add the request to the RequestQueue.

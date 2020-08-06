@@ -71,10 +71,15 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         //retrieve all available networks
         List<SimCard> availableSimCards = Tools.getAvailableSimCards(this);
         String[] networks = new String[availableSimCards.size()];
-        for (SimCard card : availableSimCards) {
+        for (int i = 0; i < availableSimCards.size(); i++) {
             //add all networks to the array
-            networks[card.getSlotIndex()] = card.getNetworkName();
+            SimCard card = availableSimCards.get(i);
+            networks[i] = card.getNetworkName();
         }
+//        for (SimCard card : availableSimCards) {
+//            //add all networks to the array
+//            networks[card.getSlotIndex()] = card.getNetworkName();
+//        }
 
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(

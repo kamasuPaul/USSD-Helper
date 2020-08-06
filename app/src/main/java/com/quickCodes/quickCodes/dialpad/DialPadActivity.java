@@ -151,11 +151,21 @@ public class DialPadActivity extends AppCompatActivity {
         for (SimCard simCard : cardList) {
             if (simCard.getSlotIndex() == 0) {
                 TextView sim1 = findViewById(R.id.sim_name);
-                sim1.setText(simCard.getNetworkName().toLowerCase().substring(0, 6));
+                String sim1name = simCard.getNetworkName().toLowerCase();
+                if (sim1name.length() > 5) {
+                    sim1name = sim1name.substring(0, 6);
+
+                }
+                sim1.setText(sim1name);
             }
             if (simCard.getSlotIndex() == 1) {
                 TextView sim2 = findViewById(R.id.sim2_name);
-                sim2.setText(simCard.getNetworkName().toLowerCase().substring(0, 6));
+                String sim2name = simCard.getNetworkName().toLowerCase();
+                if (sim2name.length() > 5) {
+                    sim2name = sim2name.substring(0, 6);
+
+                }
+                sim2.setText(sim2name);
             }
 
         }

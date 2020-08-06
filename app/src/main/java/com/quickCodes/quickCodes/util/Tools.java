@@ -67,14 +67,24 @@ public class Tools {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             subscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             subList = subscriptionManager.getActiveSubscriptionInfoList();
+//            subscriptionManager.addOnSubscriptionsChangedListener(new SubscriptionManager.OnSubscriptionsChangedListener(){
+//                @Override
+//                public void onSubscriptionsChanged() {
+//                    super.onSubscriptionsChanged();
+//                    subList = subscriptionManager.getActiveSubscriptionInfoList();
+//                }
+//            });
+            //handle null pointer excepiton
+            if (subList != null) {
 
-            for (final SubscriptionInfo subscriptionInfo : subList) {
-                final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
-                String hnc = String.valueOf(subscriptionInfo.getMcc()) + subscriptionInfo.getMnc();
-                int slotIndex = subscriptionInfo.getSimSlotIndex();
-                int subscriptionId = subscriptionInfo.getSubscriptionId();
-                SimCard simCard = new SimCard(networkName, hnc, slotIndex, subscriptionId);
-                simCards.add(simCard);
+                for (final SubscriptionInfo subscriptionInfo : subList) {
+                    final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
+                    String hnc = String.valueOf(subscriptionInfo.getMcc()) + subscriptionInfo.getMnc();
+                    int slotIndex = subscriptionInfo.getSimSlotIndex();
+                    int subscriptionId = subscriptionInfo.getSubscriptionId();
+                    SimCard simCard = new SimCard(networkName, hnc, slotIndex, subscriptionId);
+                    simCards.add(simCard);
+                }
             }
         }
         return simCards;
@@ -90,7 +100,8 @@ public class Tools {
             }
         }
         //if they dont match it returns first simcard in phone
-        return availableSimCards.get(0);
+        //if there are no detected simcards, just return unknown sim
+        return availableSimCards.size() > 0 ? availableSimCards.get(0) : new SimCard("UNKNOWN SIM", "64101", 0, 1);
     }
 
     public static void setSelectedSimcard(Context context, int simslot) {
