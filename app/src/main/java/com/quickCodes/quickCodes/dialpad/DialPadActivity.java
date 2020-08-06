@@ -74,6 +74,9 @@ public class DialPadActivity extends AppCompatActivity {
         search = intent.getStringExtra("search");
         setContentView(R.layout.activity_dialpad);
 
+        List<SimCard> cardList = Tools.getAvailableSimCards(this);
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar_dialer);
         setSupportActionBar(toolbar);
@@ -87,7 +90,9 @@ public class DialPadActivity extends AppCompatActivity {
         ussdActionsViewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
             List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
-                airtimeCodes.add(us);
+                if (Tools.containsHni(cardList, us.action.getHni())) {
+                    airtimeCodes.add(us);
+                }
             }
             mAdapter.setUssdActions(airtimeCodes);
 
@@ -147,7 +152,6 @@ public class DialPadActivity extends AppCompatActivity {
 
 
         //add simcard names to the call button
-        List<SimCard> cardList = Tools.getAvailableSimCards(this);
         for (SimCard simCard : cardList) {
             if (simCard.getSlotIndex() == 0) {
                 TextView sim1 = findViewById(R.id.sim_name);

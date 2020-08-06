@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterGridCustomCodes;
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
@@ -31,6 +32,7 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
  * A placeholder fragment containing a simple view.
  */
 public class CustomCodesFragment extends Fragment {
+    private static final String TAG = "CustomCodesFragment";
     UssdActionsViewModel ussdActionsViewModel;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String sharedPrefString = "first";
@@ -56,7 +58,11 @@ public class CustomCodesFragment extends Fragment {
             List<UssdActionWithSteps> customCodes = new ArrayList<>();
             for (UssdActionWithSteps us : ussdActionWithSteps) {
                 if (us.action.getSection() == SEC_CUSTOM_CODES) {
-                    customCodes.add(us);
+                    List<SimCard> simCards = Tools.getAvailableSimCards(getActivity());
+                    if (Tools.containsHni(simCards, us.action.getHni())) {
+                        customCodes.add(us);
+
+                    }
                 }
             }
             mAdapter.setCustomActions(customCodes);

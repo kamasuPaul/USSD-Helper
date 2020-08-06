@@ -68,6 +68,7 @@ public abstract class MyRoomDatabase extends RoomDatabase {
             );
             //copy data into temporary table
             database.execSQL("INSERT INTO ussd_actions (actionId,name,code,hni,section,weight)"
+                //only select user saved data
                 + "SELECT actionId,name,airtelCode,network,section,weight FROM ussd_actions_tmp WHERE section = 5"
             );
             //delete temporary table
@@ -222,12 +223,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                 .addMigrations(Migration_3_4)
                 .addCallback(new Callback() {
                     @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                        super.onOpen(db);
-                    }
-                })
-                .addCallback(new Callback() {
-                    @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         Log.d(TAG, "After creating database");
 //                        super.onCreate(db);
@@ -259,6 +254,11 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         //add new data to db,only if has not been added already
         if (!Tools.dataWasAdded(context)) {
             addUssdCodes(context);
+            Log.d(TAG, "ADD DATA");
+
+        } else {
+            Log.d(TAG, "DIDNT ADD DATA");
+
         }
 
         return INSTANCE;

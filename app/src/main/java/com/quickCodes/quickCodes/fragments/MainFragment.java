@@ -1,14 +1,18 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.quickCodes.quickCodes.AddYourOwnActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -124,7 +128,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void filterAndHideActions(String mode) {
+    private void filterAndHideActions(String mode, View root) {
         if (mode != null) {
 
             viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
@@ -162,6 +166,20 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes.setUssdActions(airtimeCodes);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
+                Log.d(TAG, "air:" + airtimeCodes.size());
+                Log.d(TAG, "data:" + dataCodes.size());
+                Log.d(TAG, "mm:" + mmoneyCodes.size());
+
+                if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
+                    Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Add ", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
+                        }
+                    });
+                    snackbar.show();
+                }
 
             });
         }
@@ -278,7 +296,7 @@ public class MainFragment extends Fragment {
                     }
                 }
                 //if the selected mode is mtn remove non mtn action cards
-                filterAndHideActions(simCard.getHni());
+                filterAndHideActions(simCard.getHni(), root);
                 Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
 
             });
@@ -293,7 +311,7 @@ public class MainFragment extends Fragment {
                     }
                 }
                 //if the selected mode is mtn remove non mtn action cards
-                filterAndHideActions(simCard.getHni());
+                filterAndHideActions(simCard.getHni(), root);
                 //notify the user of their action
                 Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
 
@@ -308,7 +326,7 @@ public class MainFragment extends Fragment {
 
         }
         //filter out actions that dont apply for the currently selected network
-        filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni());
+        filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), root);
 
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));

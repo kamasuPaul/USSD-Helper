@@ -333,4 +333,17 @@ public class Tools {
         pref.edit().putBoolean("datawasAdded", true).commit();//value of true will be returned the second and onwards
         return b;
     }
+
+    public static boolean containsHni(final List<SimCard> list, final String hni) {
+        if (list.size() > 1) {
+            if ((list.get(0).getHni().equals(hni)) || (list.get(1).getHni().equals(hni))) {
+                return true;
+            }
+        } else if (list.size() == 1) {
+            if (list.get(0).getHni().equals(hni)) return true;
+        } else {
+            return false;
+        }
+        return false;
+    }
 }
