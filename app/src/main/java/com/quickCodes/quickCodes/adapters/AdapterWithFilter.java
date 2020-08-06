@@ -39,9 +39,9 @@ public class AdapterWithFilter extends AdapterGridCustomCodes implements Filtera
                 }else {
                     List<UssdActionWithSteps> l = new ArrayList<>();
                     for(UssdActionWithSteps action: ussdActionWithSteps){
-                        if(action.action.getAirtelCode().toLowerCase().contains(words)
-                            ||action.action.getMtnCode().toLowerCase().contains(words)
-                            ||action.action.getAfricellCode().toLowerCase().contains(words)
+                        if (action.action.getCode().toLowerCase().contains(words)
+//                            ||action.action.getMtnCode().toLowerCase().contains(words)
+//                            ||action.action.getAfricellCode().toLowerCase().contains(words)
                         ){
                             l.add(action);
                         }

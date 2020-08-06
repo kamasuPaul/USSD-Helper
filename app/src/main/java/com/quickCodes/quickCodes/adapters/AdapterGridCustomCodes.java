@@ -57,7 +57,7 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
 
                 final UssdAction p = ussdActionWithStepsFiltered.get(position).action;
                 view.title.setText(p.getName());
-                view.code.setText(p.getAirtelCode());
+                view.code.setText(p.getCode());
 //            view.image.setImageDrawable();
                 // generate color based on a key (same key returns the same color), useful for list/grid views
                 ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -192,26 +192,26 @@ public class AdapterGridCustomCodes extends RecyclerView.Adapter<RecyclerView.Vi
                     List<UssdActionWithSteps> l = new ArrayList<>();
                     Log.d("COD3I", words);
                     for(UssdActionWithSteps action: items){
-                        Log.d("QUERY", action.action.getAirtelCode());
+                        Log.d("QUERY", action.action.getCode());
 
-                        if(action.action.getAirtelCode()!=null) {
-                            if(action.action.getAirtelCode().contains(words)) {
+                        if (action.action.getCode() != null) {
+                            if (action.action.getCode().contains(words)) {
                                 l.add(action);
                                 continue;
                             }
                         }
-                        if(action.action.getMtnCode()!=null) {
-                            if(action.action.getMtnCode().contains(words)) {
-                                l.add(action);
-                                continue;
-                            }
-                        }
-                        if(action.action.getAfricellCode()!=null) {
-                            if(action.action.getAfricellCode().contains(words)) {
-                                l.add(action);
-                                continue;
-                            }
-                        }
+//                        if(action.action.getMtnCode()!=null) {
+//                            if(action.action.getMtnCode().contains(words)) {
+//                                l.add(action);
+//                                continue;
+//                            }
+//                        }
+//                        if(action.action.getAfricellCode()!=null) {
+//                            if(action.action.getAfricellCode().contains(words)) {
+//                                l.add(action);
+//                                continue;
+//                            }
+//                        }
 
                     }
                     ussdActionWithStepsFiltered = l;

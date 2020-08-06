@@ -53,7 +53,7 @@ public class AutoDetectedFragment extends Fragment {
 
             for (UssdActionWithSteps us : ussdActionWithSteps) {
                 if (us.action.getSection() == SEC_USER_DIALED) {
-                    codes.add(us.action.getAirtelCode());
+                    codes.add(us.action.getCode());
                     airtimeCodes.add(us);
                 }
             }

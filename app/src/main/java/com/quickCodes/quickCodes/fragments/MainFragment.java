@@ -1,15 +1,18 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.quickCodes.quickCodes.AddYourOwnActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -18,13 +21,11 @@ import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import com.robertlevonyan.views.chip.Chip;
-import com.robertlevonyan.views.chip.OnSelectClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -127,7 +128,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void filterAndHideActions(String mode) {
+    private void filterAndHideActions(String mode, View root) {
         if (mode != null) {
 
             viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
@@ -139,20 +140,19 @@ public class MainFragment extends Fragment {
                     if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
                         continue;
                     }
-                    if (mode.contains("MTN")) {
-                        if (us.action.getMtnCode() == null) {
+                    if (!(mode.equals(us.action.getHni()))) {
                             continue;
-                        }
+
                     }
-                    if (mode.contains("AFRICELL")) {
-                        if ((us.action.getAfricellCode() == null)) {
-                            continue;
-                        }
-                        String code = us.action.getAfricellCode();
-                        if (code != null) {
-                            if (code.contains("not")) continue;
-                        }
-                    }
+//                    if (mode.contains("AFRICELL")) {
+//                        if ((us.action.getAfricellCode() == null)) {
+//                            continue;
+//                        }
+//                        String code = us.action.getAfricellCode();
+//                        if (code != null) {
+//                            if (code.contains("not")) continue;
+//                        }
+//                    }
                     if (us.action.getSection() == SEC_AIRTIME) {
                         airtimeCodes.add(us);
                     }
@@ -166,6 +166,20 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes.setUssdActions(airtimeCodes);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
+                Log.d(TAG, "air:" + airtimeCodes.size());
+                Log.d(TAG, "data:" + dataCodes.size());
+                Log.d(TAG, "mm:" + mmoneyCodes.size());
+
+                if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
+                    Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Add ", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
+                        }
+                    });
+                    snackbar.show();
+                }
 
             });
         }
@@ -264,62 +278,56 @@ public class MainFragment extends Fragment {
         for (SimCard simCard : availableSimCards) {
             final Chip chip1 = (Chip) getLayoutInflater().inflate(R.layout.chip, null);
             String networkName = simCard.getNetworkName();
-            chip1.setText(networkName);
+            chip1.setText(simCard.getNetworkName());
             if (networkName.contains("MTN")) {
                 chip1.setChipIcon(getResources().getDrawable(R.drawable.mtn));
-                hideNonMtnAction();
+//                hideNonMtnAction();
             }
             if (networkName.contains("AFRICELL"))
                 chip1.setChipIcon(getResources().getDrawable(R.drawable.africell));
             if (simCard.getSlotIndex() == 0) {
                 chip1.setChipSelected(true);
             }
-            chip1.setOnSelectClickListener(new OnSelectClickListener() {
-                @Override
-                public void onSelectClick(View v, boolean selected) {
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-                            Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
-                        }
+            chip1.setOnSelectClickListener((v, selected) -> {
+                for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                    if (!v.equals(v1)) {
+                        ((Chip) v1).setChipSelected(false);
+                        Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
                     }
-                    //if the selected mode is mtn remove non mtn action cards
-                    filterAndHideActions(simCard.getNetworkName());
-                    Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
-
                 }
+                //if the selected mode is mtn remove non mtn action cards
+                filterAndHideActions(simCard.getHni(), root);
+                Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
+
             });
-            chip1.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
-                @Override
-                public void onClick(View v) {
-                    //mark the current chip as selected
-                    ((com.robertlevonyan.views.chip.Chip) v).setChipSelected(true);
-                    //mark all the others as deselected
-                    for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
-                        if (!v.equals(v1)) {
-                            ((com.robertlevonyan.views.chip.Chip) v1).setChipSelected(false);
-                            Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
-                        }
+            chip1.setOnClickListener(v -> {
+                //mark the current chip as selected
+                ((Chip) v).setChipSelected(true);
+                //mark all the others as deselected
+                for (View v1 : getViewsByTag(rootLinearLayoutChips, "chip")) {
+                    if (!v.equals(v1)) {
+                        ((Chip) v1).setChipSelected(false);
+                        Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
                     }
-                    //if the selected mode is mtn remove non mtn action cards
-                    filterAndHideActions(simCard.getNetworkName());
-                    //notify the user of their action
-                    Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
-
                 }
+                //if the selected mode is mtn remove non mtn action cards
+                filterAndHideActions(simCard.getHni(), root);
+                //notify the user of their action
+                Toast.makeText(getActivity(), "You have changed to " + simCard.getNetworkName() + " codes", Toast.LENGTH_SHORT).show();
+
             });
             //add detected chips
             rootLinearLayoutChips.addView(chip1);
             setMargins(chip1, 0, 0, 15, 0);
 
-            //filter out actions that dont apply for the currently selected network
-            filterAndHideActions(simCard.getNetworkName());
 
             //hide default chips
             for (Chip chip : chips) chip.setVisibility(View.GONE);
 
         }
+        //filter out actions that dont apply for the currently selected network
+        filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), root);
+
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));
         return root;

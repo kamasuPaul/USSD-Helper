@@ -11,36 +11,24 @@ public class UssdAction {
     @SerializedName("id")
     @PrimaryKey public long actionId;
     private String name;
-    private String airtelCode;
-    private String mtnCode;
-    private String africellCode;
+    private String code;
+    private String hni;
     public int section;
     public int weight = 0;
-    private String network = ""; //this is to be used for custom codes to define which network they run on
-
     @Ignore
     public UssdAction(){
 
     }
 
-    public UssdAction(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section) {
+    public UssdAction(long actionId, String name, String code, String hni, int section, int weight) {
         this.actionId = actionId;
         this.name = name;
-        this.airtelCode = airtelCode;
-        this.mtnCode = mtnCode;
-        this.africellCode = africellCode;
+        this.code = code;
+        this.hni = hni;
         this.section = section;
+        this.weight = weight;
     }
-    @Ignore
-    public UssdAction(long actionId, String name, String airtelCode, String mtnCode, String africellCode, int section,String network) {
-        this.actionId = actionId;
-        this.name = name;
-        this.airtelCode = airtelCode;
-        this.mtnCode = mtnCode;
-        this.africellCode = africellCode;
-        this.section = section;
-        this.network = network;
-    }
+
 
     public long getActionId() {
         return actionId;
@@ -66,37 +54,6 @@ public class UssdAction {
         this.name = name;
     }
 
-    public String getAirtelCode() {
-        return airtelCode;
-    }
-
-    public void setAirtelCode(String airtelCode) {
-        this.airtelCode = airtelCode;
-    }
-
-    public String getMtnCode() {
-        return mtnCode;
-    }
-
-    public void setMtnCode(String mtnCode) {
-        this.mtnCode = mtnCode;
-    }
-
-    public String getAfricellCode() {
-        return africellCode;
-    }
-
-    public void setAfricellCode(String africellCode) {
-        this.africellCode = africellCode;
-    }
-
-    public String getNetwork() {
-        return network;
-    }
-
-    public void setNetwork(String network) {
-        this.network = network;
-    }
 
     public int getWeight() {
         return weight;
@@ -106,17 +63,31 @@ public class UssdAction {
         this.weight = weight;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getHni() {
+        return hni;
+    }
+
+    public void setHni(String hni) {
+        this.hni = hni;
+    }
+
     @Override
     public String toString() {
         return "UssdAction{" +
             "actionId=" + actionId +
             ", name='" + name + '\'' +
-            ", airtelCode='" + airtelCode + '\'' +
-            ", mtnCode='" + mtnCode + '\'' +
-            ", africellCode='" + africellCode + '\'' +
+            ", code='" + code + '\'' +
+            ", hni='" + hni + '\'' +
             ", section=" + section +
             ", weight=" + weight +
-            ", network='" + network + '\'' +
             '}';
     }
 }

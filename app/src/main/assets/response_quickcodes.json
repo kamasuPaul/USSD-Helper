@@ -1,0 +1,765 @@
+[
+    {
+        "id": 1,
+        "mcc": "641",
+        "mnc": "01",
+        "hni": "64101",
+        "iso": "ug",
+        "country": "Uganda",
+        "country_code": "256",
+        "network_name": "Airtel Uganda",
+        "created_at": "2020-08-04T14:08:11.000000Z",
+        "updated_at": "2020-08-04T14:11:32.000000Z",
+        "ussd_actions": [
+            {
+                "id": 1,
+                "name": "check balance",
+                "code": "*131",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 4,
+                "name": "Buy For Another",
+                "code": "*185*2*1*2",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 1,
+                        "ussd_action_id": 4,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 2,
+                        "ussd_action_id": 4,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "name": "Borrow Airtime",
+                "code": "*100*4*1",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 9,
+                "name": "Call Me Back",
+                "code": "*100*7*7",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 5,
+                        "ussd_action_id": 9,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 11,
+                "name": "Buy Airtime",
+                "code": "*185*2*1*1",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 7,
+                        "ussd_action_id": 11,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "0",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 14,
+                "name": "PakaLast",
+                "code": "*100*2*1",
+                "network_id": 1,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 17,
+                "name": "Data Bundles",
+                "code": "*175*2",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 20,
+                "name": "Check Balance",
+                "code": "*175*4",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 23,
+                "name": "Data OTT",
+                "code": "*185*2*5*1",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 26,
+                "name": "Data PakaLast",
+                "code": "*175*3",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 29,
+                "name": "Free Monthly",
+                "code": "*175*9*2",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 30,
+                "name": "Send Data",
+                "code": "*175*5*2",
+                "network_id": 1,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 10,
+                        "ussd_action_id": 30,
+                        "type": 2,
+                        "description": "Mbs (50 to 2000)",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 11,
+                        "ussd_action_id": 30,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 31,
+                "name": "Check Balance",
+                "code": "*185*10*1",
+                "network_id": 1,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 34,
+                "name": "Send Money",
+                "code": "*185*1*1",
+                "network_id": 1,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 12,
+                        "ussd_action_id": 34,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 13,
+                        "ussd_action_id": 34,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 37,
+                "name": "Withdraw Cash",
+                "code": "*185*3",
+                "network_id": 1,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 18,
+                        "ussd_action_id": 37,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 38,
+                "name": "Get a loan",
+                "code": "*185*8",
+                "network_id": 1,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 40,
+                "name": "Lyca mobile 20GB@10k",
+                "code": "*252*6*2*3",
+                "network_id": 1,
+                "section": 0,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 19,
+                        "ussd_action_id": 40,
+                        "type": 1,
+                        "description": "Enter Lyca mobile number",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "mcc": "641",
+        "mnc": "10",
+        "hni": "64110",
+        "iso": "ug",
+        "country": "Uganda",
+        "country_code": "256",
+        "network_name": "Mtn Uganda",
+        "created_at": "2020-08-04T14:12:05.000000Z",
+        "updated_at": "2020-08-04T14:12:05.000000Z",
+        "ussd_actions": [
+            {
+                "id": 2,
+                "name": "check balance",
+                "code": "*131",
+                "network_id": 2,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 5,
+                "name": "Buy For Another",
+                "code": "*185*2*1*2",
+                "network_id": 2,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 3,
+                        "ussd_action_id": 5,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 4,
+                        "ussd_action_id": 5,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "name": "Borrow Airtime",
+                "code": "*185",
+                "network_id": 2,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 12,
+                "name": "Buy Airtime",
+                "code": "*185*2*1*1",
+                "network_id": 2,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 8,
+                        "ussd_action_id": 12,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "0",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 15,
+                "name": "PakaLast",
+                "code": "*160*1",
+                "network_id": 2,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 18,
+                "name": "Data Bundles",
+                "code": "*160*2*2*1",
+                "network_id": 2,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 21,
+                "name": "Check Balance",
+                "code": "*131",
+                "network_id": 2,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 24,
+                "name": "Data OTT",
+                "code": "*165*2*6*1",
+                "network_id": 2,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 27,
+                "name": "Data PakaLast",
+                "code": "*160*1",
+                "network_id": 2,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 32,
+                "name": "Check Balance",
+                "code": "*185*10*1",
+                "network_id": 2,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 35,
+                "name": "Send Money",
+                "code": "*185*1*1",
+                "network_id": 2,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 14,
+                        "ussd_action_id": 35,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 15,
+                        "ussd_action_id": 35,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 39,
+                "name": "Get a loan",
+                "code": "*185*5*1*2",
+                "network_id": 2,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 41,
+                "name": "Lyca mobile 20GB@10k",
+                "code": "*252*6*2*3",
+                "network_id": 2,
+                "section": 0,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 20,
+                        "ussd_action_id": 41,
+                        "type": 1,
+                        "description": "Enter Lyca mobile number",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "mcc": "641",
+        "mnc": "12",
+        "hni": "64112",
+        "iso": "ug",
+        "country": "Uganda",
+        "country_code": "256",
+        "network_name": "Africell Uganda",
+        "created_at": "2020-08-05T10:46:32.000000Z",
+        "updated_at": "2020-08-05T10:46:32.000000Z",
+        "ussd_actions": [
+            {
+                "id": 3,
+                "name": "check balance",
+                "code": "*131",
+                "network_id": 3,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 8,
+                "name": "Borrow Airtime",
+                "code": "*160",
+                "network_id": 3,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 10,
+                "name": "Call Me Back",
+                "code": "*100*8",
+                "network_id": 3,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 6,
+                        "ussd_action_id": 10,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 13,
+                "name": "Buy Airtime",
+                "code": "*185*2*1*1",
+                "network_id": 3,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 9,
+                        "ussd_action_id": 13,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "0",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 16,
+                "name": "PakaLast",
+                "code": "*134",
+                "network_id": 3,
+                "section": 1,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 19,
+                "name": "Data Bundles",
+                "code": "*133",
+                "network_id": 3,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 22,
+                "name": "Check Balance",
+                "code": "*100*9*2",
+                "network_id": 3,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 25,
+                "name": "Data OTT",
+                "code": "*133*8",
+                "network_id": 3,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 28,
+                "name": "Data PakaLast",
+                "code": "*134",
+                "network_id": 3,
+                "section": 2,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 33,
+                "name": "Check Balance",
+                "code": "*185*10*1",
+                "network_id": 3,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": []
+            },
+            {
+                "id": 36,
+                "name": "Send Money",
+                "code": "*185*1*1",
+                "network_id": 3,
+                "section": 3,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 16,
+                        "ussd_action_id": 36,
+                        "type": 1,
+                        "description": "Telephone",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    },
+                    {
+                        "id": 17,
+                        "ussd_action_id": 36,
+                        "type": 2,
+                        "description": "Amount",
+                        "defaultValue": "",
+                        "weight": 1,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            },
+            {
+                "id": 42,
+                "name": "Lyca mobile 20GB@10k",
+                "code": "*252*6*2*3",
+                "network_id": 3,
+                "section": 0,
+                "weight": 0,
+                "created_at": "2020-08-05T13:37:13.000000Z",
+                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "steps": [
+                    {
+                        "id": 21,
+                        "ussd_action_id": 42,
+                        "type": 1,
+                        "description": "Enter Lyca mobile number",
+                        "defaultValue": "07",
+                        "weight": 0,
+                        "stepsAfter": "",
+                        "created_at": "2020-08-05T13:37:13.000000Z",
+                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "mcc": "641",
+        "mnc": "13",
+        "hni": "64113",
+        "iso": "ug",
+        "country": "Uganda",
+        "country_code": "256",
+        "network_name": "Lyca Mobile Uganda",
+        "created_at": "2020-08-05T10:47:11.000000Z",
+        "updated_at": "2020-08-05T10:47:11.000000Z",
+        "ussd_actions": []
+    }
+]
