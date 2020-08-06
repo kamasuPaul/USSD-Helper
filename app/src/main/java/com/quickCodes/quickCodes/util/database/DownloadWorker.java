@@ -2,6 +2,7 @@ package com.quickCodes.quickCodes.util.database;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.Tools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,52 +44,63 @@ public class DownloadWorker extends Worker {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "https://blackbooksuganda.com/api/quickcodes";
+        String url1 = "https://blackbooksuganda.com/api/quickcodes";
+        String url = "https://quickcodes.kamasupaul.com/api/network/" + Tools.getMcc(context) + "/ussdcodes";
 
         //build the request
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
             s -> {
                 try {
                     DataRepository dataRepository = new DataRepository((Application)context);
-                    JSONArray codes = new JSONArray(s);//array with all the codes
-                    //loop over json array with all the codes
-                    for(int i=0;i<codes.length();i++){
-                        JSONObject code = codes.getJSONObject(i);
+                    JSONArray networks = new JSONArray(s);
+                    for (int i = 0; i < networks.length(); i++) {
+                        Log.d(TAG, "size" + networks.length());
+                        JSONObject network = networks.getJSONObject(i);
+                        String hni = network.optString("hni", "");
+                        JSONArray ussd_actions = network.optJSONArray("ussd_actions");
+                        Log.d(TAG, "size_actions" + ussd_actions.length());
 
-                        int id = code.optInt("id");
-                        String name = code.optString("name");
-                        String airtelCode = code.optString("code");
-                        String hni = code.optString("hni");
-                        int section = code.optInt("section");
-                        UssdAction ussdAction = new UssdAction(id, name, airtelCode, hni, section, 0);
+                        for (int j = 0; j < ussd_actions.length(); j++) {
 
-                        //get the local object and get its weight,and set this objects weight
-                        //to that of the local object so its not overriden
-                        UssdActionWithSteps localAction = dataRepository.getUssdAction(String.valueOf(id));
-                        if (localAction != null) {
-                            ussdAction.setWeight(localAction.action.getWeight());
+                            JSONObject code = ussd_actions.getJSONObject(j);
+
+                            int id = code.optInt("id");
+                            String name = code.optString("name");
+                            String airtelCode = code.optString("code");
+                            int section = code.optInt("section");
+                            int weight = code.optInt("weight");
+                            UssdAction ussdAction = new UssdAction(id, name, airtelCode, hni, section, weight);
+
+                            //get the local object and get its weight,and set this objects weight
+                            //to that of the local object so its not overriden
+                            UssdActionWithSteps localAction = dataRepository.getUssdAction(String.valueOf(id));
+                            if (localAction != null) {
+                                ussdAction.setWeight(localAction.action.getWeight());
+                            }
+
+                            //TODO check if, it was deleted by checking is it has a flag of deleted set to true
+                            JSONArray steps = code.getJSONArray("steps");
+                            List<Step> stepList = new ArrayList<>();
+                            for (int n = 0; n < steps.length(); n++) {
+                                JSONObject step = steps.getJSONObject(n);
+                                int type = step.optInt("type");
+                                int step_weight = step.optInt("weight");
+                                String desc = step.optString("description");
+                                String defaultValue = step.optString("defaultValue");
+                                int ussd_action_id = step.optInt("ussd_action_id");
+                                Step step1 = new Step(ussd_action_id, type, step_weight, desc, defaultValue);
+                                stepList.add(step1);
+                            }
+                            Log.d(TAG, ussdAction.toString());
+
+                            //insert the code into the local database
+                            dataRepository.insertAll(new UssdActionWithSteps(ussdAction, stepList));
+
                         }
-
-                        //TODO check if, it was deleted by checking is it has a flag of deleted set to true
-                        JSONArray steps = code.getJSONArray("steps");
-                        List<Step>stepList = new ArrayList<>();
-                        for(int j=0;j<steps.length();j++){
-                            JSONObject step = steps.getJSONObject(j);
-                            int type = step.optInt("type");
-                            int weight = step.optInt("weight");
-                            String desc = step.optString("description");
-                            String defaultValue = step.optString("defaultValue");
-                            int ussd_action_id = step.optInt("ussd_action_id");
-                            Step step1 = new Step(ussd_action_id, type, weight, desc, defaultValue);
-                            stepList.add(step1);
-                        }
-                        //insert the code into the local database
-                        dataRepository.insertAll(new UssdActionWithSteps(ussdAction,stepList));
-
                     }
-//                    Toast.makeText(context, "Codes have updated", Toast.LENGTH_SHORT).show();
 
                 } catch (JSONException e) {
+                    Log.d(TAG, "error" + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -98,7 +111,7 @@ public class DownloadWorker extends Worker {
             });
 
         // Add the request to the RequestQueue.
-//        queue.add(stringRequest);
+        queue.add(stringRequest);
 
     }
 }
