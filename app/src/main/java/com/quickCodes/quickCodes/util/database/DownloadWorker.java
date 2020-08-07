@@ -54,11 +54,11 @@ public class DownloadWorker extends Worker {
                     DataRepository dataRepository = new DataRepository((Application)context);
                     JSONArray networks = new JSONArray(s);
                     for (int i = 0; i < networks.length(); i++) {
-                        Log.d(TAG, "size" + networks.length());
+//                        Log.d(TAG, "size" + networks.length());
                         JSONObject network = networks.getJSONObject(i);
                         String hni = network.optString("hni", "");
                         JSONArray ussd_actions = network.optJSONArray("ussd_actions");
-                        Log.d(TAG, "size_actions" + ussd_actions.length());
+//                        Log.d(TAG, "size_actions" + ussd_actions.length());
 
                         for (int j = 0; j < ussd_actions.length(); j++) {
 
@@ -91,7 +91,7 @@ public class DownloadWorker extends Worker {
                                 Step step1 = new Step(ussd_action_id, type, step_weight, desc, defaultValue);
                                 stepList.add(step1);
                             }
-                            Log.d(TAG, ussdAction.toString());
+//                            Log.d(TAG, ussdAction.toString());
 
                             //insert the code into the local database
                             dataRepository.insertAll(new UssdActionWithSteps(ussdAction, stepList));
