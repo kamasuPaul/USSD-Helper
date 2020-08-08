@@ -3,9 +3,12 @@ package com.quickCodes.quickCodes.util.database;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.Tools;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -16,12 +19,22 @@ public class DataRepository {
     public DataRepository(Application application){
         MyRoomDatabase db = MyRoomDatabase.getDatabase( application);
         ussdActionDao = db.ussdActionDao();
-        allUssdActions = ussdActionDao.getActionsWithSteps();
+
+        //only get ussd actions that belong to simcards inside the phone
+        List<String> hnis = new ArrayList<>();
+        for (SimCard card : Tools.getAvailableSimCards(application.getApplicationContext())) {
+            hnis.add(card.getHni());
+        }
+
+        allUssdActions = ussdActionDao.getActionsWithSteps(hnis);
 
 
     }
 
-    public LiveData<List<UssdActionWithSteps>> getAllUssdActions(){return allUssdActions;}
+    public LiveData<List<UssdActionWithSteps>> getAllUssdActions() {
+
+        return allUssdActions;
+    }
 
     public void delete(UssdAction ussdAction){
         new deleteAsyncTask(ussdActionDao).execute(ussdAction);

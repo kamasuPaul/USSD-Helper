@@ -50,8 +50,8 @@ public abstract class UssdActionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)//TODO change replace strategy
     abstract void insertAll(List<Step>steps);
     @Transaction
-    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC")
-    public abstract LiveData<List<UssdActionWithSteps>> getActionsWithSteps();
+    @Query("SELECT * FROM ussd_actions WHERE hni IN (:hnis) ORDER BY weight DESC")
+    public abstract LiveData<List<UssdActionWithSteps>> getActionsWithSteps(List<String> hnis);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insert(UssdAction ussdAction);

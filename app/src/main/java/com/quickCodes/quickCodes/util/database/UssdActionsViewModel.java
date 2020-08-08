@@ -17,6 +17,7 @@ public class UssdActionsViewModel extends AndroidViewModel {
     public UssdActionsViewModel(Application application) {
         super(application);
         repository = new DataRepository(application);
+
         ussdActions = repository.getAllUssdActions();
     }
     public LiveData<List<UssdActionWithSteps>> getAllCustomActions(){return ussdActions;}

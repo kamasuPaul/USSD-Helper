@@ -165,11 +165,9 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         try {
             JSONArray networks = new JSONArray(loadJsonFromAsset(context));
             for (int i = 0; i < networks.length(); i++) {
-                Log.d(TAG, "size" + networks.length());
                 JSONObject network = networks.getJSONObject(i);
                 String hni = network.optString("hni", "");
                 JSONArray ussd_actions = network.optJSONArray("ussd_actions");
-                Log.d(TAG, "size_actions" + ussd_actions.length());
 
                 for (int j = 0; j < ussd_actions.length(); j++) {
 
@@ -189,8 +187,9 @@ public abstract class MyRoomDatabase extends RoomDatabase {
 //                       ussdAction.setWeight(localAction.action.getWeight());
 //                   }
 
-                    //TODO check if, it was deleted by checking is it has a flag of deleted set to true
                     JSONArray steps = code.getJSONArray("steps");
+                    Log.d(TAG, name);
+                    Log.d(TAG, "len: " + steps.length());
                     List<Step> stepList = new ArrayList<>();
                     for (int n = 0; n < steps.length(); n++) {
                         JSONObject step = steps.getJSONObject(n);
@@ -202,7 +201,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                         Step step1 = new Step(ussd_action_id, type, step_weight, desc, defaultValue);
                         stepList.add(step1);
                     }
-                    Log.d(TAG, ussdAction.toString());
 
                     //insert the code into the local database
                     dao.insertUssdActionWithSteps(new UssdActionWithSteps(ussdAction, stepList));
@@ -226,7 +224,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         Log.d(TAG, "After creating database");
 //                        super.onCreate(db);
-                        addUssdCodes(context);
                         //schedule a job schedular to request for codes from the database every 24 hours
                         //constraints
                         Constraints constraints = new Constraints.Builder()
@@ -245,7 +242,6 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                     @Override
                     public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
                         Log.d(TAG, "After destructive migration");
-                        addUssdCodes(context);
 
                     }
                 })
@@ -254,10 +250,8 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         //add new data to db,only if has not been added already
         if (!Tools.dataWasAdded(context)) {
             addUssdCodes(context);
-            Log.d(TAG, "ADD DATA");
 
         } else {
-            Log.d(TAG, "DIDNT ADD DATA");
 
         }
 

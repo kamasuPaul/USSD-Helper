@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -67,6 +68,7 @@ public class MainFragment extends Fragment {
                 List<UssdActionWithSteps> dataCodes = new ArrayList<>();
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    Log.d(TAG, us.action.getHni());
                     //skip nulls
                     if (us == null || us.action == null) continue;
                     if (us.action.getName().length() < 15) {
@@ -94,6 +96,9 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes.setUssdActions(airtimeCodes);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
+                //filter out actions that dont apply for the currently selected network
+                filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), null);
 
             }
         });
@@ -128,7 +133,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void filterAndHideActions(String mode, View root) {
+    private void filterAndHideActions(String mode, @Nullable View root) {
         if (mode != null) {
 
             viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
@@ -166,22 +171,22 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes.setUssdActions(airtimeCodes);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
-                Log.d(TAG, "air:" + airtimeCodes.size());
-                Log.d(TAG, "data:" + dataCodes.size());
-                Log.d(TAG, "mm:" + mmoneyCodes.size());
 
-                if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
-                    Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
-                    snackbar.setAction("Add ", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
-                        }
-                    });
-                    snackbar.show();
+                if (root != null) {
+                    if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
+                        Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
+                        snackbar.setAction("Add ", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
+                            }
+                        });
+                        snackbar.show();
+                    }
                 }
 
             });
+
         }
 
     }
