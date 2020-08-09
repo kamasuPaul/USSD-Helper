@@ -331,7 +331,7 @@ public class MainFragment extends Fragment {
 
         }
         //filter out actions that dont apply for the currently selected network
-        filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), root);
+//        filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), root);
 
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));

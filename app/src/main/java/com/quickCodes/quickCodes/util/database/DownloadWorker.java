@@ -77,8 +77,18 @@ public class DownloadWorker extends Worker {
                             if (localAction != null) {
                                 ussdAction.setWeight(localAction.action.getWeight());
                             }
+                            //TODO add delete in another way
+                            //Step 1. delete all ussd codes apart from user dialed codes
+                            //Step 2. add the ussd codes got from the api,such that deleted codes are not
+                            //are not saved again
 
-                            //TODO check if, it was deleted by checking is it has a flag of deleted set to true
+                            //check if it was deleted by checking is it has a flag of deleted set to true
+                            boolean deleted = code.optBoolean("deleted", false);
+                            if (deleted) {
+                                dataRepository.delete(localAction.action);
+                                continue;
+                            }
+
                             JSONArray steps = code.getJSONArray("steps");
                             List<Step> stepList = new ArrayList<>();
                             for (int n = 0; n < steps.length(); n++) {
