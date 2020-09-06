@@ -2,7 +2,6 @@ package com.quickCodes.quickCodes.util.database;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -94,10 +93,10 @@ public class DownloadWorker extends Worker {
                             for (int n = 0; n < steps.length(); n++) {
                                 JSONObject step = steps.getJSONObject(n);
                                 int type = step.optInt("type");
-                                int step_weight = step.optInt("weight");
-                                String desc = step.optString("description");
-                                String defaultValue = step.optString("defaultValue");
-                                int ussd_action_id = step.optInt("ussd_action_id");
+                                int step_weight = step.optInt("weight", 0);
+                                String desc = step.optString("description", "");
+                                String defaultValue = step.optString("defaultValue", "");
+                                int ussd_action_id = step.optInt("ussd_action_id", id);
                                 Step step1 = new Step(ussd_action_id, type, step_weight, desc, defaultValue);
                                 stepList.add(step1);
                             }
@@ -110,8 +109,7 @@ public class DownloadWorker extends Worker {
                     }
 
                 } catch (JSONException e) {
-                    Log.d(TAG, "error" + e.getMessage());
-                    e.printStackTrace();
+//                    Log.d(TAG, "error in download worker json exception");
                 }
 
             },
