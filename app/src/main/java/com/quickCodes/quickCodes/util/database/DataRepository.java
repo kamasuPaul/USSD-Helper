@@ -1,6 +1,6 @@
 package com.quickCodes.quickCodes.util.database;
 
-import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -16,13 +16,14 @@ import androidx.lifecycle.LiveData;
 public class DataRepository {
     UssdActionDao ussdActionDao;
     LiveData<List<UssdActionWithSteps>> allUssdActions;
-    public DataRepository(Application application){
-        MyRoomDatabase db = MyRoomDatabase.getDatabase( application);
+
+    public DataRepository(Context context) {
+        MyRoomDatabase db = MyRoomDatabase.getDatabase(context);
         ussdActionDao = db.ussdActionDao();
 
         //only get ussd actions that belong to simcards inside the phone
         List<String> hnis = new ArrayList<>();
-        for (SimCard card : Tools.getAvailableSimCards(application.getApplicationContext())) {
+        for (SimCard card : Tools.getAvailableSimCards(context)) {
             hnis.add(card.getHni());
         }
 

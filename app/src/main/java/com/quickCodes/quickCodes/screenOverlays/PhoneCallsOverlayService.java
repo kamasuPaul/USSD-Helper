@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.screenOverlays;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,11 +50,6 @@ public class PhoneCallsOverlayService extends LifecycleService {
 
     Long codeId;
     UssdAction action;
-
-    public PhoneCallsOverlayService() {
-        dataRepository = new DataRepository((Application) getApplicationContext());
-        allUssdActions = dataRepository.getAllUssdActionsNoLiveData();
-    }
 
     @Nullable
     @Override
@@ -116,6 +110,14 @@ public class PhoneCallsOverlayService extends LifecycleService {
     @Override
     public void onCreate() {
         super.onCreate();
+        Context context = this;
+        if (context == null) {//donot continue if the application context is null,
+            //null context leads to crashes
+            stopSelf();
+        }
+        dataRepository = new DataRepository(context);
+        allUssdActions = dataRepository.getAllUssdActionsNoLiveData();
+
         SharedPreferences preferences =
             this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
         code = preferences.getString("code", null);
