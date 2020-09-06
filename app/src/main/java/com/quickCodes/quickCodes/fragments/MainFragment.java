@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.quickCodes.quickCodes.AddYourOwnActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -174,14 +171,16 @@ public class MainFragment extends Fragment {
 
                 if (root != null) {
                     if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
-                        Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
-                        snackbar.setAction("Add ", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
-                            }
-                        });
-                        snackbar.show();
+                        //TODO show no codes found page with button to add custom
+                        Toast.makeText(getActivity(), "No default ussd codes found for this network, Try adding custom codes", Toast.LENGTH_SHORT).show();
+//                        Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
+//                        snackbar.setAction("Add ", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
+//                            }
+//                        });
+//                        snackbar.show();
                     }
                 }
 
