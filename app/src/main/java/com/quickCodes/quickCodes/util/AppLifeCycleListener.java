@@ -2,6 +2,7 @@ package com.quickCodes.quickCodes.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.screenOverlays.ChatHeadService;
@@ -37,7 +38,12 @@ public class AppLifeCycleListener  implements  LifecycleObserver {
     public void startOverlay(){
         if (Tools.showMeOverlay(context)) {
             //start the screen overlay, the 3 dots
-            context.startService(new Intent(context, ChatHeadService.class));
+            try {
+                //TODO add foreground service
+                context.startService(new Intent(context, ChatHeadService.class));
+            } catch (Exception e) {
+                Toast.makeText(context, "Failed to start widget", Toast.LENGTH_SHORT).show();
+            }
         } else {
             context.stopService(new Intent(context, ChatHeadService.class));
         }

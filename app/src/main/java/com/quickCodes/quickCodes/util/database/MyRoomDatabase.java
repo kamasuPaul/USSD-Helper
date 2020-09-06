@@ -219,6 +219,7 @@ public abstract class MyRoomDatabase extends RoomDatabase {
                 .addMigrations(Migration_1_2)
                 .addMigrations(Migration_2_3)
                 .addMigrations(Migration_3_4)
+                .fallbackToDestructiveMigration()
                 .addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
