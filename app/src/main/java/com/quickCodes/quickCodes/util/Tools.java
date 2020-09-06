@@ -16,7 +16,6 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -259,7 +258,7 @@ public class Tools {
 
             final UssdActionWithSteps finalUssdAction = ussdActionWithSteps;
             String finalCode = code;
-            Log.d(TAG, finalCode);
+//            Log.d(TAG, finalCode);
             ((Button) customDialog.findViewById(R.id.bt_okay)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -293,7 +292,7 @@ public class Tools {
 
                             }
                         }
-                        Log.d(TAG, "step:" + stringBuilder.toString());
+//                        Log.d(TAG, "step:" + stringBuilder.toString());
 
 
                     }
@@ -301,7 +300,7 @@ public class Tools {
                     //run the code
                     String fullCode = stringBuilder.toString() + Uri.encode("#");
 //                    Log.d(TAG, finalCode);
-                    Log.d(TAG, fullCode);
+//                    Log.d(TAG, fullCode);
 
                     customDialog.dismiss();
                     //execute the ussd code
