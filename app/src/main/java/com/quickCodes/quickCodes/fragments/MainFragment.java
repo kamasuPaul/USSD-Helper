@@ -169,10 +169,10 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
 
-                if (root != null) {
+//                if (root != null) {// A view is required to show snabars
                     if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
                         //TODO show no codes found page with button to add custom
-                        Toast.makeText(getActivity(), "No default ussd codes found for this network, Try adding custom codes", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No default ussd codes found for this network, Try adding custom codes", Toast.LENGTH_LONG).show();
 //                        Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
 //                        snackbar.setAction("Add ", new View.OnClickListener() {
 //                            @Override
@@ -182,7 +182,7 @@ public class MainFragment extends Fragment {
 //                        });
 //                        snackbar.show();
                     }
-                }
+//                }
 
             });
 
