@@ -480,6 +480,10 @@ public class DialPadActivity extends AppCompatActivity {
 
     public void executeUssdAction(UssdActionWithSteps ussdActionWithSteps) {
         String code = ussdActionWithSteps.action.getCode();//airtel code is default code
+        if (code == null) {
+            Toast.makeText(DialPadActivity.this, "Failed to make call", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //check for phone number clicks
         if (!code.contains("*")) {//if it doesnt contain a * its aphone number, exececute it immediately
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + code)));
