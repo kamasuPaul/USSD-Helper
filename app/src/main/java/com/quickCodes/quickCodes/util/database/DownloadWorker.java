@@ -1,6 +1,5 @@
 package com.quickCodes.quickCodes.util.database;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.android.volley.Request;
@@ -50,7 +49,7 @@ public class DownloadWorker extends Worker {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
             s -> {
                 try {
-                    DataRepository dataRepository = new DataRepository((Application)context);
+                    DataRepository dataRepository = new DataRepository(context);//SECURITY EXCEPTION HERE,I DONT KNOW CAUSE
                     JSONArray networks = new JSONArray(s);
                     for (int i = 0; i < networks.length(); i++) {
 //                        Log.d(TAG, "size" + networks.length());
