@@ -54,6 +54,18 @@ public class UssdDetector extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         //catch all errors,now will fix them after knowing exact cause
         try {
+            if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
+                String typed = event.getText().toString().replace("[", "").replace("]", "").trim();
+                //if starts with a * and ends with a # its a ussd code save it in shared preferences
+                //other numbers will be concated on later
+                if (typed.startsWith("*") && typed.endsWith("#")) {
+                    SharedPreferences.Editor editor =
+                        getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
+                    editor.putString("code", typed.replace("%23", "")).commit();
+                    Log.d(TAG, "EVENT");
+                }
+            }
+
             SharedPreferences preferences =
                 this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
 
@@ -106,8 +118,6 @@ public class UssdDetector extends AccessibilityService {
 
 
                 }
-//            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
                 //build the menu
                 kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
             }
