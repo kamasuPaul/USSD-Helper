@@ -46,7 +46,6 @@ public class UssdDetector extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
 //        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "ON service connected");
         super.onServiceConnected();
     }
 
@@ -62,7 +61,6 @@ public class UssdDetector extends AccessibilityService {
                     SharedPreferences.Editor editor =
                         getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
                     editor.putString("code", typed.replace("%23", "")).commit();
-                    Log.d(TAG, "EVENT");
                 }
             }
 
@@ -86,12 +84,12 @@ public class UssdDetector extends AccessibilityService {
                     // if it also contains the word enter ,implying a user is going to enter pin,
                     //otherwise it might be just a menu option
                     if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "enter")) {
-                        Log.d(TAG, "PIN STEP SKIPPED");
+//                        Log.d(TAG, "PIN STEP SKIPPED");
                         pinbox = true;
                         return;//stop here dont record the text in the box, it will contain apin
                     }
                 } else if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "password")) {
-                    Log.d(TAG, "PASS STEP SKIPPED");
+//                    Log.d(TAG, "PASS STEP SKIPPED");
                     pinbox = true;
                     return;//stop here dont record the text in the edit text,it will contain a password
                 } else {
