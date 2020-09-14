@@ -20,6 +20,8 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -73,8 +75,18 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 //set image icon of action
                 //change the image icon to a letter icon
+
+                String icon_letter = String.valueOf((ussdAction.getName()).trim().charAt(0)).toUpperCase();
+                if (!icon_letter.matches("[a-z]")) {//if the first character is not alphabetic
+                    //find the first alphabetic character in the name of this code
+                    Pattern pattern = Pattern.compile("\\p{Alpha}");
+                    Matcher matcher = pattern.matcher(ussdAction.getName());
+                    if (matcher.find()) {
+                        icon_letter = matcher.group();
+                    }
+                }
                 TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(String.valueOf((ussdAction.getName()).trim().charAt(0)).toUpperCase(), ctx.getResources().getColor(R.color.colorPrimary));
+                    .buildRound(icon_letter, ctx.getResources().getColor(R.color.colorPrimary));
                 if (null != rootView.image) {
                     if (drawable != null) {
                         try {

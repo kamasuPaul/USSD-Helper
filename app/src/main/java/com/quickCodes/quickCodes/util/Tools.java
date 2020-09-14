@@ -47,6 +47,7 @@ import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class Tools {
+    public static final String HNI_AUTO_SAVED_CODES = "auto_saved";
     private static final String TOOLS_PREF = "tools_pref";
     private static final String MCC_PREF = "mcc_pref";
     private static final String SELECTED_SIMCARD = "selected_simcard";
