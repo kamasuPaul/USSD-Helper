@@ -283,7 +283,7 @@
             },
             {
                 "id": 38,
-                "name": "Get a loan",
+                "name": "Wewole",
                 "code": "*185*8",
                 "network_id": 1,
                 "section": 3,
@@ -521,7 +521,7 @@
             },
             {
                 "id": 39,
-                "name": "Get a loan",
+                "name": "MoKash",
                 "code": "*185*5*1*2",
                 "network_id": 2,
                 "section": 3,
