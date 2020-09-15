@@ -3,7 +3,6 @@ package com.quickCodes.quickCodes.fragments;
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +64,6 @@ public class MainFragment extends Fragment {
                 List<UssdActionWithSteps> dataCodes = new ArrayList<>();
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
-                    Log.d(TAG, us.action.getHni());
                     //skip nulls
                     if (us == null || us.action == null) continue;
                     if (us.action.getName().length() < 15) {
@@ -77,9 +75,9 @@ public class MainFragment extends Fragment {
                         us.action.setName(us.action.getName() + d);
                     }
                     //skip loan codes
-                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-                        continue;
-                    }
+//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+//                        continue;
+//                    }
                     if (us.action.getSection() == SEC_AIRTIME) {
                         airtimeCodes.add(us);
                     }
@@ -146,15 +144,7 @@ public class MainFragment extends Fragment {
                             continue;
 
                     }
-//                    if (mode.contains("AFRICELL")) {
-//                        if ((us.action.getAfricellCode() == null)) {
-//                            continue;
-//                        }
-//                        String code = us.action.getAfricellCode();
-//                        if (code != null) {
-//                            if (code.contains("not")) continue;
-//                        }
-//                    }
+
                     if (us.action.getSection() == SEC_AIRTIME) {
                         airtimeCodes.add(us);
                     }

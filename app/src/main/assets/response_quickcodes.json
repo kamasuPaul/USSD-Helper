@@ -8,8 +8,8 @@
         "country": "Uganda",
         "country_code": "256",
         "network_name": "Airtel Uganda",
-        "created_at": "2020-08-04T14:08:11.000000Z",
-        "updated_at": "2020-08-04T14:11:32.000000Z",
+        "created_at": "2020-08-04T07:08:11.000000Z",
+        "updated_at": "2020-08-04T07:11:32.000000Z",
         "ussd_actions": [
             {
                 "id": 1,
@@ -18,8 +18,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-24T04:32:32.000000Z",
                 "steps": []
             },
             {
@@ -29,8 +29,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 1,
@@ -40,8 +40,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 2,
@@ -51,8 +51,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -63,8 +63,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -74,8 +74,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 5,
@@ -85,8 +85,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -97,8 +97,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 7,
@@ -108,8 +108,8 @@
                         "defaultValue": "0",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -120,8 +120,8 @@
                 "network_id": 1,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -131,8 +131,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -142,8 +142,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -153,8 +153,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -164,8 +164,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -175,8 +175,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -186,8 +186,8 @@
                 "network_id": 1,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 10,
@@ -197,8 +197,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 11,
@@ -208,8 +208,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -220,8 +220,8 @@
                 "network_id": 1,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -231,8 +231,8 @@
                 "network_id": 1,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 12,
@@ -242,8 +242,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 13,
@@ -253,8 +253,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -265,8 +265,8 @@
                 "network_id": 1,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 18,
@@ -276,8 +276,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -288,8 +288,8 @@
                 "network_id": 1,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -297,21 +297,32 @@
                 "name": "Lyca mobile 20GB@10k",
                 "code": "*252*6*2*3",
                 "network_id": 1,
-                "section": 0,
+                "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-09-15T19:34:46.000000Z",
                 "steps": [
                     {
-                        "id": 19,
+                        "id": 26,
+                        "ussd_action_id": 40,
+                        "type": 3,
+                        "description": "Choose package",
+                        "defaultValue": "1:20GB@10K<>2:50GB@25k<>3:100GB@45K",
+                        "weight": 1,
+                        "stepsAfter": "1",
+                        "created_at": "2020-09-15T19:34:46.000000Z",
+                        "updated_at": "2020-09-15T19:34:46.000000Z"
+                    },
+                    {
+                        "id": 25,
                         "ussd_action_id": 40,
                         "type": 1,
                         "description": "Enter Lyca mobile number",
                         "defaultValue": "07",
                         "weight": 0,
-                        "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "stepsAfter": null,
+                        "created_at": "2020-09-15T19:34:46.000000Z",
+                        "updated_at": "2020-09-15T19:34:46.000000Z"
                     }
                 ]
             }
@@ -326,8 +337,8 @@
         "country": "Uganda",
         "country_code": "256",
         "network_name": "Mtn Uganda",
-        "created_at": "2020-08-04T14:12:05.000000Z",
-        "updated_at": "2020-08-04T14:12:05.000000Z",
+        "created_at": "2020-08-04T07:12:05.000000Z",
+        "updated_at": "2020-08-04T07:12:05.000000Z",
         "ussd_actions": [
             {
                 "id": 2,
@@ -336,8 +347,8 @@
                 "network_id": 2,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -347,8 +358,8 @@
                 "network_id": 2,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 3,
@@ -358,8 +369,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 4,
@@ -369,8 +380,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -381,8 +392,8 @@
                 "network_id": 2,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -392,8 +403,8 @@
                 "network_id": 2,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 8,
@@ -403,8 +414,8 @@
                         "defaultValue": "0",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -415,8 +426,8 @@
                 "network_id": 2,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -426,8 +437,8 @@
                 "network_id": 2,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -437,8 +448,8 @@
                 "network_id": 2,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -448,8 +459,8 @@
                 "network_id": 2,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -459,8 +470,8 @@
                 "network_id": 2,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -470,8 +481,8 @@
                 "network_id": 2,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -481,8 +492,8 @@
                 "network_id": 2,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 14,
@@ -492,8 +503,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 15,
@@ -503,8 +514,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -515,8 +526,8 @@
                 "network_id": 2,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -524,21 +535,32 @@
                 "name": "Lyca mobile 20GB@10k",
                 "code": "*252*6*2*3",
                 "network_id": 2,
-                "section": 0,
+                "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-09-15T19:35:14.000000Z",
                 "steps": [
                     {
-                        "id": 20,
+                        "id": 28,
+                        "ussd_action_id": 41,
+                        "type": 3,
+                        "description": "Choose package",
+                        "defaultValue": "1:20GB@10K<>2:50GB@25k<>3:100GB@45K",
+                        "weight": 1,
+                        "stepsAfter": "1",
+                        "created_at": "2020-09-15T19:35:14.000000Z",
+                        "updated_at": "2020-09-15T19:35:14.000000Z"
+                    },
+                    {
+                        "id": 27,
                         "ussd_action_id": 41,
                         "type": 1,
                         "description": "Enter Lyca mobile number",
                         "defaultValue": "07",
                         "weight": 0,
-                        "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "stepsAfter": null,
+                        "created_at": "2020-09-15T19:35:14.000000Z",
+                        "updated_at": "2020-09-15T19:35:14.000000Z"
                     }
                 ]
             }
@@ -553,8 +575,8 @@
         "country": "Uganda",
         "country_code": "256",
         "network_name": "Africell Uganda",
-        "created_at": "2020-08-05T10:46:32.000000Z",
-        "updated_at": "2020-08-05T10:46:32.000000Z",
+        "created_at": "2020-08-05T03:46:32.000000Z",
+        "updated_at": "2020-08-05T03:46:32.000000Z",
         "ussd_actions": [
             {
                 "id": 3,
@@ -563,8 +585,8 @@
                 "network_id": 3,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -574,8 +596,8 @@
                 "network_id": 3,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -585,8 +607,8 @@
                 "network_id": 3,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 6,
@@ -596,8 +618,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -608,8 +630,8 @@
                 "network_id": 3,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 9,
@@ -619,8 +641,8 @@
                         "defaultValue": "0",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -631,8 +653,8 @@
                 "network_id": 3,
                 "section": 1,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -642,8 +664,8 @@
                 "network_id": 3,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -653,8 +675,8 @@
                 "network_id": 3,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -664,8 +686,8 @@
                 "network_id": 3,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -675,8 +697,8 @@
                 "network_id": 3,
                 "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -686,8 +708,8 @@
                 "network_id": 3,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": []
             },
             {
@@ -697,8 +719,8 @@
                 "network_id": 3,
                 "section": 3,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-08-05T06:37:13.000000Z",
                 "steps": [
                     {
                         "id": 16,
@@ -708,8 +730,8 @@
                         "defaultValue": "07",
                         "weight": 0,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     },
                     {
                         "id": 17,
@@ -719,8 +741,8 @@
                         "defaultValue": "",
                         "weight": 1,
                         "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "created_at": "2020-08-05T06:37:13.000000Z",
+                        "updated_at": "2020-08-05T06:37:13.000000Z"
                     }
                 ]
             },
@@ -729,21 +751,32 @@
                 "name": "Lyca mobile 20GB@10k",
                 "code": "*252*6*2*3",
                 "network_id": 3,
-                "section": 0,
+                "section": 2,
                 "weight": 0,
-                "created_at": "2020-08-05T13:37:13.000000Z",
-                "updated_at": "2020-08-05T13:37:13.000000Z",
+                "created_at": "2020-08-05T06:37:13.000000Z",
+                "updated_at": "2020-09-15T19:35:37.000000Z",
                 "steps": [
                     {
-                        "id": 21,
+                        "id": 30,
+                        "ussd_action_id": 42,
+                        "type": 3,
+                        "description": "Choose package",
+                        "defaultValue": "1:20GB@10K<>2:50GB@25k<>3:100GB@45K",
+                        "weight": 1,
+                        "stepsAfter": "1",
+                        "created_at": "2020-09-15T19:35:37.000000Z",
+                        "updated_at": "2020-09-15T19:35:37.000000Z"
+                    },
+                    {
+                        "id": 29,
                         "ussd_action_id": 42,
                         "type": 1,
                         "description": "Enter Lyca mobile number",
                         "defaultValue": "07",
                         "weight": 0,
-                        "stepsAfter": "",
-                        "created_at": "2020-08-05T13:37:13.000000Z",
-                        "updated_at": "2020-08-05T13:37:13.000000Z"
+                        "stepsAfter": null,
+                        "created_at": "2020-09-15T19:35:37.000000Z",
+                        "updated_at": "2020-09-15T19:35:37.000000Z"
                     }
                 ]
             }
@@ -758,8 +791,8 @@
         "country": "Uganda",
         "country_code": "256",
         "network_name": "Lyca Mobile Uganda",
-        "created_at": "2020-08-05T10:47:11.000000Z",
-        "updated_at": "2020-08-05T10:47:11.000000Z",
+        "created_at": "2020-08-05T03:47:11.000000Z",
+        "updated_at": "2020-08-05T03:47:11.000000Z",
         "ussd_actions": []
     }
 ]
