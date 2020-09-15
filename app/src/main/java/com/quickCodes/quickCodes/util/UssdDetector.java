@@ -46,7 +46,6 @@ public class UssdDetector extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
 //        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "ON service connected");
         super.onServiceConnected();
     }
 
@@ -54,6 +53,17 @@ public class UssdDetector extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         //catch all errors,now will fix them after knowing exact cause
         try {
+            if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
+                String typed = event.getText().toString().replace("[", "").replace("]", "").trim();
+                //if starts with a * and ends with a # its a ussd code save it in shared preferences
+                //other numbers will be concated on later
+                if (typed.startsWith("*") && typed.endsWith("#")) {
+                    SharedPreferences.Editor editor =
+                        getSharedPreferences(UssdDetector.AUTO_SAVED_CODES, Context.MODE_PRIVATE).edit();
+                    editor.putString("code", typed.replace("%23", "")).commit();
+                }
+            }
+
             SharedPreferences preferences =
                 this.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
 
@@ -74,12 +84,12 @@ public class UssdDetector extends AccessibilityService {
                     // if it also contains the word enter ,implying a user is going to enter pin,
                     //otherwise it might be just a menu option
                     if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "enter")) {
-                        Log.d(TAG, "PIN STEP SKIPPED");
+//                        Log.d(TAG, "PIN STEP SKIPPED");
                         pinbox = true;
                         return;//stop here dont record the text in the box, it will contain apin
                     }
                 } else if (AdapterDialer.containsIgnoreCase(event.getText().toString(), "password")) {
-                    Log.d(TAG, "PASS STEP SKIPPED");
+//                    Log.d(TAG, "PASS STEP SKIPPED");
                     pinbox = true;
                     return;//stop here dont record the text in the edit text,it will contain a password
                 } else {
@@ -106,8 +116,6 @@ public class UssdDetector extends AccessibilityService {
 
 
                 }
-//            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
-//            Toast.makeText(this, "AMOUNT" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
                 //build the menu
                 kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
             }

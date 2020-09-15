@@ -26,6 +26,8 @@ public class DataRepository {
         for (SimCard card : Tools.getAvailableSimCards(context)) {
             hnis.add(card.getHni());
         }
+        // add hni used for auto save codes so that they also be retreived from db
+        hnis.add(Tools.HNI_AUTO_SAVED_CODES);
 
         allUssdActions = ussdActionDao.getActionsWithSteps(hnis);
 

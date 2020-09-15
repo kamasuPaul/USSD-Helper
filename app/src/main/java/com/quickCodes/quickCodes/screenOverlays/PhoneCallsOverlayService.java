@@ -24,6 +24,7 @@ import com.quickCodes.quickCodes.modals.Constants;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.DataRepository;
 
 import java.util.ArrayList;
@@ -256,7 +257,7 @@ public class PhoneCallsOverlayService extends LifecycleService {
             //save the code to the database
             Random r = new Random();
             codeId = r.nextLong();//TODO change random number generator
-            action = new UssdAction(codeId, menuItem, code.replace("#", ""), null, Constants.SEC_USER_DIALED, 0);
+            action = new UssdAction(codeId, menuItem, code.replace("#", ""), Tools.HNI_AUTO_SAVED_CODES, Constants.SEC_USER_DIALED, 0);
             List<Step> steps = new ArrayList<>();
             //get any steps if availabe ie telephone and amount
 //            Toast.makeText(this, "mobile" + preferences.getInt(STEP_TEL, 0), Toast.LENGTH_SHORT).show();
