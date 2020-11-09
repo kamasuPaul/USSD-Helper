@@ -4,15 +4,29 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UssdDetector extends AccessibilityService {
@@ -22,31 +36,81 @@ public class UssdDetector extends AccessibilityService {
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
 
+    public static void showSummary(Context context) {
+        Intent intent = new Intent(context, PhoneCallsOverlayService.class);
+        context.startService(intent);
+    }
 
     @Override
     public void onInterrupt() {
-
-    }
-
-    public static void showSummary(Context context) {
-        //only run this code if quick codes is not in the background
-//        SharedPreferences preferences =
-//            context.getSharedPreferences(AUTO_SAVED_CODES, Context.MODE_PRIVATE);
-//        String d = preferences.getString("code", null);
-//        String d1 = preferences.getString("menuItem", null);
-//        Toast.makeText(context, "summary code is :" + d + d1, Toast.LENGTH_SHORT).show();
-
-//        if (MainActivity.accessibilityServiceShouldRun) {
-            Intent intent = new Intent(context, PhoneCallsOverlayService.class);
-            context.startService(intent);
-//        }
     }
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-//        Toast.makeText(this, "ON SERVICE CONNECTED", Toast.LENGTH_SHORT).show();
-        super.onServiceConnected();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    public void showMenu(List<Integer> list) {
+        //inflate the layout_no_item
+        View chatHead = LayoutInflater.from(this).inflate(R.layout.show_menu_root, null);
+
+        //specify the window stuff
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+//                ? TYPE_APPLICATION_OVERLAY :TYPE_INPUT_METHOD,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT
+        );
+        //Specify the overlay position
+        params.gravity = Gravity.CENTER | Gravity.TOP;
+        LinearLayout layout = chatHead.findViewById(R.id.fill);
+        for (int key : list
+        ) {
+            Log.d(TAG, "" + key);
+            View child = LayoutInflater.from(this).inflate(R.layout.show_menu, null);
+            //change the image icon to a letter icon
+            // generate color based on a key (same key returns the same color), useful for list/grid views
+            ColorGenerator generator = ColorGenerator.MATERIAL;
+//                int color1 = ColorGenerator.MATERIAL.getRandomColor();//generate random color
+            int color1 = generator.getColor(String.valueOf(key));
+
+            // declare the builder object once.
+            TextDrawable.IBuilder builder = TextDrawable.builder()
+                .beginConfig()
+                .withBorder(2)
+                .endConfig()
+                .round();
+            TextDrawable drawable = builder.build(String.valueOf(key), color1);
+            ImageView imageView = child.findViewById(R.id.image);
+            if (drawable != null) {
+                try {
+                    imageView.setImageDrawable(drawable);
+                } catch (Exception e) {
+                    //Toast.makeText(get, "Some features may not work", Toast.LENGTH_SHORT).show();
+                }
+            }
+            child.setOnClickListener(v -> fill(key));
+            layout.addView(child);
+        }
+
+        //add view to the window
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager.addView(chatHead, params);
+
+
+    }
+
+    public void fill(int key) {
+        Toast.makeText(this, "Successfull :" + key, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -97,6 +161,13 @@ public class UssdDetector extends AccessibilityService {
                 }
                 //build the menu
                 kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
+                List<Integer> ilist = new ArrayList<>(kamasuMenu.keySet());
+                Collections.sort(ilist);
+//                for (int key:ilist
+//                     ) {
+//                    Log.d(TAG,""+key);
+//                }
+                showMenu(ilist);
             }
 //        if the current box is apin or password box dont record its text
             if (pinbox == true) {
