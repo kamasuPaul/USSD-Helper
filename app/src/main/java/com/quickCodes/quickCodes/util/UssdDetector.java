@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,6 +36,9 @@ public class UssdDetector extends AccessibilityService {
     private static final String TAG = "UssdDetector";
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
+    List<String> parts;
+    private AccessibilityNodeInfo textBoxNode;
+    private AccessibilityNodeInfo sendButton;
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
@@ -48,11 +52,13 @@ public class UssdDetector extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        Toast.makeText(this, "sevice connected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     public void showMenu(List<Integer> list) {
@@ -77,7 +83,7 @@ public class UssdDetector extends AccessibilityService {
             Log.d(TAG, "" + key);
             View child = LayoutInflater.from(this).inflate(R.layout.show_menu, null);
             //change the image icon to a letter icon
-            // generate color based on a key (same key returns the same color), useful for list/grid views
+            // generate color based on a key (same key returns the same color)
             ColorGenerator generator = ColorGenerator.MATERIAL;
 //                int color1 = ColorGenerator.MATERIAL.getRandomColor();//generate random color
             int color1 = generator.getColor(String.valueOf(key));
@@ -110,11 +116,19 @@ public class UssdDetector extends AccessibilityService {
 
     public void fill(int key) {
         Toast.makeText(this, "Successfull :" + key, Toast.LENGTH_SHORT).show();
+        if (textBoxNode != null) {
+            Bundle args = new Bundle();
+            args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, String.valueOf(key));
+            textBoxNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
+            if (sendButton != null)
+                sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
+        }
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        Toast.makeText(this, "event", Toast.LENGTH_SHORT).show();
         //catch all errors,now will fix them after knowing exact cause
         try {
             if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
@@ -176,6 +190,21 @@ public class UssdDetector extends AccessibilityService {
             //detect fields for entering amount and mobile number
             //ignore dialogs with the word pin to protect privacy of user
             if (event.getClassName().equals("android.app.AlertDialog")) {
+                // first get the node
+                AccessibilityNodeInfo source = event.getSource();
+                AccessibilityNodeInfo inputNode = source.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
+                textBoxNode = inputNode;
+                //try to access the send button
+                List<AccessibilityNodeInfo> nodes = source.findAccessibilityNodeInfosByText("Send");
+                if (nodes.size() > 0) {
+                    Toast.makeText(this, "size", Toast.LENGTH_SHORT).show();
+                    sendButton = nodes.get(nodes.size() - 1);
+                }
+                Toast.makeText(this, "Hello am  a dialog", Toast.LENGTH_SHORT).show();
+
+                // try to replay a ussd code
+
+
                 if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Mobile Number")) {
 //                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
                     preferences.edit().putString(STEP_TEL, preferences.getString(STEP_TEL, "") + ",T").commit();
@@ -194,6 +223,7 @@ public class UssdDetector extends AccessibilityService {
             if (event.getPackageName().equals("com.android.phone") && event.getClassName().equals("android.widget.EditText")) {
                 AccessibilityNodeInfo source = event.getSource();
                 AccessibilityNodeInfo inputNode = source.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
+                textBoxNode = inputNode;
 
                 String nodeValue = String.valueOf(inputNode.getText());
                 //append the value on if its not null an
@@ -240,7 +270,8 @@ public class UssdDetector extends AccessibilityService {
 
             }
         } catch (Exception ex) {
-            Log.d(TAG, ex.getLocalizedMessage());
+            ex.printStackTrace();
+            Log.d(TAG, "Error");
         }
 
     }
