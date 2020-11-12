@@ -35,6 +35,7 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class Tools {
     private static SubscriptionManager subscriptionManager;
     private static List<SubscriptionInfo> subList;
     public static HashMap<String, String> contacts;
+    static List<String> parts;
 
 
     @SuppressLint("MissingPermission")
@@ -125,6 +127,10 @@ public class Tools {
 
     @SuppressLint("MissingPermission")
     public static void executeUssd(String fullCode, Context context, int slot) {
+        if (true) {
+            replayUssd(fullCode, context, slot);
+            return;
+        }
         List<PhoneAccountHandle> phoneAccountHandleList;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
@@ -146,6 +152,17 @@ public class Tools {
         }
     }
 
+    public static void replayUssd(String ussdcode, Context context, int slot) {
+        ussdcode = ussdcode.substring(ussdcode.indexOf("*") + 1);
+        String code = ussdcode.replace("*", ":");
+        parts = new ArrayList<>(Arrays.asList(code.split(":")));
+        String ussd = "*" + parts.get(0) + Uri.encode("#");
+        parts.remove(0);
+
+        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
+
+    }
+
     public static void executeSuperAction(UssdActionWithSteps ussdActionWithSteps, Activity context) {
         //use codes for the currently selected simcard
         SimCard selectedSimCard = getSelectedSimCard((context));
@@ -164,7 +181,7 @@ public class Tools {
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //no steps found,execute the code immediately
-            executeUssd(code + Uri.encode("#"), context, selectedSimCard.getSlotIndex());
+            executeUssd(code, context, selectedSimCard.getSlotIndex());
         } else {
             final Dialog customDialog;
             //inflate the root dialog
@@ -299,7 +316,7 @@ public class Tools {
                     }
                     //generate the code with the values inserted
                     //run the code
-                    String fullCode = stringBuilder.toString() + Uri.encode("#");
+                    String fullCode = stringBuilder.toString();
 //                    Log.d(TAG, finalCode);
 //                    Log.d(TAG, fullCode);
 

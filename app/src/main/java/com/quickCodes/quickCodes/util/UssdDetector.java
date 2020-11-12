@@ -52,13 +52,12 @@ public class UssdDetector extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        Toast.makeText(this, "sevice connected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        parts = Tools.parts;
     }
 
     public void showMenu(List<Integer> list) {
@@ -106,6 +105,9 @@ public class UssdDetector extends AccessibilityService {
             child.setOnClickListener(v -> fill(key));
             layout.addView(child);
         }
+        if (list.size() < 1) {
+            chatHead.setVisibility(View.GONE);
+        }
 
         //add view to the window
         WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -128,7 +130,6 @@ public class UssdDetector extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Toast.makeText(this, "event", Toast.LENGTH_SHORT).show();
         //catch all errors,now will fix them after knowing exact cause
         try {
             if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
@@ -203,7 +204,11 @@ public class UssdDetector extends AccessibilityService {
                 Toast.makeText(this, "Hello am  a dialog", Toast.LENGTH_SHORT).show();
 
                 // try to replay a ussd code
-
+                if (Tools.parts != null && Tools.parts.size() > 0) {
+                    int key = Integer.parseInt(Tools.parts.get(0));
+                    Tools.parts.remove(0);
+                    fill(key);
+                }
 
                 if (AdapterDialer.containsIgnoreCase(event.getText().toString().toLowerCase(), "Enter Mobile Number")) {
 //                Toast.makeText(this, "mobile number", Toast.LENGTH_SHORT).show();
@@ -289,7 +294,11 @@ public class UssdDetector extends AccessibilityService {
                 String[] s2 = s1.split(":");
                 if (s2.length == 2) {
                     if (s2[0].trim().matches("n") || TextUtils.isDigitsOnly(s2[0].trim())) {
-                        menuItems.put(Integer.parseInt(s2[0].trim()), s2[1].trim());
+                        try {
+                            menuItems.put(Integer.parseInt(s2[0].trim()), s2[1].trim());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
