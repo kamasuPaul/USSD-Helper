@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,13 +16,10 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
+import com.quickCodes.quickCodes.adapters.AdapterMenuItems;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
 import java.util.ArrayList;
@@ -30,6 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class UssdDetector extends AccessibilityService {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
     public static final String STEP_TEL = "step_tel";
@@ -37,8 +38,11 @@ public class UssdDetector extends AccessibilityService {
     private static boolean pinbox = false;
     private static Map<Integer, String> kamasuMenu;
     List<String> parts;
+    View chatHead;
     private AccessibilityNodeInfo textBoxNode;
     private AccessibilityNodeInfo sendButton;
+    private WindowManager windowManager;
+    private AdapterMenuItems adapterMenuItems;
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
@@ -58,15 +62,14 @@ public class UssdDetector extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         parts = Tools.parts;
-    }
 
-    public void showMenu(List<Integer> list) {
         //inflate the layout_no_item
-        View chatHead = LayoutInflater.from(this).inflate(R.layout.show_menu_root, null);
+        chatHead = LayoutInflater.from(this).inflate(R.layout.show_menu_root, null);
+        chatHead.setVisibility(View.GONE);//hide it by default
 
         //specify the window stuff
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
 //            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
@@ -75,49 +78,58 @@ public class UssdDetector extends AccessibilityService {
             PixelFormat.TRANSLUCENT
         );
         //Specify the overlay position
-        params.gravity = Gravity.CENTER | Gravity.TOP;
-        LinearLayout layout = chatHead.findViewById(R.id.fill);
-        for (int key : list
-        ) {
-            Log.d(TAG, "" + key);
-            View child = LayoutInflater.from(this).inflate(R.layout.show_menu, null);
-            //change the image icon to a letter icon
-            // generate color based on a key (same key returns the same color)
-            ColorGenerator generator = ColorGenerator.MATERIAL;
-//                int color1 = ColorGenerator.MATERIAL.getRandomColor();//generate random color
-            int color1 = generator.getColor(String.valueOf(key));
+        params.gravity = Gravity.TOP | Gravity.RIGHT;
+        params.x = 30;
+        params.y = 300;
 
-            // declare the builder object once.
-            TextDrawable.IBuilder builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(2)
-                .endConfig()
-                .round();
-            TextDrawable drawable = builder.build(String.valueOf(key), color1);
-            ImageView imageView = child.findViewById(R.id.image);
-            if (drawable != null) {
-                try {
-                    imageView.setImageDrawable(drawable);
-                } catch (Exception e) {
-                    //Toast.makeText(get, "Some features may not work", Toast.LENGTH_SHORT).show();
-                }
+        RecyclerView recyclerView = chatHead.findViewById(R.id.menu_recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        adapterMenuItems = new AdapterMenuItems(this);
+        recyclerView.setAdapter(adapterMenuItems);
+        adapterMenuItems.setOnItemClickListener(new AdapterMenuItems.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, Integer obj, int position) {
+                fill(obj);
             }
-            child.setOnClickListener(v -> fill(key));
-            layout.addView(child);
-        }
-        if (list.size() < 1) {
+        });
+
+        //close button
+        ImageView closeButton = (ImageView) chatHead.findViewById(R.id.close_btn);
+        closeButton.setOnClickListener(v -> {
+            //close the service and remove the chat head from the window
             chatHead.setVisibility(View.GONE);
-        }
+        });
 
         //add view to the window
-        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(chatHead, params);
 
 
     }
 
+    public void showMenu(List<Integer> list) {
+        if (list.size() > 0) {
+            chatHead.setVisibility(View.VISIBLE);
+            adapterMenuItems.setUssdActions(list);
+            //close the automatically after one minute
+            CountDownTimer countDownTimer = new CountDownTimer(40000, 10000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                }
+
+                @Override
+                public void onFinish() {
+                    chatHead.setVisibility(View.GONE);
+                }
+            };
+            countDownTimer.start();
+
+        } else {
+            chatHead.setVisibility(View.GONE);
+        }
+    }
+
     public void fill(int key) {
-        Toast.makeText(this, "Successfull :" + key, Toast.LENGTH_SHORT).show();
         if (textBoxNode != null) {
             Bundle args = new Bundle();
             args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, String.valueOf(key));
@@ -130,8 +142,20 @@ public class UssdDetector extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+
         //catch all errors,now will fix them after knowing exact cause
         try {
+
+//            if(!event.getPackageName().equals("com.android.phone")&&(event.getEventType() != AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED)){
+//                //close the  chat head
+//                Log.d(TAG,"EVENT OFF");
+//                if(chatHead!= null){
+//                    Log.d(TAG,"EVENT MILL");
+//
+//                    chatHead.setVisibility(View.GONE);
+//                }
+//            }
+
             if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
                 String typed = event.getText().toString().replace("[", "").replace("]", "").trim();
                 //if starts with a * and ends with a # its a ussd code save it in shared preferences
@@ -195,13 +219,14 @@ public class UssdDetector extends AccessibilityService {
                 AccessibilityNodeInfo source = event.getSource();
                 AccessibilityNodeInfo inputNode = source.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);
                 textBoxNode = inputNode;
+//                Rect rect = new Rect();
+//                inputNode.getBoundsInScreen(rect);
+//                Log.d(TAG,rect.toString());
                 //try to access the send button
                 List<AccessibilityNodeInfo> nodes = source.findAccessibilityNodeInfosByText("Send");
                 if (nodes.size() > 0) {
-                    Toast.makeText(this, "size", Toast.LENGTH_SHORT).show();
                     sendButton = nodes.get(nodes.size() - 1);
                 }
-                Toast.makeText(this, "Hello am  a dialog", Toast.LENGTH_SHORT).show();
 
                 // try to replay a ussd code
                 if (Tools.parts != null && Tools.parts.size() > 0) {
@@ -308,6 +333,16 @@ public class UssdDetector extends AccessibilityService {
             Log.d(TAG, "null");
         }
         return menuItems;
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            super.onDestroy();
+            if (chatHead != null) windowManager.removeView(chatHead);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

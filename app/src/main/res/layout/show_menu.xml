@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:id="@+id/linearLayout_root"
     android:layout_height="wrap_content"
-    android:background="@color/amber_300">
+    android:background="@color/blue_300">
 
     <RelativeLayout
+        android:layout_margin="4dp"
         android:id="@+id/fill"
         android:layout_width="40dp"
         android:layout_height="40dp">
