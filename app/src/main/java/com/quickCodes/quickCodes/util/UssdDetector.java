@@ -43,6 +43,7 @@ public class UssdDetector extends AccessibilityService {
     private AccessibilityNodeInfo sendButton;
     private WindowManager windowManager;
     private AdapterMenuItems adapterMenuItems;
+    private CountDownTimer countDownTimer;
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
@@ -66,6 +67,13 @@ public class UssdDetector extends AccessibilityService {
         //inflate the layout_no_item
         chatHead = LayoutInflater.from(this).inflate(R.layout.show_menu_root, null);
         chatHead.setVisibility(View.GONE);//hide it by default
+//        chatHead.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                Toast.makeText(UssdDetector.this, "tocuched", Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
 
         //specify the window stuff
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -90,6 +98,11 @@ public class UssdDetector extends AccessibilityService {
             @Override
             public void onItemClick(View view, Integer obj, int position) {
                 fill(obj);
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+                createCountDownTimer();
+//                Toast.makeText(UssdDetector.this, "clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -112,21 +125,29 @@ public class UssdDetector extends AccessibilityService {
             chatHead.setVisibility(View.VISIBLE);
             adapterMenuItems.setUssdActions(list);
             //close the automatically after one minute
-            CountDownTimer countDownTimer = new CountDownTimer(40000, 10000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                }
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+            }
+            createCountDownTimer();
 
-                @Override
-                public void onFinish() {
-                    chatHead.setVisibility(View.GONE);
-                }
-            };
-            countDownTimer.start();
 
         } else {
             chatHead.setVisibility(View.GONE);
         }
+    }
+
+    public void createCountDownTimer() {
+        countDownTimer = new CountDownTimer(40000, 10000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                chatHead.setVisibility(View.GONE);
+            }
+        };
+        countDownTimer.start();
     }
 
     public void fill(int key) {
