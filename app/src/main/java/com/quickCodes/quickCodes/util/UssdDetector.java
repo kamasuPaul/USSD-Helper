@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
@@ -112,10 +113,14 @@ public class UssdDetector extends AccessibilityService {
             //close the service and remove the chat head from the window
             chatHead.setVisibility(View.GONE);
         });
-
-        //add view to the window
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        windowManager.addView(chatHead, params);
+        try {
+            //add view to the window
+            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            windowManager.addView(chatHead, params);
+        } catch (Exception e) {
+            Toast.makeText(this, "exception", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
 
 
     }
@@ -326,7 +331,6 @@ public class UssdDetector extends AccessibilityService {
         }
 
     }
-
 
     private Map<Integer, String> kamasuUssdMenuRebuilder(String menucontent) {
         Map<Integer, String> menuItems = new HashMap<>();

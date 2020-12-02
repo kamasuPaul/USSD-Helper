@@ -1,31 +1,53 @@
 package com.quickCodes.quickCodes;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.util.Tools;
+import com.quickCodes.quickCodes.util.UssdDetector;
+
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import static com.quickCodes.quickCodes.util.PermissionsActivity.CODE_ACCESSIBILITY;
 import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
+import static com.quickCodes.quickCodes.util.Tools.isBeastModeOn;
+import static com.quickCodes.quickCodes.util.Tools.setBeastModeOn;
 
 public class MainActivity extends AppCompatActivity {
     public static boolean accessibilityServiceShouldRun = false;
     String edit;
     public static String action_id = null;
+    Switch beastMode;
 
     public static void openDialer(Context context) {
 //        context.startActivity(new Intent(context, DialPadActivity.class));
@@ -69,9 +91,24 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
+        boolean accessibilityServiceEnabled = false;
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+        for (AccessibilityServiceInfo enabledService : runningServices) {
+            ServiceInfo serviceInfo = enabledService.getResolveInfo().serviceInfo;
+            if (serviceInfo.packageName.equals(context.getPackageName()) && serviceInfo.name.equals(service.getName())) {
+                accessibilityServiceEnabled = true;
+            }
+        }
+
+        return accessibilityServiceEnabled;
+    }
 
     private void setupToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar1);
+        beastMode = toolbar.findViewById(R.id.switch_beast_mode);
+        setupBeastMode(beastMode);
         setSupportActionBar(toolbar);
     }
 
@@ -83,33 +120,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, "Thank you for sharing , continue with"), null);
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CONTACT_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Uri contactUri = data.getData();
-                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-                Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
-
-                if (cursor != null && cursor.moveToFirst()) {
-                    int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                    String number = cursor.getString(numberIdex);
-                    if (Tools.phoneNumber != null) {
-                        if (number.startsWith("+256")) {
-                            number = number.replace("+256", "0");
-                        }
-                        number = number.replace(" ", "");
-                        Tools.setTelephone(number);
+    private void setupBeastMode(Switch beastMode) {
+        beastMode.setChecked(isBeastModeOn(MainActivity.this));
+        beastMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (!isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
+                        showDialogAbout();
+                    } else {
+                        Tools.setBeastModeOn(MainActivity.this, true);
+                        beastMode.setChecked(Tools.isBeastModeOn(MainActivity.this));
                     }
-                }
 
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "No contact selected", Toast.LENGTH_SHORT).show();
-                System.out.println("User closed the picker without selecting items.");
+                } else {
+                    setBeastModeOn(MainActivity.this, false);
+                    beastMode.setChecked(Tools.isBeastModeOn(MainActivity.this));
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -144,5 +173,85 @@ public class MainActivity extends AppCompatActivity {
         Intent searchActivityItent = new Intent(getApplicationContext(), DialPadActivity.class);
         searchActivityItent.putExtra("search", "search");
         startActivity(searchActivityItent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONTACT_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Uri contactUri = data.getData();
+                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIdex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String number = cursor.getString(numberIdex);
+                    if (Tools.phoneNumber != null) {
+                        if (number.startsWith("+256")) {
+                            number = number.replace("+256", "0");
+                        }
+                        number = number.replace(" ", "");
+                        Tools.setTelephone(number);
+                    }
+                }
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "No contact selected", Toast.LENGTH_SHORT).show();
+                System.out.println("User closed the picker without selecting items.");
+            }
+        }
+        if (requestCode == CODE_ACCESSIBILITY) {
+            Toast.makeText(this, "HOneo", Toast.LENGTH_SHORT).show();
+            if (isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
+                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+                Tools.setBeastModeOn(MainActivity.this, true);
+                beastMode.setChecked(Tools.isBeastModeOn(MainActivity.this));
+            } else {
+                Tools.setBeastModeOn(MainActivity.this, false);
+                beastMode.setChecked(Tools.isBeastModeOn(MainActivity.this));
+            }
+        }
+    }
+
+    public void showDialogAbout() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_set_accessibility);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //change the status of switch whenever the dialog closes
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                beastMode.setChecked(isBeastModeOn(MainActivity.this));
+            }
+        });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+
+        ((ImageButton) dialog.findViewById(R.id.bt_close)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        ((MaterialRippleLayout) dialog.findViewById(R.id.bt_rate)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivityForResult(intent, CODE_ACCESSIBILITY);
+
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 }

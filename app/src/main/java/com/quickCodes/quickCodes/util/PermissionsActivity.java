@@ -35,7 +35,7 @@ import androidx.work.WorkManager;
 public class PermissionsActivity extends AppCompatActivity {
 
     public static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 101;
-    private static final int CODE_ACCESSIBILITY = 102;
+    public static final int CODE_ACCESSIBILITY = 102;
     public static final String ASK_ACCESSIBILITY = "ask_accessibility";
     private static final String TAG = "USSD DETECTOR";
     public static final String ASK_TIMES = "ask_times";

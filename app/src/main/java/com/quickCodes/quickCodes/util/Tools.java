@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
@@ -127,10 +128,13 @@ public class Tools {
 
     @SuppressLint("MissingPermission")
     public static void executeUssd(String fullCode, Context context, int slot) {
-        if (true) {
+        Toast.makeText(context, "mode" + isBeastModeOn(context), Toast.LENGTH_SHORT).show();
+        if (isBeastModeOn(context)) {//if beast mode is on use this mode
             replayUssd(fullCode, context, slot);
+            Toast.makeText(context, "beast mode", Toast.LENGTH_SHORT).show();
             return;
         }
+        fullCode = fullCode + Uri.encode("#");
         List<PhoneAccountHandle> phoneAccountHandleList;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
@@ -152,6 +156,7 @@ public class Tools {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public static void replayUssd(String ussdcode, Context context, int slot) {
         ussdcode = ussdcode.substring(ussdcode.indexOf("*") + 1);
         String code = ussdcode.replace("*", ":");
@@ -159,7 +164,28 @@ public class Tools {
         String ussd = "*" + parts.get(0) + Uri.encode("#");
         parts.remove(0);
 
-        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
+        List<PhoneAccountHandle> phoneAccountHandleList;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+            phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
+            for (int i = 0; i < phoneAccountHandleList.size(); i++) {
+                PhoneAccountHandle phoneAccountHandle = phoneAccountHandleList.get(i);
+                if (i == slot) {
+                    Uri uri = Uri.parse("tel:" + ussd);
+                    Bundle extras = new Bundle();
+                    extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccountHandle);
+                    telecomManager.placeCall(uri, extras);
+                    break;//break out of the loop
+                }
+            }
+
+        } else {
+            Toast.makeText(context, "in else", Toast.LENGTH_SHORT).show();
+            //use normal way of dialing ussd code,because their is not an easy way of getting user selected simcard
+            context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
+        }
+
+//        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
 
     }
 
@@ -374,4 +400,17 @@ public class Tools {
         }
         return false;
     }
+
+    public static boolean isBeastModeOn(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean b = pref.getBoolean("beastMode", true);//get true at first
+//        pref.edit().putBoolean("beastMode", true).commit();//value of true will be returned the second and onwards
+        return b;
+    }
+
+    public static void setBeastModeOn(Context context, boolean onOrOff) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        pref.edit().putBoolean("beastMode", onOrOff).commit();//value of true will be returned the second and onwards
+    }
+
 }
