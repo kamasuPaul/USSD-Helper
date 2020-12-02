@@ -100,7 +100,7 @@ public class UssdDetector extends AccessibilityService {
         adapterMenuItems.setOnItemClickListener(new AdapterMenuItems.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Integer obj, int position) {
-                fill(obj);
+                fill(String.valueOf(obj));
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
@@ -156,10 +156,12 @@ public class UssdDetector extends AccessibilityService {
         countDownTimer.start();
     }
 
-    public void fill(int key) {
+    public void fill(String key) {
+        Log.d(TAG, "" + key);
+        Log.d(TAG, String.valueOf(key));
         if (textBoxNode != null) {
             Bundle args = new Bundle();
-            args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, String.valueOf(key));
+            args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, key);
             textBoxNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
             if (sendButton != null)
                 sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -257,7 +259,7 @@ public class UssdDetector extends AccessibilityService {
 
                 // try to replay a ussd code
                 if (Tools.parts != null && Tools.parts.size() > 0) {
-                    int key = Integer.parseInt(Tools.parts.get(0));
+                    String key = Tools.parts.get(0);
                     Tools.parts.remove(0);
                     fill(key);
                 }

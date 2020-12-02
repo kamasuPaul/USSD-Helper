@@ -19,6 +19,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -163,6 +164,7 @@ public class Tools {
         String code = ussdcode.replace("*", ":");
         parts = new ArrayList<>(Arrays.asList(code.split(":")));
         String ussd = "*" + parts.get(0) + Uri.encode("#");
+        Log.d(TAG, parts.toString());
         parts.remove(0);
 
         List<PhoneAccountHandle> phoneAccountHandleList;
