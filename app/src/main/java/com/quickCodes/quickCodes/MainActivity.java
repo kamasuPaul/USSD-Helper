@@ -1,12 +1,9 @@
 package com.quickCodes.quickCodes;
 
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -31,8 +27,6 @@ import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.UssdDetector;
-
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -91,20 +85,6 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
-    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
-        boolean accessibilityServiceEnabled = false;
-        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
-        for (AccessibilityServiceInfo enabledService : runningServices) {
-            ServiceInfo serviceInfo = enabledService.getResolveInfo().serviceInfo;
-            if (serviceInfo.packageName.equals(context.getPackageName()) && serviceInfo.name.equals(service.getName())) {
-                accessibilityServiceEnabled = true;
-            }
-        }
-
-        return accessibilityServiceEnabled;
-    }
-
     private void setupToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar1);
         beastMode = toolbar.findViewById(R.id.switch_beast_mode);
@@ -126,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (!isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
+                    if (!Tools.isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
                         showDialogAbout();
                     } else {
                         Tools.setBeastModeOn(MainActivity.this, true);
@@ -202,9 +182,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (requestCode == CODE_ACCESSIBILITY) {
-            Toast.makeText(this, "HOneo", Toast.LENGTH_SHORT).show();
-            if (isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            if (Tools.isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class)) {
                 Tools.setBeastModeOn(MainActivity.this, true);
                 beastMode.setChecked(Tools.isBeastModeOn(MainActivity.this));
             } else {

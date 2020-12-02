@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -16,7 +17,6 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
@@ -31,6 +31,9 @@ import java.util.Map;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
 public class UssdDetector extends AccessibilityService {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
@@ -80,9 +83,8 @@ public class UssdDetector extends AccessibilityService {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-//                ? TYPE_APPLICATION_OVERLAY :TYPE_INPUT_METHOD,
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                ? TYPE_APPLICATION_OVERLAY : TYPE_SYSTEM_ERROR,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
         );
@@ -118,7 +120,6 @@ public class UssdDetector extends AccessibilityService {
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
             windowManager.addView(chatHead, params);
         } catch (Exception e) {
-            Toast.makeText(this, "exception", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
