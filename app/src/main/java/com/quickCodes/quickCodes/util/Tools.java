@@ -1,11 +1,14 @@
 package com.quickCodes.quickCodes.util;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -19,6 +22,7 @@ import android.telephony.SubscriptionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -413,4 +417,17 @@ public class Tools {
         pref.edit().putBoolean("beastMode", onOrOff).commit();//value of true will be returned the second and onwards
     }
 
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
+        boolean accessibilityServiceEnabled = false;
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+        for (AccessibilityServiceInfo enabledService : runningServices) {
+            ServiceInfo serviceInfo = enabledService.getResolveInfo().serviceInfo;
+            if (serviceInfo.packageName.equals(context.getPackageName()) && serviceInfo.name.equals(service.getName())) {
+                accessibilityServiceEnabled = true;
+            }
+        }
+
+        return accessibilityServiceEnabled;
+    }
 }

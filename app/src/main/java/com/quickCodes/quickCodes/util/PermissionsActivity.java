@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -139,29 +138,6 @@ public class PermissionsActivity extends AppCompatActivity {
         }
     }
 
-    public static boolean isAccessibilityServiceEnabled(Context context) {
-        boolean accessibilityServiceEnabled = false;
-        try {
-            int enabled = Settings.Secure.getInt(
-                context.getApplicationContext().getContentResolver(),
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (enabled == 1) accessibilityServiceEnabled = true;
-            return accessibilityServiceEnabled;
-        } catch (Settings.SettingNotFoundException e) {
-            Toast.makeText(context, "Please go to Settings>Accessibility>Quick codes and enable accessibility access", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-
-//        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-//        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-//        for (AccessibilityServiceInfo service : runningServices) {
-//            if (service.getResolveInfo().serviceInfo.packageName.equals(context.getPackageName())) {
-//                accessibilityServiceEnabled = true;
-//            }
-//        }
-        return accessibilityServiceEnabled;
-    }
-
     private void updateUi() {
         boolean permission = false;
         boolean draw = false;
@@ -209,43 +185,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (askTimes <= 0) {
             return true;
         }
-
-
-        int accessibilityEnabled = 0;
-        final String service = getPackageName() + "/" + UssdDetector.class.getCanonicalName();
-        try {
-            accessibilityEnabled = Settings.Secure.getInt(
-                mContext.getApplicationContext().getContentResolver(),
-                android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-//            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
-        } catch (Settings.SettingNotFoundException e) {
-//            Log.e(TAG, "Error finding setting, default accessibility to not found: "
-//                + e.getMessage());
-        }
-        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
-
-        if (accessibilityEnabled == 1) {
-//            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
-            String settingValue = Settings.Secure.getString(
-                mContext.getApplicationContext().getContentResolver(),
-                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (settingValue != null) {
-                mStringColonSplitter.setString(settingValue);
-                while (mStringColonSplitter.hasNext()) {
-                    String accessibilityService = mStringColonSplitter.next();
-
-//                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
-                    if (accessibilityService.equalsIgnoreCase(service)) {
-//                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
-                        return true;
-                    }
-                }
-            }
-        } else {
-//            Log.v(TAG, "***ACCESSIBILITY IS DISABLED***");
-        }
-
-        return false;
+        return Tools.isAccessibilityServiceEnabled(mContext, UssdDetector.class);
     }
 
     private void checkPermissions() {
