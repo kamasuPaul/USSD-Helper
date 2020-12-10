@@ -67,9 +67,4 @@
     </string>
     <string name="quick_access_widget_off">This widget allows you to  open quick codes easily from any screen,click to enable</string>
     <string name="quick_access_dots_pref">quick_access_dots</string>
-
-    <string name="beast_mode_key">beast_mode</string>
-    <string name="beast_mode_title">Beast mode</string>
-    <string name="beast_mode_off"> Beast mode is off</string>
-    <string name="beast_mode_on">This feature helps when some ussd codes fail to function as expected. It is highly recommended you leave it enabled</string>
 </resources>
