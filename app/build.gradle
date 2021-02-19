@@ -12,6 +12,7 @@ android {
         targetSdkVersion 28
         versionCode 12
         versionName "1.5.0"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 //        vectorDrawables {
 //            useSupportLibrary true
@@ -89,8 +90,16 @@ dependencies {
     def sensy_version = "1.8.0"
     implementation "com.github.nisrulz:sensey:$sensy_version"
 
-    implementation 'com.google.firebase:firebase-analytics:17.2.2' //google analytics
+    implementation 'com.google.firebase:firebase-analytics:18.0.2' //google analytics
     implementation 'com.google.firebase:firebase-crashlytics:17.1.0' //Firebase Crashlytics SDK.
+
+    //admob
+    implementation ('com.google.android.gms:play-services-ads:19.7.0')
+
+    //multidex
+    implementation 'com.android.support:multidex:1.0.3'
+
+
 
 
 

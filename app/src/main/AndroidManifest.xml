@@ -21,7 +21,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name=".App"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2446972119617793~8164741922" />
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -53,8 +59,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/BaseTheme">
-        </activity>
+            android:theme="@style/BaseTheme"></activity>
 
 
         <service
