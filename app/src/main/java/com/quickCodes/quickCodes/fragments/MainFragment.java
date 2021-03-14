@@ -3,11 +3,20 @@ package com.quickCodes.quickCodes.fragments;
 import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
@@ -21,14 +30,6 @@ import com.robertlevonyan.views.chip.Chip;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
@@ -79,6 +80,7 @@ public class MainFragment extends Fragment {
 //                        continue;
 //                    }
                     if (us.action.getSection() == SEC_AIRTIME) {
+                        Log.d(TAG, us.action.toString());
                         airtimeCodes.add(us);
                     }
                     if (us.action.getSection() == SEC_DATA) {
@@ -137,11 +139,11 @@ public class MainFragment extends Fragment {
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
                     //skip loan codes
-                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-                        continue;
-                    }
+//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+//                        continue;
+//                    }
                     if (!(mode.equals(us.action.getHni()))) {
-                            continue;
+                        continue;
 
                     }
 
