@@ -17,26 +17,23 @@
         android:layout_height="wrap_content"
 
         android:theme="@style/AppTheme.AppBarOverlay">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar1"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"
-            >
-            <!--            <TextView-->
-            <!--                android:id="@+id/title"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:gravity="center"-->
-            <!--                android:minHeight="?actionBarSize"-->
-            <!--                android:padding="@dimen/appbar_padding"-->
-            <!--                android:text="@string/app_name"-->
-            <!--                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <Switch
+                android:id="@+id/switch_beast_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:textOff="Beast Mode off"
+                android:textOn="Beast Mode On"
+                android:trackTint="@android:color/white" />
 
         </androidx.appcompat.widget.Toolbar>
-
-
-
 
 
         <com.google.android.material.tabs.TabLayout
@@ -44,16 +41,16 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:tabIndicatorColor="@android:color/white"
             app:tabIndicatorHeight="3dp"
             app:tabSelectedTextColor="@android:color/white"
-            app:tabIndicatorColor="@android:color/white"
-            app:tabTextColor="@color/grey_20"
-            />
+            app:tabTextColor="@color/grey_20" />
     </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_margin="@dimen/fab_margin"
         android:gravity="right|center_vertical"
         android:orientation="horizontal">
