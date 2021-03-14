@@ -7,5 +7,11 @@
         app:summaryOn="@string/quick_access_widget_on"
         app:title="@string/quick_access_widget" />
 
-
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:iconSpaceReserved="false"
+        app:key="@string/beast_mode_key"
+        app:summaryOff="@string/beast_mode_off"
+        app:summaryOn="@string/beast_mode_on"
+        app:title="@string/beast_mode_title" />
 </PreferenceScreen>

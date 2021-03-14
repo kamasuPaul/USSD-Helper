@@ -1,11 +1,14 @@
 package com.quickCodes.quickCodes.util;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -16,9 +19,11 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -35,6 +40,7 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +63,7 @@ public class Tools {
     private static SubscriptionManager subscriptionManager;
     private static List<SubscriptionInfo> subList;
     public static HashMap<String, String> contacts;
+    static List<String> parts;
 
 
     @SuppressLint("MissingPermission")
@@ -125,6 +132,11 @@ public class Tools {
 
     @SuppressLint("MissingPermission")
     public static void executeUssd(String fullCode, Context context, int slot) {
+        if (isBeastModeOn(context)) {//if beast mode is on use this mode
+            replayUssd(fullCode, context, slot);
+            return;
+        }
+        fullCode = fullCode + Uri.encode("#");
         List<PhoneAccountHandle> phoneAccountHandleList;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
@@ -146,6 +158,39 @@ public class Tools {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    public static void replayUssd(String ussdcode, Context context, int slot) {
+        ussdcode = ussdcode.substring(ussdcode.indexOf("*") + 1);
+        String code = ussdcode.replace("*", ":");
+        parts = new ArrayList<>(Arrays.asList(code.split(":")));
+        String ussd = "*" + parts.get(0) + Uri.encode("#");
+        Log.d(TAG, parts.toString());
+        parts.remove(0);
+
+        List<PhoneAccountHandle> phoneAccountHandleList;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+            phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
+            for (int i = 0; i < phoneAccountHandleList.size(); i++) {
+                PhoneAccountHandle phoneAccountHandle = phoneAccountHandleList.get(i);
+                if (i == slot) {
+                    Uri uri = Uri.parse("tel:" + ussd);
+                    Bundle extras = new Bundle();
+                    extras.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccountHandle);
+                    telecomManager.placeCall(uri, extras);
+                    break;//break out of the loop
+                }
+            }
+
+        } else {
+            //use normal way of dialing ussd code,because their is not an easy way of getting user selected simcard
+            context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
+        }
+
+//        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussd)));
+
+    }
+
     public static void executeSuperAction(UssdActionWithSteps ussdActionWithSteps, Activity context) {
         //use codes for the currently selected simcard
         SimCard selectedSimCard = getSelectedSimCard((context));
@@ -164,7 +209,7 @@ public class Tools {
 
         if (ussdActionWithSteps.steps == null || ussdActionWithSteps.steps.size() == 0) {
             //no steps found,execute the code immediately
-            executeUssd(code + Uri.encode("#"), context, selectedSimCard.getSlotIndex());
+            executeUssd(code, context, selectedSimCard.getSlotIndex());
         } else {
             final Dialog customDialog;
             //inflate the root dialog
@@ -299,7 +344,7 @@ public class Tools {
                     }
                     //generate the code with the values inserted
                     //run the code
-                    String fullCode = stringBuilder.toString() + Uri.encode("#");
+                    String fullCode = stringBuilder.toString();
 //                    Log.d(TAG, finalCode);
 //                    Log.d(TAG, fullCode);
 
@@ -356,5 +401,31 @@ public class Tools {
             return false;
         }
         return false;
+    }
+
+    public static boolean isBeastModeOn(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean b = pref.getBoolean("beastMode", true);//get true at first
+//        pref.edit().putBoolean("beastMode", true).commit();//value of true will be returned the second and onwards
+        return b && isAccessibilityServiceEnabled(context, UssdDetector.class);
+    }
+
+    public static void setBeastModeOn(Context context, boolean onOrOff) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        pref.edit().putBoolean("beastMode", onOrOff).commit();//value of true will be returned the second and onwards
+    }
+
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
+        boolean accessibilityServiceEnabled = false;
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> runningServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+        for (AccessibilityServiceInfo enabledService : runningServices) {
+            ServiceInfo serviceInfo = enabledService.getResolveInfo().serviceInfo;
+            if (serviceInfo.packageName.equals(context.getPackageName()) && serviceInfo.name.equals(service.getName())) {
+                accessibilityServiceEnabled = true;
+            }
+        }
+
+        return accessibilityServiceEnabled;
     }
 }
