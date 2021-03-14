@@ -24,14 +24,25 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <Switch
-                android:id="@+id/switch_beast_mode"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:textOff="Beast Mode off"
-                android:textOn="Beast Mode On"
-                android:trackTint="@android:color/white" />
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
+
+                <Switch
+                    android:id="@+id/switch_beast_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="Beast Mode off"
+                    android:textOn="Beast Mode On"
+                    android:trackTint="@android:color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.appcompat.widget.Toolbar>
 
