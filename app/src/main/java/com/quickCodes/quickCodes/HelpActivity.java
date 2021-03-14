@@ -1,19 +1,16 @@
 package com.quickCodes.quickCodes;
 
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.quickCodes.quickCodes.util.ViewAnimation;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+import com.quickCodes.quickCodes.util.ViewAnimation;
 
 public class HelpActivity extends AppCompatActivity {
 
@@ -31,7 +28,7 @@ public class HelpActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Help");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initComponent();
+//        initComponent();
 
     }
 

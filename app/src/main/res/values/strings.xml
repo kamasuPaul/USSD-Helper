@@ -19,6 +19,7 @@
 
     <string name="title_activity_help">HelpActivity</string>
     <string name="HIDE">HIDE</string>
+    <string name="beast">Beast mode helps with ussd codes that fail to work when chained. </string>
     <string name="use_of_plus_btn"> Custom codes are saved automatically  whenever you dial any ussd codes but all you can manually  save your custom codes by tapping the button with "+" symbol \n
         \n\n
     Steps for saving codes\n
@@ -31,17 +32,17 @@
         Optional.\n
         you can also add additional fields\n
         for entering information later on ie a field for entering
-        the telephone,or an amount
-        this is done by clicking the add steps button.
+        the telephone,or an amount.
+        This is done by clicking the add steps button.
     </string>
-    <string name="which_simcards">We currently support two networks in uganda.\n
+    <string name="which_simcards">The app works on all networks  but only the following  networks have default codes saved.\n
         1.Mtn uganda \n
         2.Airtel uganda \n
         3.Africell uganda \n
         4.Lyca Mobile uganda \n
         \n
 
-        but other networks will be supported soon.
+        For other networks,  ussd codes are saved automatically whenever you dial a ussd or when you save the ussd codes manually.
 
     </string>
     <string name="accessibility_desc">

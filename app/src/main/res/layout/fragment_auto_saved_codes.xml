@@ -42,7 +42,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_large"
-                        android:text="No auto saved codes,yet"
+                        android:text="No codes saved , just yet"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                         android:textColor="@color/grey_60" />
 
@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="Whenever you dial any ussd code using quick codes dialer,it will automatically appear here,try dialing any code.Just tap the dialer"
+                        android:text="With beast mode enabled,whenever you dial any ussd code using any dialer,it will automagically appear here,try dialing any code.Just tap the dialer"
                         android:textAlignment="center"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:textColor="@color/grey_40" />
