@@ -24,7 +24,8 @@ import static androidx.lifecycle.Lifecycle.Event.ON_START;
  */
 public class AppOpenManager implements LifecycleObserver, Application.ActivityLifecycleCallbacks {
     private static final String LOG_TAG = "AppOpenManager";
-    private static final String AD_UNIT_ID = "ca-app-pub-2446972119617793/7277526468";
+    private static final String AD_UNIT_ID1 = "ca-app-pub-2446972119617793/7277526468";
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
     private static boolean isShowingAd = false;
     private final App myApplication;
     private AppOpenAd appOpenAd = null;
@@ -147,6 +148,12 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
     public void showAdIfAvailable() {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
+        // show ads if the current activity is not the activity for showing
+        //permissions
+        if (currentActivity.getLocalClassName().equals("util.PermissionsActivity")) {
+            Log.d(LOG_TAG, "Permissions activity not showing ad");
+            return; //dont show ads just return
+        }
         if (!isShowingAd && isAdAvailable()) {
             Log.d(LOG_TAG, "Will show ad.");
 
