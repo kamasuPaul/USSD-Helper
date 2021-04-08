@@ -35,7 +35,7 @@ import java.util.Map;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
-public class UssdDetector extends AccessibilityService {
+public class UssdDetector extends AccessibilityService implements AdapterMenuItems.OnItemClickListener {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
     public static final String STEP_TEL = "step_tel";
     private static final String TAG = "UssdDetector";
@@ -48,6 +48,7 @@ public class UssdDetector extends AccessibilityService {
     private WindowManager windowManager;
     private AdapterMenuItems adapterMenuItems;
     private CountDownTimer countDownTimer;
+    private AdapterMenuItems.OnItemClickListener listener;
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
@@ -95,7 +96,8 @@ public class UssdDetector extends AccessibilityService {
 
         RecyclerView recyclerView = chatHead.findViewById(R.id.menu_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapterMenuItems = new AdapterMenuItems(this);
+        this.listener = this;
+        adapterMenuItems = new AdapterMenuItems(this, listener);
         recyclerView.setAdapter(adapterMenuItems);
         adapterMenuItems.setOnItemClickListener(new AdapterMenuItems.OnItemClickListener() {
             @Override
@@ -167,6 +169,10 @@ public class UssdDetector extends AccessibilityService {
                 sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
         }
+    }
+
+    public void hide() {
+        chatHead.setVisibility(View.GONE);//hide it by default
     }
 
     @Override
@@ -377,4 +383,8 @@ public class UssdDetector extends AccessibilityService {
         }
     }
 
+    @Override
+    public void onItemClick(View view, String obj, int position) {
+        chatHead.setVisibility(View.GONE);
+    }
 }

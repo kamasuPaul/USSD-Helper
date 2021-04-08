@@ -24,8 +24,10 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
     private Map<String, String> kamasuMenu;
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener myListener;
 
-    public AdapterMenuItems(Context context) {
+    public AdapterMenuItems(Context context, OnItemClickListener listener) {
+        this.myListener = listener;
         ctx = context;
     }
 
@@ -75,6 +77,9 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
                 view.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (myListener != null) {
+                            myListener.onItemClick(view, items.get(position), position);
+                        }
                         if (mOnItemClickListener != null) {
                             mOnItemClickListener.onItemClick(view, items.get(position), position);
                         }
@@ -110,6 +115,7 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
     public interface OnItemClickListener {
         void onItemClick(View view, String obj, int position);
     }
+
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
