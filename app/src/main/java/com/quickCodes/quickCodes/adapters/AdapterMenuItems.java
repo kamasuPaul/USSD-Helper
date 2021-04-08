@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Integer> items = new ArrayList<>();
-    private Map<Integer, String> kamasuMenu;
+    private List<String> items = new ArrayList<>();
+    private Map<String, String> kamasuMenu;
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
@@ -49,7 +49,7 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
                 final OriginalViewHolder view = (OriginalViewHolder) holder;
 
 
-                final int key = items.get(position);
+                final String key = items.get(position);
                 TextView textView = view.description;
                 String description = kamasuMenu.get(key);
                 textView.setText(description);
@@ -92,7 +92,7 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void setUssdActions(List<Integer> menues, Map<Integer, String> kamasuMenu) {
+    public void setUssdActions(List<String> menues, Map<String, String> kamasuMenu) {
         this.items = menues;
         this.kamasuMenu = kamasuMenu;
         notifyDataSetChanged();
@@ -108,7 +108,7 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, Integer obj, int position);
+        void onItemClick(View view, String obj, int position);
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {

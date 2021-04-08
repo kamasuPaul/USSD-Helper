@@ -40,7 +40,7 @@ public class UssdDetector extends AccessibilityService {
     public static final String STEP_TEL = "step_tel";
     private static final String TAG = "UssdDetector";
     private static boolean pinbox = false;
-    private static Map<Integer, String> kamasuMenu;
+    private static Map<String, String> kamasuMenu;
     List<String> parts;
     View chatHead;
     private AccessibilityNodeInfo textBoxNode;
@@ -99,7 +99,7 @@ public class UssdDetector extends AccessibilityService {
         recyclerView.setAdapter(adapterMenuItems);
         adapterMenuItems.setOnItemClickListener(new AdapterMenuItems.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, Integer obj, int position) {
+            public void onItemClick(View view, String obj, int position) {
                 fill(String.valueOf(obj));
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
@@ -126,7 +126,7 @@ public class UssdDetector extends AccessibilityService {
 
     }
 
-    public void showMenu(List<Integer> list, Map<Integer, String> kamasuMenu) {
+    public void showMenu(List<String> list, Map<String, String> kamasuMenu) {
         if (list.size() > 0) {
             chatHead.setVisibility(View.VISIBLE);
             adapterMenuItems.setUssdActions(list, kamasuMenu);
@@ -229,7 +229,7 @@ public class UssdDetector extends AccessibilityService {
                 }
                 //build the menu
                 kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
-                List<Integer> ilist = new ArrayList<>(kamasuMenu.keySet());
+                List<String> ilist = new ArrayList<>(kamasuMenu.keySet());
                 Collections.sort(ilist);
 //                for (int key:ilist
 //                     ) {
@@ -335,20 +335,24 @@ public class UssdDetector extends AccessibilityService {
 
     }
 
-    private Map<Integer, String> kamasuUssdMenuRebuilder(String menucontent) {
-        Map<Integer, String> menuItems = new HashMap<>();
+    private Map<String, String> kamasuUssdMenuRebuilder(String menucontent) {
+        Map<String, String> menuItems = new HashMap<>();
         if (menucontent != null) {
             String s = menucontent.replaceAll("\n", ",")
-                .substring(1, menucontent.length() - 1);//remove []
+                    .substring(1, menucontent.length() - 1);//remove []
             String[] valuePairs = s.split(",");//split into pieces
             for (String p : valuePairs
             ) {
                 String s1 = p.trim().replaceFirst("[\\s.]", ":");
                 String[] s2 = s1.split(":");
                 if (s2.length == 2) {
-                    if (s2[0].trim().matches("n") || TextUtils.isDigitsOnly(s2[0].trim())) {
+                    if (s2[0].trim().matches("n")
+                            || s2[0].trim().matches("0")
+                            || s2[0].trim().matches("\\*")
+                            || s2[0].trim().matches("#")
+                            || TextUtils.isDigitsOnly(s2[0].trim())) {
                         try {
-                            menuItems.put(Integer.parseInt(s2[0].trim()), s2[1].trim());
+                            menuItems.put((s2[0].trim()), s2[1].trim());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
