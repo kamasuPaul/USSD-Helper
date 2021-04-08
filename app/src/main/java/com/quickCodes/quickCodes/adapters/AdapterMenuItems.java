@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -13,12 +16,12 @@ import com.quickCodes.quickCodes.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Map;
 
 public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Integer> items = new ArrayList<>();
+    private Map<Integer, String> kamasuMenu;
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
@@ -47,25 +50,18 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
                 final int key = items.get(position);
-
-                //set title of action
-
-//                view.title.setText(p.getName());
-//            view.image.setImageDrawable();
-                // generate color based on a key (same key returns the same color), useful for list/grid views
-
-//change the image icon to a letter icon
+                TextView textView = view.description;
+                String description = kamasuMenu.get(key);
+                textView.setText(description);
                 // generate color based on a key (same key returns the same color)
                 ColorGenerator generator = ColorGenerator.MATERIAL;
-//                int color1 = ColorGenerator.MATERIAL.getRandomColor();//generate random color
                 int color1 = generator.getColor(String.valueOf(key));
-
                 // declare the builder object once.
                 TextDrawable.IBuilder builder = TextDrawable.builder()
-                    .beginConfig()
-                    .withBorder(2)
-                    .endConfig()
-                    .round();
+                        .beginConfig()
+                        .withBorder(2)
+                        .endConfig()
+                        .round();
                 TextDrawable drawable = builder.build(String.valueOf(key), color1);
                 ImageView imageView = view.image;
                 if (drawable != null) {
@@ -96,8 +92,9 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void setUssdActions(List<Integer> menues) {
+    public void setUssdActions(List<Integer> menues, Map<Integer, String> kamasuMenu) {
         this.items = menues;
+        this.kamasuMenu = kamasuMenu;
         notifyDataSetChanged();
     }
 
@@ -118,12 +115,14 @@ public class AdapterMenuItems extends RecyclerView.Adapter<RecyclerView.ViewHold
         public ImageView image;
         //        public TextView title;
         public LinearLayout linearLayout;
+        public TextView description;
 
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.image);
 //            title = (TextView) v.findViewById(R.id.TextView_ActionName);
             linearLayout = v.findViewById(R.id.linearLayout_root);
+            description = v.findViewById(R.id.description);
         }
     }
 

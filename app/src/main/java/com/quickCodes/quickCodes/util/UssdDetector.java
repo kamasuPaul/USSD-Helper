@@ -18,6 +18,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterMenuItems;
@@ -28,9 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
@@ -81,20 +81,20 @@ public class UssdDetector extends AccessibilityService {
 
         //specify the window stuff
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                ? TYPE_APPLICATION_OVERLAY : TYPE_SYSTEM_ERROR,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? TYPE_APPLICATION_OVERLAY : TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                PixelFormat.TRANSLUCENT
         );
         //Specify the overlay position
-        params.gravity = Gravity.TOP | Gravity.RIGHT;
+        params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 30;
         params.y = 300;
 
         RecyclerView recyclerView = chatHead.findViewById(R.id.menu_recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapterMenuItems = new AdapterMenuItems(this);
         recyclerView.setAdapter(adapterMenuItems);
         adapterMenuItems.setOnItemClickListener(new AdapterMenuItems.OnItemClickListener() {
@@ -126,10 +126,10 @@ public class UssdDetector extends AccessibilityService {
 
     }
 
-    public void showMenu(List<Integer> list) {
+    public void showMenu(List<Integer> list, Map<Integer, String> kamasuMenu) {
         if (list.size() > 0) {
             chatHead.setVisibility(View.VISIBLE);
-            adapterMenuItems.setUssdActions(list);
+            adapterMenuItems.setUssdActions(list, kamasuMenu);
             //close the automatically after one minute
             if (countDownTimer != null) {
                 countDownTimer.cancel();
@@ -235,7 +235,7 @@ public class UssdDetector extends AccessibilityService {
 //                     ) {
 //                    Log.d(TAG,""+key);
 //                }
-                showMenu(ilist);
+                showMenu(ilist, kamasuMenu);
             }
 //        if the current box is apin or password box dont record its text
             if (pinbox == true) {
