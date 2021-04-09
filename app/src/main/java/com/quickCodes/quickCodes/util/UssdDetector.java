@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,12 +44,14 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
     private static Map<String, String> kamasuMenu;
     List<String> parts;
     View chatHead;
+    TextView heading;
     private AccessibilityNodeInfo textBoxNode;
     private AccessibilityNodeInfo sendButton;
     private WindowManager windowManager;
     private AdapterMenuItems adapterMenuItems;
     private CountDownTimer countDownTimer;
     private AdapterMenuItems.OnItemClickListener listener;
+    private String heading_text = "";
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
@@ -125,7 +128,9 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
             e.printStackTrace();
         }
 
-
+        //initialize heading text
+        heading = chatHead.findViewById(R.id.heading);
+        heading.setText(this.heading_text);
     }
 
     public void showMenu(List<String> list, Map<String, String> kamasuMenu) {
@@ -145,7 +150,7 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
     }
 
     public void createCountDownTimer() {
-        countDownTimer = new CountDownTimer(40000, 10000) {
+        countDownTimer = new CountDownTimer(20000, 10000) {
             @Override
             public void onTick(long millisUntilFinished) {
             }
@@ -365,7 +370,17 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
                     }
                 }
             }
-
+            String header = "";
+            //get the heading using the postion of the first item
+            if (menuItems.size() > 0) {
+                Object[] items = menuItems.keySet().toArray();
+                String first = (String) items[0];
+                int firstItemPostion = s.indexOf(first);
+                header = s.substring(0, firstItemPostion);
+            }
+            if (!header.trim().startsWith("1")) {
+                this.heading.setText(header.trim().replaceAll(",", ""));
+            }
 
         } else {
             Log.d(TAG, "null");

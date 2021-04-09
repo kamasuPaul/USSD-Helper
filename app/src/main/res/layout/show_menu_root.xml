@@ -25,6 +25,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/menu_recyclerView"
             android:layout_width="match_parent"
