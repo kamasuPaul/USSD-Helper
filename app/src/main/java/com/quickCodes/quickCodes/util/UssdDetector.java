@@ -150,7 +150,7 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
     }
 
     public void createCountDownTimer() {
-        countDownTimer = new CountDownTimer(20000, 10000) {
+        countDownTimer = new CountDownTimer(30000, 10000) {
             @Override
             public void onTick(long millisUntilFinished) {
             }
