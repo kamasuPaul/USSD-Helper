@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,8 @@ import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterMenuItems;
 import com.quickCodes.quickCodes.screenOverlays.PhoneCallsOverlayService;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +39,7 @@ import java.util.Map;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
-public class UssdDetector extends AccessibilityService implements AdapterMenuItems.OnItemClickListener {
+public class UssdDetector extends AccessibilityService implements AdapterMenuItems.OnItemClickListener, ExpandableLayout.OnExpansionUpdateListener {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
     public static final String STEP_TEL = "step_tel";
     private static final String TAG = "UssdDetector";
@@ -51,11 +54,24 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
     private AdapterMenuItems adapterMenuItems;
     private CountDownTimer countDownTimer;
     private AdapterMenuItems.OnItemClickListener listener;
+
+    private ExpandableLayout expandableLayout;
+    private ImageView expandButton;
+    private LinearLayout window_buttonLayout;
+
+
     private String heading_text = "";
+    private boolean visible = true;
 
     public static void showSummary(Context context) {
         Intent intent = new Intent(context, PhoneCallsOverlayService.class);
         context.startService(intent);
+    }
+
+    @Override
+    public void onExpansionUpdate(float expansionFraction, int state) {
+        Log.d("ExpandableLayout", "State: " + state);
+        expandButton.setRotation(expansionFraction * 180);
     }
 
     @Override
@@ -75,13 +91,31 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
         //inflate the layout_no_item
         chatHead = LayoutInflater.from(this).inflate(R.layout.show_menu_root, null);
         chatHead.setVisibility(View.GONE);//hide it by default
-//        chatHead.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                Toast.makeText(UssdDetector.this, "tocuched", Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//        });
+
+        expandableLayout = chatHead.findViewById(R.id.expandable_layout);
+        expandButton = chatHead.findViewById(R.id.expand_button);
+//        window_buttonLayout = chatHead.findViewById(R.id.window_buttons_layout);
+
+        //initialize heading text
+        heading = chatHead.findViewById(R.id.heading);
+        heading.setText(this.heading_text);
+
+        expandableLayout.setOnExpansionUpdateListener(this);
+        expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //hide or unhide heading
+                if (!visible) {
+                    heading.setVisibility(View.VISIBLE);
+                    visible = true;
+                } else {
+                    heading.setVisibility(View.GONE);
+                    visible = false;
+                }
+                expandableLayout.toggle();
+            }
+        });
+
 
         //specify the window stuff
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -128,9 +162,6 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
             e.printStackTrace();
         }
 
-        //initialize heading text
-        heading = chatHead.findViewById(R.id.heading);
-        heading.setText(this.heading_text);
     }
 
     public void showMenu(List<String> list, Map<String, String> kamasuMenu) {

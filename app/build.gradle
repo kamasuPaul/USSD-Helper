@@ -99,6 +99,9 @@ dependencies {
     //multidex
     implementation 'com.android.support:multidex:1.0.3'
 
+    //expandable layout
+    implementation 'com.github.cachapa:ExpandableLayout:2.9.2'
+
 
 
 }
