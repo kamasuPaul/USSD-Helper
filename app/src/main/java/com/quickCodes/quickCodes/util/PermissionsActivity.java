@@ -14,6 +14,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -25,11 +30,6 @@ import com.quickCodes.quickCodes.R;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class PermissionsActivity extends AppCompatActivity {
 
@@ -167,7 +167,7 @@ public class PermissionsActivity extends AppCompatActivity {
         }
 
         //update ui if both them are true
-        if (permission && draw && accessibility) {
+        if (permission && draw) {
             btn_continue.setEnabled(true);
         }
 //        askTimes.setText(String.valueOf(sharedPreferences.getInt(ASK_TIMES_DRAW,-1)));
@@ -211,7 +211,7 @@ public class PermissionsActivity extends AppCompatActivity {
         }
 
         //update ui if all them are true
-        if (permission && draw && accessibility) {
+        if (permission && draw) {
             startActivity(new Intent(PermissionsActivity.this, MainActivity.class));
             finish();
         }
