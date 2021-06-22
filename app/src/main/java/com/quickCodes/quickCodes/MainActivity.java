@@ -20,6 +20,10 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -27,10 +31,6 @@ import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.UssdDetector;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
 
 import static com.quickCodes.quickCodes.util.PermissionsActivity.CODE_ACCESSIBILITY;
 import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
 //        if(action_id!=null){
 //            viewPager.se
 //        }
+        //show accessibility setting if its off
+        if (accessibilityOff()) {
+            showDialogAbout();
+        }
     }
 
     private void setupToolBar() {
@@ -231,5 +235,9 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    private boolean accessibilityOff() {
+        return !Tools.isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class);
     }
 }

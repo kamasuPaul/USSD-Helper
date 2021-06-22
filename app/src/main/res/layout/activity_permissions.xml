@@ -298,7 +298,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Accessibility (optional)"
+                    android:text="Accessibility (Recommended)"
                     android:textAppearance="@style/TextAppearance.Medium.Bold"
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
