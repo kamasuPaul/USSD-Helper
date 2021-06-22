@@ -15,13 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickCodes.quickCodes.R;
-import com.quickCodes.quickCodes.adapters.AdapterUssdCodes;
+import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
@@ -37,10 +38,12 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 
 public class MainFragment extends Fragment {
 
-    RecyclerView airtimeRecyclerView, dataRecyclerView, mmRecyclerView;
+    RecyclerView airtimeRecyclerView, dataRecyclerView, mmRecyclerView, recyclerView;
     private OnFragmentInteractionListener mListener;
     private UssdActionsViewModel viewModel;
-    private AdapterUssdCodes adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
+    private AdapterDialer adapterUssdCodes, adapterUssdCodes1, adapterUssdCodes2;
+    private AdapterDialer mAdapter;
+    private UssdActionsViewModel ussdActionsViewModel;
 
 
     private final static String TAG = "MainFragment";
@@ -53,9 +56,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapterUssdCodes = new AdapterUssdCodes(getActivity());
-        adapterUssdCodes1 = new AdapterUssdCodes(getActivity());
-        adapterUssdCodes2 = new AdapterUssdCodes(getActivity());
+        adapterUssdCodes = new AdapterDialer(getActivity());
+        adapterUssdCodes1 = new AdapterDialer(getActivity());
+        adapterUssdCodes2 = new AdapterDialer(getActivity());
         viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
             @Override
@@ -99,17 +102,64 @@ public class MainFragment extends Fragment {
 
             }
         });
-        adapterUssdCodes.setOnItemClickListener((view, obj, position) -> {
-            Tools.executeSuperAction(obj, getActivity());
-            Tools.updateWeightOnClick(obj, viewModel);
+//        adapterUssdCodes.setOnItemClickListener((view, obj, position) -> {
+//            Tools.executeSuperAction(obj, getActivity());
+//            Tools.updateWeightOnClick(obj, viewModel);
+//        });
+//        adapterUssdCodes1.setOnItemClickListener((view, obj, position) -> {
+//            Tools.executeSuperAction(obj, getActivity());
+//            Tools.updateWeightOnClick(obj, viewModel);
+//        });
+//        adapterUssdCodes2.setOnItemClickListener((view, obj, position) -> {
+//            Tools.executeSuperAction(obj, getActivity());
+//            Tools.updateWeightOnClick(obj, viewModel);
+//        });
+//        mAdapter = new AdapterDialer(getActivity());
+//
+//        List<SimCard> cardList = Tools.getAvailableSimCards(getActivity());
+//
+//        ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+//        ussdActionsViewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
+//            List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+//            for (UssdActionWithSteps us : ussdActionWithSteps) {
+//                if (Tools.containsHni(cardList, us.action.getHni())) {
+//                    airtimeCodes.add(us);
+//                }
+//            }
+//            mAdapter.setUssdActions(airtimeCodes);
+//        });
+        adapterUssdCodes.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Tools.executeSuperAction(obj, getActivity());
+                Tools.updateWeightOnClick(obj, viewModel);
+            }
+
+            @Override
+            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
         });
-        adapterUssdCodes1.setOnItemClickListener((view, obj, position) -> {
-            Tools.executeSuperAction(obj, getActivity());
-            Tools.updateWeightOnClick(obj, viewModel);
+        adapterUssdCodes1.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Tools.executeSuperAction(obj, getActivity());
+                Tools.updateWeightOnClick(obj, viewModel);
+            }
+
+            @Override
+            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
         });
-        adapterUssdCodes2.setOnItemClickListener((view, obj, position) -> {
-            Tools.executeSuperAction(obj, getActivity());
-            Tools.updateWeightOnClick(obj, viewModel);
+        adapterUssdCodes2.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Tools.executeSuperAction(obj, getActivity());
+                Tools.updateWeightOnClick(obj, viewModel);
+            }
+
+            @Override
+            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
         });
     }
 
@@ -227,17 +277,26 @@ public class MainFragment extends Fragment {
 
         //setup airtime
         airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
-        airtimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        airtimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        airtimeRecyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
         airtimeRecyclerView.setAdapter(adapterUssdCodes);
-
-        //setup data
+//
+//        //setup data
         dataRecyclerView = root.findViewById(R.id.dataRecylerView);
-        dataRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        dataRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        dataRecyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
         dataRecyclerView.setAdapter(adapterUssdCodes1);
-        //setup mobile money
+//        //setup mobile money
         mmRecyclerView = root.findViewById(R.id.mmoneyRecylerView);
-        mmRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mmRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        mmRecyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
         mmRecyclerView.setAdapter(adapterUssdCodes2);
+
+//        recyclerView = root.findViewById(R.id.matched_items_recylerview);
+//        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+//        recyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
+//        recyclerView.setAdapter(mAdapter);
+
 
 //*****************************************SIMCARDS IN PHONE*********************************************************
         //initialize chip views
