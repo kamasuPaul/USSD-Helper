@@ -31,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import androidx.cardview.widget.CardView;
+
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
 import com.quickCodes.quickCodes.modals.SimCard;
@@ -42,10 +44,9 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.cardview.widget.CardView;
 
 import static com.quickCodes.quickCodes.modals.Constants.CHOICE;
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
@@ -366,6 +367,7 @@ public class Tools {
 
     public static void updateWeightOnClick(UssdActionWithSteps obj, UssdActionsViewModel viewModel) {
         obj.action.setWeight(obj.action.getWeight() + 1);
+        obj.action.setDate_last_accessed(new Date());
         viewModel.update(obj);
     }
 

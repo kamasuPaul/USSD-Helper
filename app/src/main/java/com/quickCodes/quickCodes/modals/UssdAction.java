@@ -1,20 +1,24 @@
 package com.quickCodes.quickCodes.modals;
 
-import com.google.gson.annotations.SerializedName;
-
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 @Entity(tableName = "ussd_actions")
 public class UssdAction {
     @SerializedName("id")
-    @PrimaryKey public long actionId;
+    @PrimaryKey
+    public long actionId;
     private String name;
     private String code;
     private String hni;
     public int section;
     public int weight = 0;
+    private Date date_last_accessed;
     @Ignore
     public UssdAction(){
 
@@ -79,15 +83,23 @@ public class UssdAction {
         this.hni = hni;
     }
 
+    public Date getDate_last_accessed() {
+        return date_last_accessed;
+    }
+
+    public void setDate_last_accessed(Date date_last_accessed) {
+        this.date_last_accessed = date_last_accessed;
+    }
+
     @Override
     public String toString() {
         return "UssdAction{" +
-            "actionId=" + actionId +
-            ", name='" + name + '\'' +
-            ", code='" + code + '\'' +
-            ", hni='" + hni + '\'' +
-            ", section=" + section +
-            ", weight=" + weight +
+                "actionId=" + actionId +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", hni='" + hni + '\'' +
+                ", section=" + section +
+                ", weight=" + weight +
             '}';
     }
 }

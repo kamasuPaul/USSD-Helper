@@ -3,6 +3,18 @@ package com.quickCodes.quickCodes.util.database;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
@@ -20,19 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
-
-@Database(entities = {UssdAction.class, Step.class}, version = 4)
+@Database(entities = {UssdAction.class, Step.class}, version = 5)
+@TypeConverters({Converters.class})
 public abstract class MyRoomDatabase extends RoomDatabase {
     private static final String TAG = "MyRoomDatabase";
     private UssdActionsViewModel viewModel;
@@ -41,13 +43,24 @@ public abstract class MyRoomDatabase extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             //add stepsAfter column
             database.execSQL("ALTER TABLE Step "
-                + "ADD COLUMN stepsAfter TEXT"
+                    + "ADD COLUMN stepsAfter TEXT"
 
             );
 
 
         }
     };
+    static final Migration Migration_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //add Date column
+            database.execSQL("ALTER TABLE ussd_actions "
+                    + "ADD COLUMN date_last_accessed LONG"
+            );
+
+        }
+    };
+
     static final Migration Migration_3_4 = new Migration(3, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -216,9 +229,10 @@ public abstract class MyRoomDatabase extends RoomDatabase {
     public static synchronized MyRoomDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context, MyRoomDatabase.class, "custom_actions_db")
-                .addMigrations(Migration_1_2)
-                .addMigrations(Migration_2_3)
-                .addMigrations(Migration_3_4)
+                    .addMigrations(Migration_1_2)
+                    .addMigrations(Migration_2_3)
+                    .addMigrations(Migration_3_4)
+                    .addMigrations(Migration_4_5)
                 .fallbackToDestructiveMigration()
                 .addCallback(new Callback() {
                     @Override
@@ -284,4 +298,5 @@ public abstract class MyRoomDatabase extends RoomDatabase {
     }
 
     public abstract UssdActionDao ussdActionDao();
+
 }
