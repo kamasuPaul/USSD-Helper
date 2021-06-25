@@ -22,11 +22,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
 import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
 import com.quickCodes.quickCodes.util.Tools;
@@ -58,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        if (edit != null) {
-            viewPager.setCurrentItem(1);
-        }
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+//        ViewPager viewPager = findViewById(R.id.view_pager);
+//        viewPager.setAdapter(sectionsPagerAdapter);
+//        if (edit != null) {
+//            viewPager.setCurrentItem(1);
+//        }
+//        TabLayout tabs = findViewById(R.id.tabs);
+//        tabs.setupWithViewPager(viewPager);
 
         setupToolBar();
         //setup floating action buttons
