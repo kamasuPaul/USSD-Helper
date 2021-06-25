@@ -2,12 +2,6 @@ package com.quickCodes.quickCodes.util.database;
 
 import android.util.Log;
 
-import com.quickCodes.quickCodes.modals.Step;
-import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -16,6 +10,12 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
+
+import com.quickCodes.quickCodes.modals.Step;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+
+import java.util.List;
 
 @Dao
 public abstract class UssdActionDao {
@@ -49,8 +49,9 @@ public abstract class UssdActionDao {
     }
     @Insert(onConflict = OnConflictStrategy.REPLACE)//TODO change replace strategy
     abstract void insertAll(List<Step>steps);
+
     @Transaction
-    @Query("SELECT * FROM ussd_actions WHERE hni IN (:hnis) ORDER BY weight DESC")
+    @Query("SELECT * FROM ussd_actions WHERE hni IN (:hnis) ORDER BY weight DESC,date_last_accessed")
     public abstract LiveData<List<UssdActionWithSteps>> getActionsWithSteps(List<String> hnis);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -71,7 +72,7 @@ public abstract class UssdActionDao {
     abstract void deleteActionSteps(long actionId);
 
     @Transaction
-    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC")
+    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC,date_last_accessed")
     public abstract List<UssdActionWithSteps> getActionsWithStepsNoLiveData();
 }
 
