@@ -84,6 +84,23 @@
 
 
             <TextView
+                android:id="@+id/recent_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_middle"
+                android:text="Recent"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/grey_90"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recentReyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <TextView
                 android:id="@+id/airtime_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -47,6 +47,8 @@ public class MainFragment extends Fragment {
 
 
     private final static String TAG = "MainFragment";
+    private AdapterDialer adapterUssdCodesRecent;
+    private RecyclerView recentReyclerView;
 
     public MainFragment() {
         // Required empty public constructor
@@ -56,6 +58,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adapterUssdCodesRecent = new AdapterDialer(getActivity());
         adapterUssdCodes = new AdapterDialer(getActivity());
         adapterUssdCodes1 = new AdapterDialer(getActivity());
         adapterUssdCodes2 = new AdapterDialer(getActivity());
@@ -65,6 +68,7 @@ public class MainFragment extends Fragment {
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
 
                 List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> recent = new ArrayList<>();
                 List<UssdActionWithSteps> dataCodes = new ArrayList<>();
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : ussdActionWithSteps) {
@@ -92,8 +96,12 @@ public class MainFragment extends Fragment {
                     if (us.action.getSection() == SEC_MMONEY) {
                         mmoneyCodes.add(us);
                     }
+                    if (recent.size() < 5) {
+                        recent.add(us);
+                    }
                 }
                 adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodesRecent.setUssdActions(recent);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
 
@@ -127,7 +135,17 @@ public class MainFragment extends Fragment {
 //                }
 //            }
 //            mAdapter.setUssdActions(airtimeCodes);
-//        });
+        adapterUssdCodesRecent.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
+                Tools.executeSuperAction(obj, getActivity());
+                Tools.updateWeightOnClick(obj, viewModel);
+            }
+
+            @Override
+            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
+        });
         adapterUssdCodes.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
@@ -139,6 +157,7 @@ public class MainFragment extends Fragment {
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
             }
         });
+//        });
         adapterUssdCodes1.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
@@ -280,6 +299,11 @@ public class MainFragment extends Fragment {
         airtimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         airtimeRecyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
         airtimeRecyclerView.setAdapter(adapterUssdCodes);
+        //setup recent
+        recentReyclerView = root.findViewById(R.id.recentReyclerView);
+        recentReyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        recentReyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
+        recentReyclerView.setAdapter(adapterUssdCodesRecent);
 //
 //        //setup data
         dataRecyclerView = root.findViewById(R.id.dataRecylerView);
