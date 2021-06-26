@@ -18,18 +18,28 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.quickCodes.quickCodes.adapters.AdapterSimCards;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
-import com.quickCodes.quickCodes.ui.main.SectionsPagerAdapter;
+import com.quickCodes.quickCodes.modals.SimCard;
+import com.quickCodes.quickCodes.modals.UssdAction;
+import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.UssdDetector;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.util.PermissionsActivity.CODE_ACCESSIBILITY;
 import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
 import static com.quickCodes.quickCodes.util.Tools.isBeastModeOn;
@@ -40,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     String edit;
     public static String action_id = null;
     Switch beastMode;
+    private RecyclerView recyclerView;
+    private AdapterSimCards adapterSimcards;
+    private TextView textView;
 
     public static void openDialer(Context context) {
 //        context.startActivity(new Intent(context, DialPadActivity.class));
@@ -54,15 +67,15 @@ public class MainActivity extends AppCompatActivity {
         action_id = intent.getStringExtra("action_id");
 
         setContentView(R.layout.activity_main);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
+//        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
-//        ViewPager viewPager = findViewById(R.id.view_pager);
-//        viewPager.setAdapter(sectionsPagerAdapter);
+
 //        if (edit != null) {
 //            viewPager.setCurrentItem(1);
 //        }
 //        TabLayout tabs = findViewById(R.id.tabs);
 //        tabs.setupWithViewPager(viewPager);
+        textView = findViewById(R.id.text);
 
         setupToolBar();
         //setup floating action buttons
@@ -76,11 +89,38 @@ public class MainActivity extends AppCompatActivity {
         });
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
+        adapterSimcards = new AdapterSimCards(this);
+        List<UssdActionWithSteps> cards = new ArrayList<UssdActionWithSteps>();
+        List<SimCard> simCards = Tools.getAvailableSimCards(this);
+        for (SimCard simCard : simCards) {
+            UssdAction action = new UssdAction(simCard.getSubscriptionId(), simCard.getNetworkName(), simCard.getHni(), simCard.getHni(), SEC_CUSTOM_CODES, 0);
+            cards.add(new UssdActionWithSteps(action, null));
+        }
 
-        //move the fragment
-//        if(action_id!=null){
-//            viewPager.se
-//        }
+
+        ViewPager2 viewPager = findViewById(R.id.viewpager);
+        adapterSimcards.setUssdActions(cards);
+        viewPager.setAdapter(adapterSimcards);
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                SimCard card = simCards.get(position);
+                textView.setText(card.getNetworkName() + card.getSlotIndex());
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
+
         //show accessibility setting if its off
         if (accessibilityOff()) {
             showDialogAbout();
