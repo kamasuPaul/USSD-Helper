@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -20,63 +19,6 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_middle">
 
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:id="@+id/linearLayout_root_chips"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/viewpager"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@color/red_500"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_middle" />
-            <!--            <androidx.recyclerview.widget.RecyclerView-->
-            <!--                android:id="@+id/matched_items_recylerview"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:layout_marginTop="@dimen/actionBarSize"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintHorizontal_bias="1.0"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent"-->
-            <!--                app:layout_constraintVertical_bias="0.145" />-->
-
-
-            <TextView
-                android:id="@+id/recent_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_middle"
-                android:text="Recent"
-                android:textAlignment="textStart"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textColor="@color/grey_90"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recentReyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
 
             <TextView
                 android:id="@+id/airtime_label"

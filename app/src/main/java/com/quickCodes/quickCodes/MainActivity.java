@@ -23,23 +23,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.quickCodes.quickCodes.adapters.AdapterSimCards;
 import com.quickCodes.quickCodes.dialpad.DialPadActivity;
-import com.quickCodes.quickCodes.modals.SimCard;
-import com.quickCodes.quickCodes.modals.UssdAction;
-import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.UssdDetector;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.util.PermissionsActivity.CODE_ACCESSIBILITY;
 import static com.quickCodes.quickCodes.util.Tools.CONTACT_PICKER_REQUEST;
 import static com.quickCodes.quickCodes.util.Tools.isBeastModeOn;
@@ -51,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public static String action_id = null;
     Switch beastMode;
     private RecyclerView recyclerView;
-    private AdapterSimCards adapterSimcards;
     private TextView textView;
 
     public static void openDialer(Context context) {
@@ -66,7 +61,17 @@ public class MainActivity extends AppCompatActivity {
         edit = intent.getStringExtra("edit");
         action_id = intent.getStringExtra("action_id");
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
+        setupToolBar();
+
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                .build();
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
+
 //        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
 
@@ -77,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 //        tabs.setupWithViewPager(viewPager);
         textView = findViewById(R.id.text);
 
-        setupToolBar();
         //setup floating action buttons
         FloatingActionButton fab = findViewById(R.id.dialer);
         FloatingActionButton fabAdd = findViewById(R.id.fab_add);
@@ -89,37 +93,7 @@ public class MainActivity extends AppCompatActivity {
         });
         fabContacts.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)));
 
-        adapterSimcards = new AdapterSimCards(this);
-        List<UssdActionWithSteps> cards = new ArrayList<UssdActionWithSteps>();
-        List<SimCard> simCards = Tools.getAvailableSimCards(this);
-        for (SimCard simCard : simCards) {
-            UssdAction action = new UssdAction(simCard.getSubscriptionId(), simCard.getNetworkName(), simCard.getHni(), simCard.getHni(), SEC_CUSTOM_CODES, 0);
-            cards.add(new UssdActionWithSteps(action, null));
-        }
 
-
-        ViewPager2 viewPager = findViewById(R.id.viewpager);
-        adapterSimcards.setUssdActions(cards);
-        viewPager.setAdapter(adapterSimcards);
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                SimCard card = simCards.get(position);
-                textView.setText(card.getNetworkName() + card.getSlotIndex());
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
-        });
 
         //show accessibility setting if its off
         if (accessibilityOff()) {

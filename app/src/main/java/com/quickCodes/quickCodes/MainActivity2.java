@@ -33,6 +33,9 @@ public class MainActivity2 extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        //........SETUP FABS........................................................................
+
     }
 
     @Override

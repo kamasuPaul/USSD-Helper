@@ -51,7 +51,7 @@ public abstract class UssdActionDao {
     abstract void insertAll(List<Step>steps);
 
     @Transaction
-    @Query("SELECT * FROM ussd_actions WHERE hni IN (:hnis) ORDER BY weight DESC,date_last_accessed")
+    @Query("SELECT * FROM ussd_actions WHERE hni IN (:hnis) ORDER BY date_last_accessed")
     public abstract LiveData<List<UssdActionWithSteps>> getActionsWithSteps(List<String> hnis);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -72,7 +72,7 @@ public abstract class UssdActionDao {
     abstract void deleteActionSteps(long actionId);
 
     @Transaction
-    @Query("SELECT * FROM ussd_actions ORDER BY weight DESC,date_last_accessed")
+    @Query("SELECT * FROM ussd_actions ORDER BY date_last_accessed")
     public abstract List<UssdActionWithSteps> getActionsWithStepsNoLiveData();
 }
 
