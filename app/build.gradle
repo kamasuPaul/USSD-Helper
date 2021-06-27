@@ -108,8 +108,10 @@ dependencies {
     implementation 'com.github.cachapa:ExpandableLayout:2.9.2'
 
     //card slider
-    implementation 'com.ramotion.cardslider:card-slider:0.3.1'
-    implementation 'com.synnapps:carouselview:0.1.5'
+//    implementation 'com.ramotion.cardslider:card-slider:0.3.1'
+//    implementation 'com.synnapps:carouselview:0.1.5'
+//    implementation 'io.github.vejei.pagetransformer:pagetransformer:1.0.0-alpha'
+
 
 
 

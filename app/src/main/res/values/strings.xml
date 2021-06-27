@@ -73,4 +73,8 @@
     <string name="beast_mode_title">Beast mode</string>
     <string name="beast_mode_off"> Beast mode is off</string>
     <string name="beast_mode_on">This feature helps when some ussd codes fail to function as expected. It is highly recommended you leave it enabled</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="title_home">Recent</string>
+    <string name="title_dashboard">Ussd codes</string>
+    <string name="title_notifications">Me</string>
 </resources>
