@@ -1,11 +1,14 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.quickCodes.quickCodes.AddYourOwnActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
@@ -69,53 +73,6 @@ public class MainFragment extends Fragment {
         viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
-        viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
-            @Override
-            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
-                actions = ussdActionWithSteps;
-
-                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
-                List<UssdActionWithSteps> recent = new ArrayList<>();
-                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
-                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
-                for (UssdActionWithSteps us : ussdActionWithSteps) {
-                    //skip nulls
-                    if (us == null || us.action == null) continue;
-                    if (us.action.getName().length() < 15) {
-                        int len = 15 - us.action.getName().length();
-                        String d = "";
-                        for (int i = 0; i < len; i++) {
-                            d = d + " ";
-                        }
-                        us.action.setName(us.action.getName() + d);
-                    }
-                    //skip loan codes
-//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-//                        continue;
-//                    }
-                    if (us.action.getSection() == SEC_AIRTIME) {
-                        Log.d(TAG, us.action.toString());
-                        airtimeCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_DATA) {
-                        dataCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_MMONEY) {
-                        mmoneyCodes.add(us);
-                    }
-                    if (recent.size() < 5) {
-                        recent.add(us);
-                    }
-                }
-                adapterUssdCodes.setUssdActions(airtimeCodes);
-                adapterUssdCodes1.setUssdActions(dataCodes);
-                adapterUssdCodes2.setUssdActions(mmoneyCodes);
-
-                //filter out actions that dont apply for the currently selected network
-                filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), null);
-
-            }
-        });
 
         adapterUssdCodes.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
@@ -217,6 +174,12 @@ public class MainFragment extends Fragment {
 
         // Inflate the layout_no_item for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
+        LinearLayout linear_layout_recent = root.findViewById(R.id.linear_layout_recent);
+        LinearLayout linear_layout_no_recent_items = root.findViewById(R.id.linear_layout_no_recent_items);
+
+        Button btn = root.findViewById(R.id.add_custom_codes_btn);
+        btn.setOnClickListener(view -> startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class)));
+
 
         homeViewModel.getSimCards(getActivity()).observe(getViewLifecycleOwner(), new Observer<List<SimCard>>() {
             @Override
@@ -225,6 +188,63 @@ public class MainFragment extends Fragment {
                 simCards = cards;
             }
         });
+
+        viewModel.getAllCustomActions().observe(getActivity(), new Observer<List<UssdActionWithSteps>>() {
+            @Override
+            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
+                actions = ussdActionWithSteps;
+
+                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> recent = new ArrayList<>();
+                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : ussdActionWithSteps) {
+                    //skip nulls
+                    if (us == null || us.action == null) continue;
+                    if (us.action.getName().length() < 15) {
+                        int len = 15 - us.action.getName().length();
+                        String d = "";
+                        for (int i = 0; i < len; i++) {
+                            d = d + " ";
+                        }
+                        us.action.setName(us.action.getName() + d);
+                    }
+                    //skip loan codes
+//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+//                        continue;
+//                    }
+                    if (us.action.getSection() == SEC_AIRTIME) {
+                        Log.d(TAG, us.action.toString());
+                        airtimeCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_DATA) {
+                        dataCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_MMONEY) {
+                        mmoneyCodes.add(us);
+                    }
+                    if (recent.size() < 5) {
+                        recent.add(us);
+                    }
+                }
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
+                if (ussdActionWithSteps.size() < 1) {
+                    linear_layout_recent.setVisibility(View.GONE);
+                    linear_layout_no_recent_items.setVisibility(View.VISIBLE);
+                } else {
+                    linear_layout_recent.setVisibility(View.VISIBLE);
+                    linear_layout_no_recent_items.setVisibility(View.GONE);
+                }
+
+                //filter out actions that dont apply for the currently selected network
+                filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), null);
+
+            }
+        });
+
 
         //setup airtime
         airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
