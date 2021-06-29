@@ -93,15 +93,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                SimCard card = simCards.get(position);
+                SimCard simCard = simCards.get(position);
                 List<UssdActionWithSteps> filterd = new ArrayList<UssdActionWithSteps>();
                 for (UssdActionWithSteps us : actions) {
                     if (us == null || us.action == null) continue;
-                    if (us.action.getHni().equals(card.getHni())) {
+                    if (us.action.getHni().equals(simCard.getHni())) {
                         filterd.add(us);
                     }
                 }
                 adapterUssdCodesRecent.setUssdActions(filterd);
+                Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
             }
 
             @Override
@@ -177,7 +178,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    class SideBySideTransformer implements ViewPager2.PageTransformer {
+    public static class SideBySideTransformer implements ViewPager2.PageTransformer {
         private float minScale;
 
         public SideBySideTransformer() {

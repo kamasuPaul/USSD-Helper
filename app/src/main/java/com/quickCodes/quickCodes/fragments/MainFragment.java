@@ -15,11 +15,15 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
+import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.ui.home.HomeFragment;
+import com.quickCodes.quickCodes.ui.home.HomeViewModel;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
@@ -43,6 +47,9 @@ public class MainFragment extends Fragment {
 
     private final static String TAG = "MainFragment";
     private AdapterSimCards adapterSimcards;
+    private HomeViewModel homeViewModel;
+    private List<SimCard> simCards;
+    private List<UssdActionWithSteps> actions;
 
 
     public MainFragment() {
@@ -56,10 +63,16 @@ public class MainFragment extends Fragment {
         adapterUssdCodes = new AdapterDialer(getActivity());
         adapterUssdCodes1 = new AdapterDialer(getActivity());
         adapterUssdCodes2 = new AdapterDialer(getActivity());
+        simCards = new ArrayList<>();
+        actions = new ArrayList<>();
+
         viewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        ussdActionsViewModel = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         viewModel.getAllCustomActions().observe(this, new Observer<List<UssdActionWithSteps>>() {
             @Override
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
+                actions = ussdActionWithSteps;
 
                 List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
                 List<UssdActionWithSteps> recent = new ArrayList<>();
@@ -205,6 +218,14 @@ public class MainFragment extends Fragment {
         // Inflate the layout_no_item for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
+        homeViewModel.getSimCards(getActivity()).observe(getViewLifecycleOwner(), new Observer<List<SimCard>>() {
+            @Override
+            public void onChanged(List<SimCard> cards) {
+                adapterSimcards.setSimcards(cards);
+                simCards = cards;
+            }
+        });
+
         //setup airtime
         airtimeRecyclerView = root.findViewById(R.id.airtimeRecylerView);
         airtimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -221,6 +242,69 @@ public class MainFragment extends Fragment {
         mmRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         mmRecyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
         mmRecyclerView.setAdapter(adapterUssdCodes2);
+
+        //......SETUP SIMCARDS VIEW PAGER...........................................................
+        ViewPager2 viewPagerSimcards = root.findViewById(R.id.viewpager_main);
+        viewPagerSimcards.setAdapter(adapterSimcards);
+        viewPagerSimcards.setOffscreenPageLimit(1);
+        int pageMarginPx = getResources().getDimensionPixelOffset(R.dimen.card_margin);
+        int peekMarginPx = getResources().getDimensionPixelOffset(R.dimen.peek_offset_margin);
+
+        RecyclerView rv = (RecyclerView) viewPagerSimcards.getChildAt(0);
+        rv.setClipToPadding(false);
+        int padding = peekMarginPx + pageMarginPx;
+        rv.setPadding(padding, 0, padding, 0);
+
+        viewPagerSimcards.setPageTransformer(new HomeFragment.SideBySideTransformer());
+
+        viewPagerSimcards.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                SimCard simCard = simCards.get(position);
+                Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
+
+                List<UssdActionWithSteps> filterd = new ArrayList<UssdActionWithSteps>();
+                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
+                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
+                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
+                for (UssdActionWithSteps us : actions) {
+                    //skip loan codes
+//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
+//                        continue;
+//                    }
+                    if (!(simCard.getHni().equals(us.action.getHni()))) {
+                        continue;
+
+                    }
+
+                    if (us.action.getSection() == SEC_AIRTIME) {
+                        airtimeCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_DATA) {
+                        dataCodes.add(us);
+                    }
+                    if (us.action.getSection() == SEC_MMONEY) {
+                        mmoneyCodes.add(us);
+                    }
+                }
+                adapterUssdCodes.setUssdActions(airtimeCodes);
+                adapterUssdCodes1.setUssdActions(dataCodes);
+                adapterUssdCodes2.setUssdActions(mmoneyCodes);
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }
+        });
+        //..........................................................................................
 
 
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
