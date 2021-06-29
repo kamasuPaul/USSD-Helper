@@ -42,5 +42,4 @@ public class HomeViewModel extends ViewModel {
         return ussdActions;
     }
 
-
 }

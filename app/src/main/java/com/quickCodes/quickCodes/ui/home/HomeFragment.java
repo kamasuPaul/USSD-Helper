@@ -23,6 +23,7 @@ import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
+import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class HomeFragment extends Fragment {
     private AdapterDialer adapterUssdCodesRecent;
     private List<SimCard> simCards;
     private List<UssdActionWithSteps> actions;
+    private UssdActionsViewModel ussdActionsViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class HomeFragment extends Fragment {
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
+        ussdActionsViewModel =
+                new ViewModelProvider(this).get(UssdActionsViewModel.class);
         homeViewModel.getSimCards(getActivity()).observe(getViewLifecycleOwner(), new Observer<List<SimCard>>() {
             @Override
             public void onChanged(List<SimCard> cards) {
@@ -62,7 +66,7 @@ public class HomeFragment extends Fragment {
                 simCards = cards;
             }
         });
-        homeViewModel.getUssdActions(getActivity()).observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
+        ussdActionsViewModel.getAllCustomActions().observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
             @Override
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 adapterUssdCodesRecent.setUssdActions(ussdActionWithSteps);
@@ -121,7 +125,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
                 Tools.executeSuperAction(obj, getActivity());
-//                Tools.updateWeightOnClick(obj, viewModel);
+                Tools.updateWeightOnClick(obj, ussdActionsViewModel);
             }
 
             @Override
