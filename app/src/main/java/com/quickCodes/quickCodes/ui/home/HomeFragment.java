@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +55,8 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        LinearLayout linear_layout_recent = root.findViewById(R.id.linear_layout_recent);
+        LinearLayout linear_layout_no_recent_items = root.findViewById(R.id.linear_layout_no_recent_items);
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -71,6 +74,13 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 adapterUssdCodesRecent.setUssdActions(ussdActionWithSteps);
                 actions = ussdActionWithSteps;
+                if (ussdActionWithSteps.size() < 1) {
+                    linear_layout_recent.setVisibility(View.GONE);
+                    linear_layout_no_recent_items.setVisibility(View.VISIBLE);
+                } else {
+                    linear_layout_recent.setVisibility(View.VISIBLE);
+                    linear_layout_no_recent_items.setVisibility(View.GONE);
+                }
             }
         });
 

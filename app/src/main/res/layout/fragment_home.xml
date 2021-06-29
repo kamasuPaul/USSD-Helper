@@ -38,7 +38,6 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_middle" />
-
             <TextView
                 android:id="@+id/recent_label"
                 android:layout_width="match_parent"
@@ -50,11 +49,37 @@
                 android:textColor="@color/grey_90"
                 android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recentReyclerView"
+            <LinearLayout
+                android:id="@+id/linear_layout_recent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recentReyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_layout_no_recent_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/no_recent_items_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/spacing_middle"
+                    android:text="No recent items"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/grey_90"
+                    android:textStyle="italic" />
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
