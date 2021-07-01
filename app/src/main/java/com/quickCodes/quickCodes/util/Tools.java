@@ -8,13 +8,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
@@ -35,6 +40,7 @@ import androidx.cardview.widget.CardView;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
+import com.quickCodes.quickCodes.modals.DeviceInfo;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.Step;
 import com.quickCodes.quickCodes.modals.UssdAction;
@@ -429,5 +435,81 @@ public class Tools {
         }
 
         return accessibilityServiceEnabled;
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * For device info parameters
+     */
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return model;
+        } else {
+            return manufacturer + " " + model;
+        }
+    }
+
+    public static String getAndroidVersion() {
+        return Build.VERSION.RELEASE + "";
+    }
+
+    public static int getVersionCode(Context ctx) {
+        try {
+            PackageManager manager = ctx.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
+            return info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            return -1;
+        }
+    }
+
+
+    public static String getVersionName(Context ctx) {
+        try {
+            PackageManager manager = ctx.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
+            return ctx.getString(R.string.app_version) + " " + info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return ctx.getString(R.string.version_unknown);
+        }
+    }
+
+    public static String getVersionNamePlain(Context ctx) {
+        try {
+            PackageManager manager = ctx.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
+            return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return ctx.getString(R.string.version_unknown);
+        }
+    }
+
+    public static DeviceInfo getDeviceInfo(Context context) {
+        DeviceInfo deviceInfo = new DeviceInfo();
+        deviceInfo.device = Tools.getDeviceName();
+        deviceInfo.os_version = Tools.getAndroidVersion();
+        deviceInfo.app_version = Tools.getVersionCode(context) + " (" + Tools.getVersionNamePlain(context) + ")";
+        deviceInfo.serial = Tools.getDeviceID(context);
+        return deviceInfo;
+    }
+
+    public static String getDeviceID(Context context) {
+        String deviceID = Build.SERIAL;
+        if (deviceID == null || deviceID.trim().isEmpty() || deviceID.equalsIgnoreCase("unknown") || deviceID.equals("0")) {
+            try {
+                deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            } catch (Exception e) {
+            }
+        }
+        return deviceID;
     }
 }

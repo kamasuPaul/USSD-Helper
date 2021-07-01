@@ -77,4 +77,8 @@
     <string name="title_home">Recent</string>
     <string name="title_dashboard">Ussd codes</string>
     <string name="title_notifications">Me</string>
+
+    <string name="app_version">Version</string>
+    <string name="version_unknown">Unknown</string>
+
 </resources>

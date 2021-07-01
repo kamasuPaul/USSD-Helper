@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_xxlarge">
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,6 +31,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/device_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Quick Codes"
@@ -39,6 +40,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/device_id"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="DeviceId: 3483483437847738488"
@@ -53,11 +55,10 @@
                     android:layout_marginTop="1dp">
 
                     <ImageView
-                        android:id="@+id/ImageView_ActionIcon"
+                        android:id="@+id/image_view_user_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:background="@color/red_50"
                         android:src="@drawable/dailpad_numbers_background" />
 
                 </RelativeLayout>
@@ -107,6 +108,7 @@
                 android:background="@color/grey_10" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -146,6 +148,7 @@
                 android:background="@color/grey_10" />
 
             <LinearLayout
+                android:id="@+id/linear_layout_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -191,6 +194,7 @@
                 android:background="@color/grey_10" />
 
             <LinearLayout
+                android:id="@+id/linear_layout_help"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -229,6 +233,7 @@
                 android:background="@color/grey_10" />
 
             <LinearLayout
+                android:id="@+id/linear_layout_send_feeback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"

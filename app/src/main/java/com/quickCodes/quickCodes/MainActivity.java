@@ -252,4 +252,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean accessibilityOff() {
         return !Tools.isAccessibilityServiceEnabled(getApplicationContext(), UssdDetector.class);
     }
+
+    public void gotoHelp(View view) {
+        startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+    }
 }
