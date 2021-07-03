@@ -112,6 +112,9 @@ dependencies {
 //    implementation 'com.synnapps:carouselview:0.1.5'
 //    implementation 'io.github.vejei.pagetransformer:pagetransformer:1.0.0-alpha'
 
+    implementation 'com.mikhaellopez:circularimageview:4.3.0'
+
+
 
 
 

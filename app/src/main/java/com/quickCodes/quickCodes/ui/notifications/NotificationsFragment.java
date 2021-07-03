@@ -35,10 +35,16 @@ public class NotificationsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
 
         ImageView iconView = (ImageView) root.findViewById(R.id.image_view_user_icon);
-        setUserIcon(iconView, Tools.getDeviceName(), getActivity());
+//        setUserIcon(iconView, Tools.getDeviceName(), getActivity());
 
         TextView device_name = root.findViewById(R.id.device_name);
         device_name.setText(Tools.getDeviceName());
+        TextView simcards_number = root.findViewById(R.id.textView_simcards);
+        String simcards = String.valueOf((Tools.getAvailableSimCards(getActivity()).size()));
+        simcards_number.setText(simcards);
+        TextView points = root.findViewById(R.id.textView_points_scored);
+
+        points.setText("200");
 
         TextView device_id = root.findViewById(R.id.device_id);
         device_id.setText("Device id : " + Tools.getDeviceID(getActivity()));
