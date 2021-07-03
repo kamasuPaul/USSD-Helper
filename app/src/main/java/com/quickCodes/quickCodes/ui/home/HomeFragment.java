@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +17,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
+import com.quickCodes.quickCodes.adapters.RecentAdapter;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
@@ -40,6 +44,8 @@ public class HomeFragment extends Fragment {
     private List<UssdActionWithSteps> actions;
     private UssdActionsViewModel ussdActionsViewModel;
     private boolean pointsCalculated = false;
+    private RecentAdapter recentAdapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +53,7 @@ public class HomeFragment extends Fragment {
         actions = new ArrayList<>();
         adapterSimcards = new AdapterSimCards(getActivity());
         adapterUssdCodesRecent = new AdapterDialer(getActivity());
-
-
+        recentAdapter = new RecentAdapter(this);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -143,6 +148,18 @@ public class HomeFragment extends Fragment {
             }
         });
         //..........................................................................................
+        ViewPager2 tabsPager = root.findViewById(R.id.pager_tabs);
+        TabLayout tabLayout = root.findViewById(R.id.tab_layout);
+        tabsPager.setAdapter(recentAdapter);
+
+        new TabLayoutMediator(tabLayout, tabsPager,
+                (tab, position) -> {
+                    if (position == 0) tab.setText("Recent");
+                    if (position == 1) tab.setText("Starred");
+
+                }
+        ).attach();
+
 
         //.... SETUP RECENT ACTIONS ................................................................
         RecyclerView recentReyclerView = root.findViewById(R.id.recentReyclerView);
@@ -158,6 +175,12 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
+
+            @Override
+            public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                Toast.makeText(getActivity(), ussdActionWithSteps.action.getName() + "has been " + (ussdActionWithSteps.action.isStarred() ? "un starred" : "starred"), Toast.LENGTH_SHORT).show();
+                Tools.updateSetStar(ussdActionWithSteps, ussdActionsViewModel);
             }
         });
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes

@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,9 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.quickCodes.quickCodes.R;
@@ -23,13 +25,11 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.recyclerview.widget.RecyclerView;
-
+import static com.quickCodes.quickCodes.modals.Constants.AUTO_SAVED_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
-import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
 
 public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
@@ -46,35 +46,19 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (ussdActionWithStepsFiltered != null) {
             if (holder instanceof OriginalViewHolder) {
                 final OriginalViewHolder rootView = (OriginalViewHolder) holder;
-
-
                 final UssdAction ussdAction = ussdActionWithStepsFiltered.get(position).action;
 
                 //set title of action
-
                 rootView.title.setText(ussdAction.getName());
+                ImageView starImageView = rootView.imageViewStar;
 
                 String codeString = ussdAction.getCode();
-//                if (ussdAction.getMtnCode() != null) {
-//                    if (!ussdAction.getMtnCode().isEmpty())
-//                        codeString += "\t\t|" + ussdAction.getMtnCode();
-//
-//                }
-//                if (ussdAction.getAfricellCode() != null) {
-//                    if (!ussdAction.getAfricellCode().isEmpty())
-//                        codeString += "\t\t|" + ussdAction.getAfricellCode();
-//                }
                 rootView.code.setText(codeString);
                 if (String.valueOf(ussdAction.getActionId()) != null) {
                     rootView.section.setText(getSectionFromId(ussdAction.getSection()));
                 } else {
                     rootView.section.setText("TELPHONE");
                 }
-//            view.image.setImageDrawable();
-                // generate color based on a key (same key returns the same color), useful for list/grid views
-
-                //set image icon of action
-                //change the image icon to a letter icon
 
                 String icon_letter = String.valueOf((ussdAction.getName()).trim().charAt(0)).toUpperCase();
                 if (!icon_letter.matches("[a-z]")) {//if the first character is not alphabetic
@@ -86,7 +70,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
                 TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(icon_letter, ctx.getResources().getColor(R.color.colorPrimary));
+                        .buildRound(icon_letter, ctx.getResources().getColor(R.color.colorPrimary));
                 if (null != rootView.image) {
                     if (drawable != null) {
                         try {
@@ -96,12 +80,11 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }
                 }
-                //view.image.setImageDrawable(drawable);
-                //get the screen width
-                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-//                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
-
-
+                if (ussdAction.isStarred()) {
+                    starImageView.setColorFilter(ContextCompat.getColor(ctx, R.color.amber_300), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else {
+                    starImageView.setColorFilter(ContextCompat.getColor(ctx, R.color.grey_10), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
                 rootView.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -119,6 +102,14 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         return true;
                     }
                 });
+                starImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onStarClick(v, ussdActionWithStepsFiltered.get(position), position);
+                        }
+                    }
+                });
 
             }
         }
@@ -133,19 +124,23 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView title, code, section;
-        public LinearLayout linearLayout;
-
-        public OriginalViewHolder(View v) {
-            super(v);
-            image = (ImageView) v.findViewById(R.id.ImageView_ActionIcon);
-            title = (TextView) v.findViewById(R.id.TextView_ActionName);
-            code = (TextView) v.findViewById(R.id.TextView_ActionCode);
-            section = (TextView) v.findViewById(R.id.TextView_Action_section);
-            linearLayout = v.findViewById(R.id.myAction);
+    public String getSectionFromId(int id) {
+        if (id == SEC_AIRTIME) {
+            return "AIRTIME";
         }
+        if (id == SEC_DATA) {
+            return "DATA";
+        }
+        if (id == SEC_MMONEY) {
+            return "MOBILE MONEY";
+        }
+        if (id == SEC_CUSTOM_CODES) {
+            return "CUSTOM CODE";
+        }
+        if (id == AUTO_SAVED_CODES) {
+            return "AUTO SAVED";
+        }
+        return "";//TODO change the ifs to a switch
     }
 
     @Override
@@ -158,7 +153,10 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface OnItemClickListener {
         void onItemClick(View view, UssdActionWithSteps obj, int position);
+
         void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position);
+
+        void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position);
 
     }
 
@@ -263,26 +261,26 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    public String getSectionFromId(int id) {
-        if (id == SEC_AIRTIME) {
-            return "AIRTIME";
+    public class OriginalViewHolder extends RecyclerView.ViewHolder {
+        public ImageView image, imageViewStar;
+        public TextView title, code, section;
+        public LinearLayout linearLayout;
+
+        public OriginalViewHolder(View v) {
+            super(v);
+            image = (ImageView) v.findViewById(R.id.ImageView_ActionIcon);
+            imageViewStar = v.findViewById(R.id.imageViewStar);
+            title = (TextView) v.findViewById(R.id.TextView_ActionName);
+            code = (TextView) v.findViewById(R.id.TextView_ActionCode);
+            section = (TextView) v.findViewById(R.id.TextView_Action_section);
+            linearLayout = v.findViewById(R.id.myAction);
         }
-        if (id == SEC_DATA) {
-            return "DATA";
-        }
-        if (id == SEC_MMONEY) {
-            return "MOBILE MONEY";
-        }
-        if (id == SEC_USER_DIALED) {
-            return "ME";
-        }
-        return "";//TODO change the ifs to a switch
     }
 
     /*
  adapted from mkyong.com
  */
     public static boolean containsIgnoreCase(String str, String subString) {
-        return str.toLowerCase().trim().replaceAll(" ","").contains(subString.toLowerCase().trim().replaceAll(" ",""));
+        return str.toLowerCase().trim().replaceAll(" ", "").contains(subString.toLowerCase().trim().replaceAll(" ", ""));
     }
 }

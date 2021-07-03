@@ -19,6 +19,7 @@ public class UssdAction {
     public int section;
     public int weight = 0;
     private Date date_last_accessed;
+    private boolean isStarred;
     @Ignore
     public UssdAction(){
 
@@ -89,6 +90,14 @@ public class UssdAction {
 
     public void setDate_last_accessed(Date date_last_accessed) {
         this.date_last_accessed = date_last_accessed;
+    }
+
+    public boolean isStarred() {
+        return isStarred;
+    }
+
+    public void setStarred(boolean starred) {
+        isStarred = starred;
     }
 
     @Override

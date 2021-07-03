@@ -84,6 +84,11 @@ public class MainFragment extends Fragment {
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
             }
+
+            @Override
+            public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+
+            }
         });
 //        });
         adapterUssdCodes1.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
@@ -96,6 +101,11 @@ public class MainFragment extends Fragment {
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
             }
+
+            @Override
+            public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+
+            }
         });
         adapterUssdCodes2.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
@@ -106,6 +116,12 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+            }
+
+            @Override
+            public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                Toast.makeText(getActivity(), ussdActionWithSteps.action.getName() + "has been " + (ussdActionWithSteps.action.isStarred() ? "un starred" : "starred"), Toast.LENGTH_SHORT).show();
+                Tools.updateSetStar(ussdActionWithSteps, ussdActionsViewModel);
             }
         });
         adapterSimcards = new AdapterSimCards(getActivity());

@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-@Database(entities = {UssdAction.class, Step.class}, version = 5)
+@Database(entities = {UssdAction.class, Step.class}, version = 6)
 @TypeConverters({Converters.class})
 public abstract class MyRoomDatabase extends RoomDatabase {
     private static final String TAG = "MyRoomDatabase";

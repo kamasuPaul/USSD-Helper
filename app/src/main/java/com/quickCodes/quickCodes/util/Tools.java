@@ -378,6 +378,11 @@ public class Tools {
         viewModel.update(obj);
     }
 
+    public static void updateSetStar(UssdActionWithSteps obj, UssdActionsViewModel viewModel) {
+        obj.action.setStarred(!obj.action.isStarred());
+        viewModel.update(obj);
+    }
+
     public static HashMap<String, String> getContacts() {
         return contacts;
     }

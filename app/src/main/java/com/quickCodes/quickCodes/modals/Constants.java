@@ -17,5 +17,6 @@ public class Constants {
     public static int   SEC_DATA = 2;
     public static int   SEC_MMONEY = 3;
     public static int   SEC_UTILITY = 4;
-    public static int   SEC_USER_DIALED = 5;
+    public static int SEC_USER_DIALED = 5;
+    public static int AUTO_SAVED_CODES = 6;
 }

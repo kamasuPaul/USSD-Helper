@@ -38,6 +38,18 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_middle" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/pager_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
             <TextView
                 android:id="@+id/recent_label"
                 android:layout_width="match_parent"
@@ -47,7 +59,9 @@
                 android:textAlignment="textStart"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/grey_90"
+                android:layout_gravity="start"
                 android:textStyle="bold" />
+
 
             <LinearLayout
                 android:id="@+id/linear_layout_recent"
