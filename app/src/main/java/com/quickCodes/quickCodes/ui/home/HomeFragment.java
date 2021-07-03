@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment {
     private List<SimCard> simCards;
     private List<UssdActionWithSteps> actions;
     private UssdActionsViewModel ussdActionsViewModel;
-
+    private boolean pointsCalculated = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +74,29 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 adapterUssdCodesRecent.setUssdActions(ussdActionWithSteps);
                 actions = ussdActionWithSteps;
+
                 if (ussdActionWithSteps.size() < 1) {
                     linear_layout_recent.setVisibility(View.GONE);
                     linear_layout_no_recent_items.setVisibility(View.VISIBLE);
                 } else {
+
                     linear_layout_recent.setVisibility(View.VISIBLE);
                     linear_layout_no_recent_items.setVisibility(View.GONE);
+                }
+                if (!pointsCalculated) {
+                    pointsCalculated = true;
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int points = 0;
+                            for (UssdActionWithSteps a : ussdActionWithSteps
+                            ) {
+                                points = points + a.action.getWeight();
+                            }
+                            Tools.setPoints(getActivity(), points);
+                        }
+                    });
+                    thread.start();
                 }
             }
         });
@@ -148,46 +165,6 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
-
-        private static final float MIN_SCALE = 0.85f;
-        private static final float MIN_ALPHA = 0.5f;
-
-        @Override
-        public void transformPage(View page, float position) {
-            int pageWidth = page.getWidth();
-            int pageHeight = page.getHeight();
-
-            if (position < -1) { // [ -Infinity,-1 )
-                // This page is way off-screen to the left.
-                page.setAlpha(0);
-            } else if (position <= 1) { // [ -1,1 ]
-                // Modify the default slide transition to shrink the page as well
-                float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-                float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-                float horzMargin = pageWidth * (1 - scaleFactor) / 2;
-                if (position < 0) {
-                    page.setTranslationX(horzMargin - vertMargin / 2);
-                } else {
-                    page.setTranslationX(-horzMargin + vertMargin / 2);
-                }
-
-                // Scale the page down ( between MIN_SCALE and 1 )
-                page.setScaleX(scaleFactor);
-                page.setScaleY(scaleFactor);
-
-                // Fade the page relative to its size.
-                page.setAlpha(MIN_ALPHA +
-                        (scaleFactor - MIN_SCALE) /
-                                (1 - MIN_SCALE) * (1 - MIN_ALPHA));
-
-            } else { // ( 1,+Infinity ]
-                // This page is way off-screen to the right.
-                page.setAlpha(0);
-            }
-        }
-    }
-
     public static class SideBySideTransformer implements ViewPager2.PageTransformer {
         private float minScale;
 
@@ -228,6 +205,46 @@ public class HomeFragment extends Fragment {
                 page.setPivotX(0);
                 page.setScaleX(minScale);
                 page.setScaleY(minScale);
+            }
+        }
+    }
+
+    class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
+
+        private static final float MIN_SCALE = 0.85f;
+        private static final float MIN_ALPHA = 0.5f;
+
+        @Override
+        public void transformPage(View page, float position) {
+            int pageWidth = page.getWidth();
+            int pageHeight = page.getHeight();
+
+            if (position < -1) { // [ -Infinity,-1 )
+                // This page is way off-screen to the left.
+                page.setAlpha(0);
+            } else if (position <= 1) { // [ -1,1 ]
+                // Modify the default slide transition to shrink the page as well
+                float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+                float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+                float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+                if (position < 0) {
+                    page.setTranslationX(horzMargin - vertMargin / 2);
+                } else {
+                    page.setTranslationX(-horzMargin + vertMargin / 2);
+                }
+
+                // Scale the page down ( between MIN_SCALE and 1 )
+                page.setScaleX(scaleFactor);
+                page.setScaleY(scaleFactor);
+
+                // Fade the page relative to its size.
+                page.setAlpha(MIN_ALPHA +
+                        (scaleFactor - MIN_SCALE) /
+                                (1 - MIN_SCALE) * (1 - MIN_ALPHA));
+
+            } else { // ( 1,+Infinity ]
+                // This page is way off-screen to the right.
+                page.setAlpha(0);
             }
         }
     }

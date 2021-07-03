@@ -240,7 +240,7 @@ public class MainFragment extends Fragment {
                 }
 
                 //filter out actions that dont apply for the currently selected network
-                filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), null);
+//                filterAndHideActions(Tools.getSelectedSimCard(getActivity()).getHni(), null);
 
             }
         });

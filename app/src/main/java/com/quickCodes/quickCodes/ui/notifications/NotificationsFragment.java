@@ -43,8 +43,8 @@ public class NotificationsFragment extends Fragment {
         String simcards = String.valueOf((Tools.getAvailableSimCards(getActivity()).size()));
         simcards_number.setText(simcards);
         TextView points = root.findViewById(R.id.textView_points_scored);
-
-        points.setText("200");
+        String scored_points = String.valueOf(Tools.getPoints(getActivity()));
+        points.setText(scored_points);
 
         TextView device_id = root.findViewById(R.id.device_id);
         device_id.setText("Device id : " + Tools.getDeviceID(getActivity()));

@@ -65,6 +65,7 @@ public class Tools {
     private static final String MCC_PREF = "mcc_pref";
     private static final String SELECTED_SIMCARD = "selected_simcard";
     public static final int CONTACT_PICKER_REQUEST = 29;
+    private static final String POINTS = "points";
     public static EditText phoneNumber;
     private static String TAG = "TOOLS";
     private static SubscriptionManager subscriptionManager;
@@ -511,5 +512,16 @@ public class Tools {
             }
         }
         return deviceID;
+    }
+
+    public static int getPoints(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
+        int points = preferences.getInt(POINTS, -1);
+        return points;
+    }
+
+    public static void setPoints(Context context, int points) {
+        SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
+        preferences.edit().putInt(POINTS, points).apply();
     }
 }
