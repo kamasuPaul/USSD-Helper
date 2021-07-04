@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -65,21 +66,30 @@ public class RecentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recent, container, false);
+        View view = inflater.inflate(R.layout.fragment_recent_recent, container, false);
+        View view_recent = view.findViewById(R.id.list);
+        LinearLayout linear_layout_no_recent_items = view.findViewById(R.id.linear_layout_no_recent_items);
         ussdActionsViewModel =
                 new ViewModelProvider(this).get(UssdActionsViewModel.class);
         ussdActionsViewModel.getAllCustomActions().observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
             @Override
             public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 adapterUssdCodesRecent.setUssdActions(ussdActionWithSteps);
+                if (ussdActionWithSteps.size() < 1) {
+                    view_recent.setVisibility(View.GONE);
+                    linear_layout_no_recent_items.setVisibility(View.VISIBLE);
+                } else {
+
+                    view_recent.setVisibility(View.VISIBLE);
+                    linear_layout_no_recent_items.setVisibility(View.GONE);
+                }
 
             }
         });
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -87,7 +97,7 @@ public class RecentFragment extends Fragment {
             }
 
             recyclerView.setAdapter(adapterUssdCodesRecent);
-        }
+
         adapterUssdCodesRecent.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {

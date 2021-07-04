@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.quickCodes.quickCodes.ui.home.HomeFragment"
+        android:name="com.quickCodes.quickCodes.ui.home.RecentFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_recent" />
 
     <fragment
         android:id="@+id/navigation_dashboard"

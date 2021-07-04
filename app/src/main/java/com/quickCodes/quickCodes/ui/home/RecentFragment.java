@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -25,7 +22,6 @@ import com.quickCodes.quickCodes.adapters.AdapterSimCards;
 import com.quickCodes.quickCodes.adapters.RecentAdapter;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
@@ -34,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class RecentFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
     private HomeViewModel homeViewModel;
@@ -59,9 +55,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        LinearLayout linear_layout_recent = root.findViewById(R.id.linear_layout_recent);
-        LinearLayout linear_layout_no_recent_items = root.findViewById(R.id.linear_layout_no_recent_items);
+        View root = inflater.inflate(R.layout.fragment_recent, container, false);
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -80,14 +74,6 @@ public class HomeFragment extends Fragment {
                 adapterUssdCodesRecent.setUssdActions(ussdActionWithSteps);
                 actions = ussdActionWithSteps;
 
-                if (ussdActionWithSteps.size() < 1) {
-                    linear_layout_recent.setVisibility(View.GONE);
-                    linear_layout_no_recent_items.setVisibility(View.VISIBLE);
-                } else {
-
-                    linear_layout_recent.setVisibility(View.VISIBLE);
-                    linear_layout_no_recent_items.setVisibility(View.GONE);
-                }
                 if (!pointsCalculated) {
                     pointsCalculated = true;
                     Thread thread = new Thread(new Runnable() {
@@ -134,19 +120,12 @@ public class HomeFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 SimCard simCard = simCards.get(position);
-                List<UssdActionWithSteps> filterd = new ArrayList<UssdActionWithSteps>();
-                for (UssdActionWithSteps us : actions) {
-                    if (us == null || us.action == null) continue;
-                    if (us.action.getHni().equals(simCard.getHni())) {
-                        filterd.add(us);
-                    }
-                }
-                adapterUssdCodesRecent.setUssdActions(filterd);
+
                 Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
             }
 
         });
-        viewPagerSimcards.beginFakeDrag();
+//        viewPagerSimcards.beginFakeDrag();
         //..........................................................................................
         ViewPager2 tabsPager = root.findViewById(R.id.pager_tabs);
         TabLayout tabLayout = root.findViewById(R.id.tab_layout);
@@ -160,29 +139,6 @@ public class HomeFragment extends Fragment {
                 }
         ).attach();
 
-
-        //.... SETUP RECENT ACTIONS ................................................................
-        RecyclerView recentReyclerView = root.findViewById(R.id.recentReyclerView);
-        recentReyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        recentReyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
-        recentReyclerView.setAdapter(adapterUssdCodesRecent);
-        adapterUssdCodesRecent.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, UssdActionWithSteps obj, int position) {
-                Tools.executeSuperAction(obj, getActivity());
-                Tools.updateWeightOnClick(obj, ussdActionsViewModel);
-            }
-
-            @Override
-            public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
-            }
-
-            @Override
-            public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
-                Toast.makeText(getActivity(), ussdActionWithSteps.action.getName() + "has been " + (ussdActionWithSteps.action.isStarred() ? "un starred" : "starred"), Toast.LENGTH_SHORT).show();
-                Tools.updateSetStar(ussdActionWithSteps, ussdActionsViewModel);
-            }
-        });
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));
         return root;

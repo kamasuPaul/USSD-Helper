@@ -26,8 +26,8 @@ import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
-import com.quickCodes.quickCodes.ui.home.HomeFragment;
 import com.quickCodes.quickCodes.ui.home.HomeViewModel;
+import com.quickCodes.quickCodes.ui.home.RecentFragment;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.AppLifeCycleListener;
 import com.quickCodes.quickCodes.util.Tools;
@@ -191,7 +191,7 @@ public class MainFragment extends Fragment {
         // Inflate the layout_no_item for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         LinearLayout linear_layout_recent = root.findViewById(R.id.linear_layout_recent);
-        LinearLayout linear_layout_no_recent_items = root.findViewById(R.id.linear_layout_no_recent_items);
+        LinearLayout linear_layout_no_recent_items = root.findViewById(R.id.linear_layout_no_recent_starred_items);
 
         Button btn = root.findViewById(R.id.add_custom_codes_btn);
         btn.setOnClickListener(view -> startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class)));
@@ -291,7 +291,7 @@ public class MainFragment extends Fragment {
         int padding = peekMarginPx + pageMarginPx;
         rv.setPadding(padding, 0, padding, 0);
 
-        viewPagerSimcards.setPageTransformer(new HomeFragment.SideBySideTransformer());
+        viewPagerSimcards.setPageTransformer(new RecentFragment.SideBySideTransformer());
 
         viewPagerSimcards.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
