@@ -298,17 +298,19 @@ public class MainFragment extends Fragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                 SimCard simCard = simCards.get(position);
-                Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
+//                Toast.makeText(getActivity(), "You have changed to "+simCard.getNetworkName()+" codes", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                SimCard simCard = simCards.get(position);
 
                 List<UssdActionWithSteps> filterd = new ArrayList<UssdActionWithSteps>();
                 List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
                 List<UssdActionWithSteps> dataCodes = new ArrayList<>();
                 List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
                 for (UssdActionWithSteps us : actions) {
-                    //skip loan codes
-//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-//                        continue;
-//                    }
                     if (!(simCard.getHni().equals(us.action.getHni()))) {
                         continue;
 
@@ -327,19 +329,10 @@ public class MainFragment extends Fragment {
                 adapterUssdCodes.setUssdActions(airtimeCodes);
                 adapterUssdCodes1.setUssdActions(dataCodes);
                 adapterUssdCodes2.setUssdActions(mmoneyCodes);
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
+                Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
             }
         });
+
         //..........................................................................................
 
 

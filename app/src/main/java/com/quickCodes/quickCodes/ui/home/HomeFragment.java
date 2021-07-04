@@ -126,6 +126,14 @@ public class HomeFragment extends Fragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                 SimCard simCard = simCards.get(position);
+//                Toast.makeText(getActivity(), "You have changed to "+simCard.getNetworkName()+" codes", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                SimCard simCard = simCards.get(position);
                 List<UssdActionWithSteps> filterd = new ArrayList<UssdActionWithSteps>();
                 for (UssdActionWithSteps us : actions) {
                     if (us == null || us.action == null) continue;
@@ -137,16 +145,8 @@ public class HomeFragment extends Fragment {
                 Tools.setSelectedSimcard(getActivity(), simCard.getSlotIndex());
             }
 
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
         });
+        viewPagerSimcards.beginFakeDrag();
         //..........................................................................................
         ViewPager2 tabsPager = root.findViewById(R.id.pager_tabs);
         TabLayout tabLayout = root.findViewById(R.id.tab_layout);

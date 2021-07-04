@@ -1,7 +1,6 @@
 package com.quickCodes.quickCodes.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,20 +54,8 @@ public class AdapterSimCards extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 rootView.title.setText(simCard.getNetworkName());
 
                 String codeString = simCard.getHni();
-//                if (ussdAction.getMtnCode() != null) {
-//                    if (!ussdAction.getMtnCode().isEmpty())
-//                        codeString += "\t\t|" + ussdAction.getMtnCode();
-//
-//                }
-//                if (ussdAction.getAfricellCode() != null) {
-//                    if (!ussdAction.getAfricellCode().isEmpty())
-//                        codeString += "\t\t|" + ussdAction.getAfricellCode();
-//                }
-//            view.image.setImageDrawable();
-                // generate color based on a key (same key returns the same color), useful for list/grid views
 
-                //set image icon of action
-                //change the image icon to a letter icon
+                rootView.simcardIndex.setText("SIM " + (simCard.getSlotIndex() + 1));
 
                 String icon_letter = String.valueOf((simCard.getNetworkName()).trim().charAt(0)).toUpperCase();
                 if (!icon_letter.matches("[a-z]")) {//if the first character is not alphabetic
@@ -90,11 +77,6 @@ public class AdapterSimCards extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     }
                 }
-                //view.image.setImageDrawable(drawable);
-                //get the screen width
-                int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-//                view.linearLayout.getLayoutParams().width = (int)((widthPixels)/3);
-
 
                 rootView.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -155,13 +137,14 @@ public class AdapterSimCards extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
-        public TextView title;
+        public TextView title, simcardIndex;
         public LinearLayout linearLayout;
 
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.ImageView_ActionIcon);
             title = (TextView) v.findViewById(R.id.TextView_ActionName);
+            simcardIndex = (TextView) v.findViewById(R.id.text_view_simcard_index);
             linearLayout = v.findViewById(R.id.myAction);
         }
     }

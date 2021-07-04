@@ -43,7 +43,7 @@
                 android:id="@+id/TextView_ActionName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Receive"
+                android:text="AIRTEL UGANDA"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:textColor="@color/indigo_900" />
 
@@ -57,12 +57,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_view_simcard_index"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.639 ETH"
+                android:text="SIM 1"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="@color/light_blue_500"
-                android:visibility="gone" />
+                android:textColor="@color/grey_500" />
 
         </LinearLayout>
 
