@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.quickCodes.quickCodes.AddYourOwnActionActivity;
+import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 
@@ -83,6 +87,8 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                createOptionsMenu(v, ussdActionWithSteps, position);
+
             }
 
             @Override
@@ -100,6 +106,8 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                createOptionsMenu(v, ussdActionWithSteps, position);
+
             }
 
             @Override
@@ -116,6 +124,8 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                createOptionsMenu(v, ussdActionWithSteps, position);
+
             }
 
             @Override
@@ -340,5 +350,36 @@ public class MainFragment extends Fragment {
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));
         return root;
     }
+
+    public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
+        //inflate options menu
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+        //inflate the menu from layout_no_item resource file
+        popupMenu.inflate(R.menu.action_card_menu);
+        //handle menu item clicks
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.edit_menu:
+                        //edit clicked
+                        Intent i = new Intent(getActivity(), EditActionActivity.class);
+                        i.putExtra("action_id", String.valueOf(p.action.getActionId()));
+                        i.putExtra("section", SEC_CUSTOM_CODES);
+                        startActivity(i);
+                        break;
+                    case R.id.delete_menu:
+                        //delete clicked
+                        ussdActionsViewModel.delete(p);
+                        Toast.makeText(getActivity(), "Deleted successfully", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
+            }
+        });
+        //show the menu
+        popupMenu.show();
+    }
+
 }
 

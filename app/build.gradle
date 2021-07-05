@@ -114,6 +114,8 @@ dependencies {
 //    implementation 'io.github.vejei.pagetransformer:pagetransformer:1.0.0-alpha'
 
     implementation 'com.mikhaellopez:circularimageview:4.3.0'
+    //show menu as bottom sheet
+//    implementation 'com.r4sh33d:SlidingUpMenu:0.0.2'
 
 
 
