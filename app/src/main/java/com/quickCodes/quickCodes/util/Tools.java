@@ -37,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.MutableLiveData;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.StepArrayAdapter;
@@ -72,6 +73,7 @@ public class Tools {
     private static List<SubscriptionInfo> subList;
     public static HashMap<String, String> contacts;
     static List<String> parts;
+    private static MutableLiveData<SimCard> selectedSimCard;
 
 
     @SuppressLint("MissingPermission")
@@ -133,9 +135,20 @@ public class Tools {
         return availableSimCards.size() > 0 ? availableSimCards.get(0) : new SimCard("UNKNOWN SIM", "64101", 0, 1);
     }
 
+    public static MutableLiveData<SimCard> getSelectedSimCardLive(Context context) {
+        if (selectedSimCard == null) {
+            selectedSimCard = new MutableLiveData<>();
+        }
+        return selectedSimCard;
+    }
+
     public static void setSelectedSimcard(Context context, int simslot) {
         SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
         preferences.edit().putInt(SELECTED_SIMCARD, simslot).commit();
+        if (selectedSimCard == null) {
+            selectedSimCard = new MutableLiveData<>();
+        }
+        selectedSimCard.setValue(getAvailableSimCards(context).get(simslot));
     }
 
     @SuppressLint("MissingPermission")
