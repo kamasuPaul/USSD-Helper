@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -23,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.quickCodes.quickCodes.AddYourOwnActionActivity;
-import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
 import com.quickCodes.quickCodes.adapters.AdapterSimCards;
@@ -40,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
-import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 
@@ -138,60 +133,6 @@ public class MainFragment extends Fragment {
 
 
     }
-
-
-    private void filterAndHideActions(String mode, @Nullable View root) {
-        if (mode != null) {
-
-            viewModel.getAllCustomActions().observe(this, ussdActionWithSteps -> {
-                List<UssdActionWithSteps> airtimeCodes = new ArrayList<>();
-                List<UssdActionWithSteps> dataCodes = new ArrayList<>();
-                List<UssdActionWithSteps> mmoneyCodes = new ArrayList<>();
-                for (UssdActionWithSteps us : ussdActionWithSteps) {
-                    //skip loan codes
-//                    if (us.action.getActionId() == 203 || us.action.getActionId() == 4) {
-//                        continue;
-//                    }
-                    if (!(mode.equals(us.action.getHni()))) {
-                        continue;
-
-                    }
-
-                    if (us.action.getSection() == SEC_AIRTIME) {
-                        airtimeCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_DATA) {
-                        dataCodes.add(us);
-                    }
-                    if (us.action.getSection() == SEC_MMONEY) {
-                        mmoneyCodes.add(us);
-                    }
-                }
-                adapterUssdCodes.setUssdActions(airtimeCodes);
-                adapterUssdCodes1.setUssdActions(dataCodes);
-                adapterUssdCodes2.setUssdActions(mmoneyCodes);
-
-//                if (root != null) {// A view is required to show snabars
-                    if (airtimeCodes.size() == 0 && dataCodes.size() == 0 && mmoneyCodes.size() == 0) {
-                        //TODO show no codes found page with button to add custom
-                        Toast.makeText(getActivity(), "No default ussd codes found for this network, Try adding custom codes", Toast.LENGTH_LONG).show();
-//                        Snackbar snackbar = Snackbar.make(root, "No default ussd codes found for this network, add custom codes", Snackbar.LENGTH_LONG);
-//                        snackbar.setAction("Add ", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                startActivity(new Intent(getActivity(), AddYourOwnActionActivity.class));
-//                            }
-//                        });
-//                        snackbar.show();
-                    }
-//                }
-
-            });
-
-        }
-
-    }
-
 
     @SuppressLint("MissingPermission")
     @Override
@@ -352,33 +293,7 @@ public class MainFragment extends Fragment {
     }
 
     public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
-        //inflate options menu
-        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-        //inflate the menu from layout_no_item resource file
-        popupMenu.inflate(R.menu.action_card_menu);
-        //handle menu item clicks
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.edit_menu:
-                        //edit clicked
-                        Intent i = new Intent(getActivity(), EditActionActivity.class);
-                        i.putExtra("action_id", String.valueOf(p.action.getActionId()));
-                        i.putExtra("section", SEC_CUSTOM_CODES);
-                        startActivity(i);
-                        break;
-                    case R.id.delete_menu:
-                        //delete clicked
-                        ussdActionsViewModel.delete(p);
-                        Toast.makeText(getActivity(), "Deleted successfully", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return false;
-            }
-        });
-        //show the menu
-        popupMenu.show();
+        OptionsDialogFragment.newInstance(ussdActionsViewModel, p).show(getActivity().getSupportFragmentManager(), "dialog");
     }
 
 }

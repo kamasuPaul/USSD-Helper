@@ -62,6 +62,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lyt_imageViewStar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
@@ -77,18 +78,9 @@
                         android:id="@+id/TextView_Action_section"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="16dp"
                         android:text="user defined"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                         android:textColor="@color/grey_40" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="&#8942;"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@color/light_blue_500"
-                        android:visibility="visible" />
 
 
                 </LinearLayout>

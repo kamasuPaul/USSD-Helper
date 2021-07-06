@@ -1,14 +1,11 @@
 package com.quickCodes.quickCodes.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -16,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.quickCodes.quickCodes.EditActionActivity;
 import com.quickCodes.quickCodes.MainActivity;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
@@ -28,7 +24,6 @@ import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_USER_DIALED;
 
 public class AutoDetectedFragment extends Fragment {
@@ -125,32 +120,8 @@ public class AutoDetectedFragment extends Fragment {
     }
 
     public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
-        //inflate options menu
-        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
-        //inflate the menu from layout_no_item resource file
-        popupMenu.inflate(R.menu.action_card_menu);
-        //handle menu item clicks
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.edit_menu:
-                        //edit clicked
-                        Intent i = new Intent(getActivity(), EditActionActivity.class);
-                        i.putExtra("action_id", String.valueOf(p.action.getActionId()));
-                        i.putExtra("section", SEC_CUSTOM_CODES);
-                        startActivity(i);
-                        break;
-                    case R.id.delete_menu:
-                        //delete clicked
-                        ussdActionsViewModel.delete(p);
-                        break;
-                }
-                return false;
-            }
-        });
-        //show the menu
-        popupMenu.show();
+        OptionsDialogFragment.newInstance(ussdActionsViewModel, p).show(getActivity().getSupportFragmentManager(), "dialog");
+
     }
 
 

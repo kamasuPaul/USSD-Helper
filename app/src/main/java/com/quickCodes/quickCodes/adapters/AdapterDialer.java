@@ -51,6 +51,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //set title of action
                 rootView.title.setText(ussdAction.getName());
                 ImageView starImageView = rootView.imageViewStar;
+                View paretnStarImageView = rootView.lytImageViewStar;
 
                 String codeString = ussdAction.getCode();
                 rootView.code.setText(codeString);
@@ -103,6 +104,14 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
                 starImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onStarClick(v, ussdActionWithStepsFiltered.get(position), position);
+                        }
+                    }
+                });
+                paretnStarImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (mOnItemClickListener != null) {
@@ -264,12 +273,13 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public ImageView image, imageViewStar;
         public TextView title, code, section;
-        public LinearLayout linearLayout;
+        public LinearLayout linearLayout, lytImageViewStar;
 
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.ImageView_ActionIcon);
             imageViewStar = v.findViewById(R.id.imageViewStar);
+            lytImageViewStar = v.findViewById(R.id.lyt_imageViewStar);
             title = (TextView) v.findViewById(R.id.TextView_ActionName);
             code = (TextView) v.findViewById(R.id.TextView_ActionCode);
             section = (TextView) v.findViewById(R.id.TextView_Action_section);
