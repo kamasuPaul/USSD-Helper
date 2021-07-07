@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
+        tools:visibility="gone"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,6 +18,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
+        tools:visibility="gone"
         android:id="@+id/linear_layout_no_recent_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,4 +37,15 @@
             android:textColor="@color/grey_90"
             android:textStyle="italic" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/spacing_middle"
+        android:text="Tap and hold on an item for more options"
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+        android:textColor="@color/grey_20"
+        android:textStyle="bold" />
 </LinearLayout>

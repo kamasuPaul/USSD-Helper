@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
+import com.quickCodes.quickCodes.fragments.OptionsDialogFragment;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
@@ -474,11 +475,13 @@ public class DialPadActivity extends AppCompatActivity {
 
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
+                createOptionsMenu(v, ussdActionWithSteps, position);
             }
 
             @Override
             public void onStarClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
-
+                Toast.makeText(DialPadActivity.this, ussdActionWithSteps.action.getName() + "has been " + (ussdActionWithSteps.action.isStarred() ? "un starred" : "starred"), Toast.LENGTH_SHORT).show();
+                Tools.updateSetStar(ussdActionWithSteps, ussdActionsViewModel);
             }
         });
 
@@ -617,5 +620,9 @@ public class DialPadActivity extends AppCompatActivity {
     public void closeButtomSheet(View view) {
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
+        OptionsDialogFragment.newInstance(ussdActionsViewModel, p).show(this.getSupportFragmentManager(), "dialog");
     }
 }
