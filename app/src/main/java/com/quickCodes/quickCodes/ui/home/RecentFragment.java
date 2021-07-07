@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -138,10 +140,16 @@ public class RecentFragment extends Fragment {
 
                 }
         ).attach();
+//        setupToolBar(root);
 
         //add this fragment as alifecycle owner so that its lifecycle is observed for lifecycle changes
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifeCycleListener(getActivity()));
         return root;
+    }
+
+    private void setupToolBar(View root) {
+        Toolbar toolbar = root.findViewById(R.id.toolbar1);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     public static class SideBySideTransformer implements ViewPager2.PageTransformer {
