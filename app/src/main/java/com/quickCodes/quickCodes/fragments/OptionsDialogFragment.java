@@ -1,7 +1,10 @@
 package com.quickCodes.quickCodes.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +51,7 @@ public class OptionsDialogFragment extends BottomSheetDialogFragment {
         View edit = root.findViewById(R.id.edit_action);
         View star = root.findViewById(R.id.star_action);
         View delete = root.findViewById(R.id.delete_action);
+        View copy = root.findViewById(R.id.copy_action);
 
         edit.setOnClickListener(view -> {
             editAction();
@@ -57,6 +61,9 @@ public class OptionsDialogFragment extends BottomSheetDialogFragment {
         });
         delete.setOnClickListener(view -> {
             deleteAction();
+        });
+        copy.setOnClickListener(view -> {
+            copyAction();
         });
         return root;
     }
@@ -85,6 +92,20 @@ public class OptionsDialogFragment extends BottomSheetDialogFragment {
         this.action.action.setStarred(!this.action.action.isStarred());
         viewModel.update(this.action);
         Toast.makeText(getActivity(), "starred/unstarred successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void copyAction() {
+        String text = this.action.action.getCode();
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Ussd code", text);
+            clipboard.setPrimaryClip(clip);
+        }
+        this.dismiss();
+        Toast.makeText(getActivity(), "copied successfully", Toast.LENGTH_SHORT).show();
     }
 
 
