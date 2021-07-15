@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -21,6 +22,7 @@
             android:padding="@dimen/spacing_middle">
 
             <androidx.viewpager2.widget.ViewPager2
+                tools:background="@color/amber_400"
                 android:id="@+id/viewpager_main"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"

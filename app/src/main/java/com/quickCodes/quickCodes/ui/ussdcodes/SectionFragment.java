@@ -1,4 +1,4 @@
-package com.quickCodes.quickCodes.fragments;
+package com.quickCodes.quickCodes.ui.ussdcodes;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,13 +13,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.adapters.AdapterDialer;
+import com.quickCodes.quickCodes.fragments.OptionsDialogFragment;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
+import com.quickCodes.quickCodes.ui.main.CustomCodesFragment;
 import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
@@ -29,41 +30,34 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class StarredFragment extends Fragment {
+public class SectionFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private int section;
     private AdapterDialer adapterUssdCodesRecent;
     private UssdActionsViewModel ussdActionsViewModel;
     private LiveData<SimCard> simCardLiveData;
-
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public StarredFragment() {
+
+    public SectionFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static StarredFragment newInstance(int columnCount) {
-        StarredFragment fragment = new StarredFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+    public SectionFragment(int section) {
+        this.section = section;
+    }
+
+    public static SectionFragment newInstance(int section) {
+
+        SectionFragment fragment = new SectionFragment(section);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
         adapterUssdCodesRecent = new AdapterDialer(getActivity());
         simCardLiveData = Tools.getSelectedSimCardLive(getActivity());
 
@@ -72,17 +66,17 @@ public class StarredFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recent_starred, container, false);
-        View view_recent = view.findViewById(R.id.list_starred);
-        LinearLayout linear_layout_no_recent_items = view.findViewById(R.id.linear_layout_no_recent_starred_items);
+        View view = inflater.inflate(R.layout.fragment_recent_recent, container, false);
+        View view_recent = view.findViewById(R.id.list);
+        LinearLayout linear_layout_no_recent_items = view.findViewById(R.id.linear_layout_no_recent_items);
         ussdActionsViewModel =
                 new ViewModelProvider(this).get(UssdActionsViewModel.class);
         ussdActionsViewModel.getAllCustomActions().observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
             @Override
-            public void onChanged(List<UssdActionWithSteps> actions) {
+            public void onChanged(List<UssdActionWithSteps> ussdActionWithSteps) {
                 List<UssdActionWithSteps> starred = new ArrayList();
-                for (UssdActionWithSteps action : actions) {
-                    if (action.action.isStarred()) {
+                for (UssdActionWithSteps action : ussdActionWithSteps) {
+                    if (action.action.getSection() == section) {
                         starred.add(action);
                     }
                 }
@@ -98,6 +92,14 @@ public class StarredFragment extends Fragment {
                 }
             }
         });
+
+        // Set the adapter
+        Context context = view.getContext();
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
+        recyclerView.addItemDecoration(new CustomCodesFragment.MyItemDecorator(2, 5));
+        recyclerView.setAdapter(adapterUssdCodesRecent);
+
         adapterUssdCodesRecent.setOnItemClickListener(new AdapterDialer.OnItemClickListener() {
             @Override
             public void onItemClick(View view, UssdActionWithSteps obj, int position) {
@@ -108,7 +110,6 @@ public class StarredFragment extends Fragment {
             @Override
             public void onLongClick(View v, UssdActionWithSteps ussdActionWithSteps, int position) {
                 createOptionsMenu(v, ussdActionWithSteps, position);
-
             }
 
             @Override
@@ -117,17 +118,6 @@ public class StarredFragment extends Fragment {
                 Tools.updateSetStar(ussdActionWithSteps, ussdActionsViewModel);
             }
         });
-        // Set the adapter
-        Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list_starred);
-        if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        }
-
-        recyclerView.setAdapter(adapterUssdCodesRecent);
-
         simCardLiveData.observe(getViewLifecycleOwner(), new Observer<SimCard>() {
             @Override
             public void onChanged(SimCard simCard) {
@@ -135,17 +125,17 @@ public class StarredFragment extends Fragment {
                 ussdActionsViewModel.getAllCustomActions().observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
                     @Override
                     public void onChanged(List<UssdActionWithSteps> actions) {
-                        List<UssdActionWithSteps> recentList = new ArrayList();
+                        List<UssdActionWithSteps> items = new ArrayList();
                         for (UssdActionWithSteps action : actions) {
-                            if (action.action.getHni().equals(simCard.getHni())) {
-                                if (action.action.isStarred()) {
-                                    recentList.add(action);
-                                }
+                            if ((action.action.getHni().equals(simCard.getHni()))
+                                    && (action.action.getSection() == section)) {
+                                items.add(action);
                             }
                         }
-                        adapterUssdCodesRecent.setUssdActions(recentList);
 
-                        if (recentList.size() < 1) {
+                        adapterUssdCodesRecent.setUssdActions(items);
+
+                        if (items.size() < 1) {
                             view_recent.setVisibility(View.GONE);
                             linear_layout_no_recent_items.setVisibility(View.VISIBLE);
                         } else {
@@ -158,7 +148,6 @@ public class StarredFragment extends Fragment {
                 });
             }
         });
-
         return view;
     }
 
