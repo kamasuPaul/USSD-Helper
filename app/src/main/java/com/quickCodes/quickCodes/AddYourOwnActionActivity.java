@@ -12,6 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.google.android.material.button.MaterialButton;
 import com.quickCodes.quickCodes.modals.SimCard;
 import com.quickCodes.quickCodes.modals.Step;
@@ -20,15 +24,16 @@ import com.quickCodes.quickCodes.util.Tools;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-
 import static com.quickCodes.quickCodes.modals.Constants.NUMBER;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
 import static com.quickCodes.quickCodes.modals.Constants.TELEPHONE;
 import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
@@ -41,10 +46,11 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
     private static final String TAG = "AddYourOwnActionActvity";
     MaterialButton button;
     EditText actionName, actionCode;
-    AutoCompleteTextView actionNetwork;
+    AutoCompleteTextView actionNetwork, actionSection;
     //    Spinner spinner;
     int lastId = 6;
     LinearLayout parentlayout;
+    HashMap<Integer, String> secs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         actionName = findViewById(R.id.action_name);
         actionCode = findViewById(R.id.action_code);
         actionNetwork = findViewById(R.id.action_network);
+        actionSection = findViewById(R.id.action_section);
 //        spinner = findViewById(R.id.type_spinner);
 
         parentlayout = findViewById(R.id.layout_parent);
@@ -74,7 +81,8 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
         for (int i = 0; i < availableSimCards.size(); i++) {
             //add all networks to the array
             SimCard card = availableSimCards.get(i);
-            networks[i] = card.getNetworkName();
+            int index = (i + 1);
+            networks[i] = "SIM " + index + " - " + card.getNetworkName();
         }
 //        for (SimCard card : availableSimCards) {
 //            //add all networks to the array
@@ -83,17 +91,36 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter =
             new ArrayAdapter<>(
-                this,
-                R.layout.dropdown_menu_popup_item,
-                networks);
+                    this,
+                    R.layout.dropdown_menu_popup_item,
+                    networks);
 
         AutoCompleteTextView editTextFilledExposedDropdown =
-            findViewById(R.id.action_network);
+                findViewById(R.id.action_network);
         editTextFilledExposedDropdown.setKeyListener(null);
         editTextFilledExposedDropdown.setAdapter(adapter);
 
         //**************************************************************************************//
+        secs = new HashMap<Integer, String>();
+        secs.put(SEC_CUSTOM_CODES, "CUSTOM CODES");
+        secs.put(SEC_AIRTIME, "AIRTIME");
+        secs.put(SEC_DATA, "DATA");
+        secs.put(SEC_MMONEY, "MOBILE MONEY");
+        String[] sections = new String[4];
+        int i = 0;
+        for (String value : secs.values()) {
+            sections[i] = value;
+            i++;
+        }
+        ArrayAdapter<String> secAdapter =
+                new ArrayAdapter<>(
+                        this,
+                        R.layout.dropdown_menu_popup_item,
+                        sections);
 
+        AutoCompleteTextView secEdit = findViewById(R.id.action_section);
+        secEdit.setKeyListener(null);
+        secEdit.setAdapter(secAdapter);
     }
 
     private void setupToolBar() {
@@ -167,24 +194,31 @@ public class AddYourOwnActionActivity extends AppCompatActivity {
                 hni = card.getHni();
             }
         }
-//        String airtelCode = "", mtnCode = "", africellCode = "";
-//        if (containsIgnoreCase(networkName, "MTN")) {
-//            mtnCode = code;
-//        }
-//        if (containsIgnoreCase(networkName, "AIRTEL")) {
-//            airtelCode = code;
-//        }
-//        if (containsIgnoreCase(networkName, "AFRICELL")) {
-//            africellCode = code;
-//        }
+
+        String sectionName = actionSection.getText().toString();
+        int section_number = SEC_CUSTOM_CODES;
+        for (Map.Entry<Integer, String> entry : secs.entrySet()) {
+            Integer key = entry.getKey();
+            String value = entry.getValue();
+            if (value.equals(sectionName)) {
+                section_number = key;
+            }
+            // ...
+        }
+
+        for (SimCard card : availableSimCards) {
+            if (String.valueOf(card.getNetworkName()).equalsIgnoreCase(networkName)) {
+                hni = card.getHni();
+            }
+        }
         UssdActionsViewModel v = ViewModelProviders.of(this).get(UssdActionsViewModel.class);
         UssdAction ussdAction =
-            new UssdAction(codeId, actionNameText, code, hni, SEC_CUSTOM_CODES, 0);
-        v.insert(ussdAction,steps);
+                new UssdAction(codeId, actionNameText, code, hni, section_number, 0);
+        v.insert(ussdAction, steps);
 
         //TODO go to custom codes fragment
 
-        Toast.makeText(this, ussdAction.getName()+" Has been added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ussdAction.getName() + " Has been added", Toast.LENGTH_SHORT).show();
         finish();
 
     }
