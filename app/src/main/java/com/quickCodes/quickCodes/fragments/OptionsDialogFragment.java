@@ -19,6 +19,7 @@ import com.quickCodes.quickCodes.R;
 import com.quickCodes.quickCodes.modals.UssdActionWithSteps;
 import com.quickCodes.quickCodes.util.database.UssdActionsViewModel;
 
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CONTACT;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 
 /**
@@ -31,7 +32,7 @@ import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 public class OptionsDialogFragment extends BottomSheetDialogFragment {
     UssdActionsViewModel viewModel;
     UssdActionWithSteps action;
-
+    View view;
     public OptionsDialogFragment(UssdActionsViewModel viewModel, UssdActionWithSteps action) {
         this.viewModel = viewModel;
         this.action = action;
@@ -65,6 +66,13 @@ public class OptionsDialogFragment extends BottomSheetDialogFragment {
         copy.setOnClickListener(view -> {
             copyAction();
         });
+        view = root;
+
+        if (this.action.action.getSection() == SEC_CONTACT) {
+            edit.setVisibility(View.GONE);
+            star.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+        }
         return root;
     }
 

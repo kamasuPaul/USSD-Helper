@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import static com.quickCodes.quickCodes.modals.Constants.AUTO_SAVED_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_AIRTIME;
+import static com.quickCodes.quickCodes.modals.Constants.SEC_CONTACT;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_CUSTOM_CODES;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_DATA;
 import static com.quickCodes.quickCodes.modals.Constants.SEC_MMONEY;
@@ -184,7 +185,7 @@ public class AdapterDialer extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         for (int i = 0; i < numberlist.size(); i++) {
             Long codeId = r.nextLong();
             UssdAction ussdAction = new UssdAction(codeId, namelist.get(i),
-                numberlist.get(i), null, SEC_CUSTOM_CODES, 0);
+                    numberlist.get(i), null, SEC_CONTACT, 0);
             items.add(new UssdActionWithSteps(ussdAction, null));
         }
 
