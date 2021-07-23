@@ -535,6 +535,7 @@ public class DialPadActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (ActivityCompat.checkSelfPermission(DialPadActivity.this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == 1) {
                 makePhoneCall(0);
@@ -623,6 +624,7 @@ public class DialPadActivity extends AppCompatActivity {
     }
 
     public void createOptionsMenu(final View v, final UssdActionWithSteps p, final int position) {
-        OptionsDialogFragment.newInstance(ussdActionsViewModel, p).show(this.getSupportFragmentManager(), "dialog");
+        OptionsDialogFragment optionsDialogFragment = OptionsDialogFragment.newInstance(ussdActionsViewModel, p);
+        optionsDialogFragment.show(this.getSupportFragmentManager(), "dialog");
     }
 }
