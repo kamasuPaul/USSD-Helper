@@ -43,6 +43,7 @@ public class RecentFragment extends Fragment {
     private UssdActionsViewModel ussdActionsViewModel;
     private boolean pointsCalculated = false;
     private RecentAdapter recentAdapter;
+    ViewPager2 viewPagerSimcards, tabsPager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,12 @@ public class RecentFragment extends Fragment {
         adapterSimcards = new AdapterSimCards(getActivity());
         adapterUssdCodesRecent = new AdapterDialer(getActivity());
         recentAdapter = new RecentAdapter(this);
+    }
+
+    @Override
+    public void onResume() {
+        tabsPager.setAdapter(recentAdapter);
+        super.onResume();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -96,7 +103,7 @@ public class RecentFragment extends Fragment {
 
 
         //......SETUP SIMCARDS VIEW PAGER...........................................................
-        ViewPager2 viewPagerSimcards = root.findViewById(R.id.viewpager);
+        viewPagerSimcards = root.findViewById(R.id.viewpager);
         viewPagerSimcards.setAdapter(adapterSimcards);
         viewPagerSimcards.setOffscreenPageLimit(1);
         int pageMarginPx = getResources().getDimensionPixelOffset(R.dimen.card_margin);
@@ -129,9 +136,10 @@ public class RecentFragment extends Fragment {
         });
 //        viewPagerSimcards.beginFakeDrag();
         //..........................................................................................
-        ViewPager2 tabsPager = root.findViewById(R.id.pager_tabs);
+        tabsPager = root.findViewById(R.id.pager_tabs);
         TabLayout tabLayout = root.findViewById(R.id.tab_layout);
         tabsPager.setAdapter(recentAdapter);
+        tabsPager.setSaveEnabled(false);
 
         new TabLayoutMediator(tabLayout, tabsPager,
                 (tab, position) -> {
@@ -150,6 +158,12 @@ public class RecentFragment extends Fragment {
     private void setupToolBar(View root) {
         Toolbar toolbar = root.findViewById(R.id.toolbar1);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public void onDestroyView() {
+        tabsPager.setAdapter(null);
+        super.onDestroyView();
     }
 
     public static class SideBySideTransformer implements ViewPager2.PageTransformer {
