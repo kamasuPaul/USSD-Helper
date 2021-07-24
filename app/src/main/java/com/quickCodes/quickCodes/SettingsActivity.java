@@ -1,8 +1,6 @@
 package com.quickCodes.quickCodes;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -13,23 +11,14 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceFragmentCompat;
 
-public class SettingsActivity extends AppCompatActivity {
+import com.balysv.materialripple.MaterialRippleLayout;
+import com.quickCodes.quickCodes.util.Tools;
 
-    public static void rateAction(Activity activity) {
-        Uri uri = Uri.parse("market://details?id=" + activity.getPackageName());
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        try {
-            activity.startActivity(goToMarket);
-        } catch (ActivityNotFoundException e) {
-            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + activity.getPackageName())));
-        }
-    }
+public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((MaterialRippleLayout) dialog.findViewById(R.id.bt_rate)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rateAction(SettingsActivity.this);
+                Tools.rateAction(SettingsActivity.this);
         }
         });
 

@@ -248,7 +248,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/grey_10" />
+                            android:background="@color/colorPrimary" />
 
 
                         <LinearLayout
@@ -376,7 +376,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/grey_10" />
+                            android:background="@color/colorPrimary" />
 
                         <LinearLayout
                             android:id="@+id/linear_layout_send_feeback"
@@ -396,6 +396,41 @@
                                 android:layout_weight="1"
                                 android:fontFamily="sans-serif-light"
                                 android:text="Give us feedback"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/grey_80" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_large"
+                                android:layout_height="wrap_content" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="@dimen/spacing_large"
+                            android:layout_marginRight="@dimen/spacing_large"
+                            android:background="@color/grey_10" />
+
+                        <LinearLayout
+                            android:id="@+id/linear_layout_rate_us"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="70dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/spacing_large"
+                            android:paddingRight="@dimen/spacing_large">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Rate us"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                                 android:textColor="@color/grey_80" />
 

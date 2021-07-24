@@ -66,6 +66,8 @@ public class NotificationsFragment extends Fragment {
                 startActivity(Intent.createChooser(Email, "Send Feedback:"));
             }
         });
+        View rateUs = root.findViewById(R.id.linear_layout_rate_us);
+        rateUs.setOnClickListener(view -> Tools.rateAction(getActivity()));
 
         notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

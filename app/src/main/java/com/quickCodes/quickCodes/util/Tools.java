@@ -5,6 +5,7 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -546,5 +547,15 @@ public class Tools {
     public static void setPoints(Context context, int points) {
         SharedPreferences preferences = context.getSharedPreferences(TOOLS_PREF, Context.MODE_PRIVATE);
         preferences.edit().putInt(POINTS, points).apply();
+    }
+
+    public static void rateAction(Activity activity) {
+        Uri uri = Uri.parse("market://details?id=" + activity.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            activity.startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + activity.getPackageName())));
+        }
     }
 }
