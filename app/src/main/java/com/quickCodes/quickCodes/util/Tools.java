@@ -62,17 +62,17 @@ import static com.quickCodes.quickCodes.modals.Constants.TEXT;
 
 public class Tools {
     public static final String HNI_AUTO_SAVED_CODES = "auto_saved";
+    public static final int CONTACT_PICKER_REQUEST = 29;
     private static final String TOOLS_PREF = "tools_pref";
     private static final String MCC_PREF = "mcc_pref";
     private static final String SELECTED_SIMCARD = "selected_simcard";
-    public static final int CONTACT_PICKER_REQUEST = 29;
     private static final String POINTS = "points";
     public static EditText phoneNumber;
+    public static HashMap<String, String> contacts;
+    static List<String> parts;
     private static String TAG = "TOOLS";
     private static SubscriptionManager subscriptionManager;
     private static List<SubscriptionInfo> subList;
-    public static HashMap<String, String> contacts;
-    static List<String> parts;
     private static MutableLiveData<SimCard> selectedSimCard;
 
 
@@ -94,24 +94,24 @@ public class Tools {
 //                }
 //            });
             //handle null pointer excepiton
-                if (subList != null) {
+            if (subList != null) {
 
-                    for (final SubscriptionInfo subscriptionInfo : subList) {
-                        final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
-                        String mcc = String.valueOf(subscriptionInfo.getMcc());
-                        String mnc = String.valueOf(subscriptionInfo.getMnc());
-                        if (mnc.length() == 1) {
-                            mnc = "0" + mnc;
-                        }
-                        String hnc = mcc + mnc;
-                        int slotIndex = subscriptionInfo.getSimSlotIndex();
-                        int subscriptionId = subscriptionInfo.getSubscriptionId();
-                        SimCard simCard = new SimCard(networkName, hnc, slotIndex, subscriptionId);
-                        simCards.add(simCard);
-                        preferences.edit().putString(MCC_PREF, String.valueOf(mcc)).commit();
-
+                for (final SubscriptionInfo subscriptionInfo : subList) {
+                    final String networkName = subscriptionInfo.getCarrierName().toString().toUpperCase();
+                    String mcc = String.valueOf(subscriptionInfo.getMcc());
+                    String mnc = String.valueOf(subscriptionInfo.getMnc());
+                    if (mnc.length() == 1) {
+                        mnc = "0" + mnc;
                     }
+                    String hnc = mcc + mnc;
+                    int slotIndex = subscriptionInfo.getSimSlotIndex();
+                    int subscriptionId = subscriptionInfo.getSubscriptionId();
+                    SimCard simCard = new SimCard(networkName, hnc, slotIndex, subscriptionId);
+                    simCards.add(simCard);
+                    preferences.edit().putString(MCC_PREF, String.valueOf(mcc)).commit();
+
                 }
+            }
         }
         return simCards;
     }
@@ -148,7 +148,12 @@ public class Tools {
         if (selectedSimCard == null) {
             selectedSimCard = new MutableLiveData<>();
         }
-        selectedSimCard.setValue(getAvailableSimCards(context).get(simslot));
+        List<SimCard> simCardList = getAvailableSimCards(context);
+        SimCard card = simCardList.get(0);
+        if (simslot < simCardList.size()) {
+            card = simCardList.get(simslot);
+        }
+        selectedSimCard.setValue(card);
     }
 
     @SuppressLint("MissingPermission")
@@ -289,13 +294,13 @@ public class Tools {
                         data[i] = data[i].substring(data[i].indexOf(":") + 1);
                     }
                     StepArrayAdapter adapter =
-                        new StepArrayAdapter(
-                            context,
-                            R.layout.dropdown_menu_popup_item,
-                            data);
+                            new StepArrayAdapter(
+                                    context,
+                                    R.layout.dropdown_menu_popup_item,
+                                    data);
 
                     AutoCompleteTextView editTextFilledExposedDropdown =
-                        rowAmount.findViewById(R.id.action_network);
+                            rowAmount.findViewById(R.id.action_network);
                     editTextFilledExposedDropdown.setKeyListener(null);
                     editTextFilledExposedDropdown.setAdapter(adapter);
                     editTextFilledExposedDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -406,7 +411,7 @@ public class Tools {
 
     public static boolean showMeOverlay(Context context) {
         boolean b = PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
+                .getBoolean(context.getResources().getString(R.string.quick_access_dots_pref), false);
         return b;
     }
 
