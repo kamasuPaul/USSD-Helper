@@ -121,7 +121,7 @@ public class SectionFragment extends Fragment {
         simCardLiveData.observe(getViewLifecycleOwner(), new Observer<SimCard>() {
             @Override
             public void onChanged(SimCard simCard) {
-                Toast.makeText(context, "simcard changed to " + simCard.getNetworkName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "simcard changed to " + simCard.getNetworkName(), Toast.LENGTH_SHORT).show();
                 ussdActionsViewModel.getAllCustomActions().observe(getViewLifecycleOwner(), new Observer<List<UssdActionWithSteps>>() {
                     @Override
                     public void onChanged(List<UssdActionWithSteps> actions) {
